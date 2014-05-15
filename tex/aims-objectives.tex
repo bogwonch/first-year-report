@@ -1,0 +1,77 @@
+\documentclass[report.tex]{subfiles}
+\begin{document}
+
+\section{Introduction}
+
+When an app is installed on Android it prompts the user to accept a list of
+privileges granted to the app.  The user makes the decision based on what they
+know about the app and their own security policies.  In practice a large number
+of users accept the permissions whatever.  This is problematic because some apps
+are over privileged\cite{Felt:2011kj} and some are malicious\cite{Zhou:2012cf}.
+Other apps are considered to be \ac{PUS} because though they are not malicious
+in themselves they handle data in a way that is not in the user's interests.
+
+More generally users and computers make decisions, whether it update an app;
+whether to connect to a website, based on security policies and trust
+relationships.  These security policies may include the use of tools or experts
+to decide whether something is malicious.  For instance a user may trust a
+firewall program to enforce their network policy; and they may trust a tool like
+\emph{Shorewall} to generate the actual policy for them.  Alternately a user
+might wish to be able to install apps but only trust apps \emph{Amazon} have
+vetted to be installed on their device.  \emph{The aim of this project is to
+  formalize these security policies so they can be studied and enforced
+  automatically.}
+
+Mobile operating systems are similar to existing systems but come with a
+different trust model and are used in a different manner.  Software is
+downloaded from app stores, Apps run within sandboxes and must collaborate and
+collude to share data with other apps. These devices contain more personal data
+than ever before: sensors tracking users' locations,  gyroscopes measuring how
+users move, and microphones listening to users calls.  The \ac{BYOD} movement
+empowers users to take the devices they have at home and bring them into work.
+This creates a tension between how the corporate IT department may require
+employees to use their devices and the user's policies on how they want to use
+their devices.  These features add a novel challenge to modelling these devices
+and the stores and users surrounding them.  
+
+Formalizing the policies allows comparisons to be made between different systems
+and users.  When comparisons are made between the two biggest mobile OSs,
+iOS~and~Android, the comparisons is informal: we say iOS is more closed, more of
+a \emph{walled garden}, Android is more permissive.  With a formal language to
+describe system policy we can make a precise comparison.  It allows us to 
+
+There is decades of research on analysis tools.  These tools can infer complex
+security properties about the code and systems they analyze.  What there is
+missing is a glue layer between the assurances these tools can give and the
+policies users are trying to enforce.  By using an \emph{authorization logic} as
+the glue layer we can enforce the policy by building on the work on access
+control in distributed systems.  Our static analysis tools can be trusted to
+give statements about code, with other principles, that can be combined to
+implement a security policy.
+
+
+\subsection{Objectives}
+
+\begin{enumerate}
+  \item \emph{To instantiate a logic of authorization that allows us to model
+      the trust relationships between the components of an operating system and
+      the users.}  This will include analysis tools as principals and allow
+    making decisions based on signed statements from them.  The logic must be
+    able to model what happens when apps can collude.  The logic may be based
+    off of earlier work on the \emph{SecPAL~language}\cite{Becker:2006vh} that
+    was used for distributed access control decisions.
+
+  \item \emph{To model the decisions and trust relationships inherent in Android
+      and other mobile operating systems.} 
+
+  \item \emph{To implement an app store that serves users only the apps that
+      meet their security policies.}  This will include a user-study where we
+    evaluate how well users comprehend their policies and the decisions made for
+    them.
+
+  \item \emph{To evaluate something with a user study}.
+
+\end{enumerate}
+
+\end{document}
+

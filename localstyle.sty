@@ -1,0 +1,50 @@
+\ProvidesPackage{localstyle}
+
+\usepackage{url}
+\@ifpackageloaded{natbib}{}{\usepackage[square,numbers]{natbib}}
+
+% For structuring the document
+\usepackage{subfiles}
+
+% For graphics
+\usepackage{graphicx}
+\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+\graphicspath{{img/}}
+
+% Acronyms
+\usepackage{acronym}
+\acrodef{PUS}{potentially unwanted software}
+\acrodef{RBAC}{role based access control}
+\acrodef{PII}{personally identifiable information}
+\acrodef{AC}{assertion context}
+\acrodef{BYOD}{bring your own device}
+
+% Handle tufte figures gracefully
+\@ifundefined{marginfigure}{%
+  \newenvironment{marginfigure}{\begin{figure}}{\end{figure}}
+}{}
+\@ifundefined{figure*}{%
+  \newenvironment{figure*}{\begin{figure}}{\end{figure}}
+}{}
+
+% Code
+\usepackage{listings}
+\lstset{%
+  basicstyle=\tt,
+  tabsize=2,
+  showstringspaces=true
+}
+\newcommand{\code}[1]{\lstinline{#1}}
+
+\lstdefinelanguage{SecPAL}{%
+  morekeywords={%
+    says,if,can,say,can,act,as,shows,meets
+  },
+}[keywords,comments,strings]
+
+% Maths
+\usepackage{amsmath}
+\usepackage{proof}
+
+% BNF Diagrams
+\usepackage{syntax}
