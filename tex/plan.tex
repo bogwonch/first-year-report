@@ -19,6 +19,53 @@ nature was felt to be ideal for describing a mobile-device and app-store
 ecosystem as there isn't a single authority making decisions about what can and
 cannot be installed onto a device.  
 
+\begin{marginfigure}\label{secpal:bnf}
+  \begin{grammar}\footnotesize
+<E> ::= <Variable> \alt <Constant>
+
+<Variable> ::= <Lower> <TokenChar>*
+
+<Constant> ::= <Upper> <TokenChar>*
+
+<D> ::= '0' \alt 'inf'
+
+<VerbPhrase> ::= ('can-say' <D> <Fact>) \alt <Predicate>
+
+<Predicate> ::= <TokenChar>+ <PredicateArg>?
+
+<PredicateArg> ::= '(' ( <E> ( ',' <E> )* )? ')'
+
+<Fact> ::= <E> <VerbPhrase>
+
+<Claim> ::= <Fact> ('if' <Fact> ( ',' <Fact>)*)? (';' <C>)?
+
+<Assertion> ::= <E> 'says' <Claim> '.'
+
+<AC> ::= <Assertion>*
+
+<Ec> ::= <Apply> \alt <Entity> \alt <Value>
+
+<Apply> ::= <TokenChar>+ '(' (<Ec> (',' <Ec>)*)? ')'
+
+<Entity> ::= <E>
+
+<C> ::= <Conj> \alt <C~>
+
+<C~> ::= <Equals> \alt <Not> \alt <Boolean>
+
+<Boolean> ::= 'True' \alt 'False'
+
+<Not> ::= '!' <C~>
+
+<Equals> ::= Ec '=' Ec
+
+<Conj> ::= <C~> ',' <C>
+
+<Value> ::= <Float> \alt <Int> \alt <String>
+  \end{grammar}
+  \caption{Simplified BNF grammar for SecPAL as we have implemented it.}
+\end{marginfigure}
+
 When considering the policies we wanted to allow users to delegate decisions to
 experts who might be third party certification services or static analysis
 services running on a remote server or on the device itself.  There should be
