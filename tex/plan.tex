@@ -209,7 +209,7 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
   ---------------
   \end{lstlisting}
   \caption{Proof output by the SecPAL tool when evaluating Alice's query.  The
-    proof is presented as an inverted $infty$erence tree where indented statements
+    proof is presented as an inverted inference tree where indented statements
     are the proofs for each condition of the unindented line above.  Underlining
     indicates something is known to be true as it either exists in the assertion
     context or is true in itself. Variable substitutions are shown in brackets
@@ -220,6 +220,34 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
 
 
 \subsection{Third year}
+
+
+\begin{landscape}
+\begin{ganttchart}[%
+  hgrid, vgrid,
+  time slot format=isodate-yearmonth,
+  compress calendar
+]{2013-09}{2017-03}
+  \gantttitlecalendar{year,month}                       \\
+  \gantttgroup{Initial work}{2013-09}{2014-09} \\
+  \ganttbar{Background reading}{2013-09}{2014-09} \\
+  \ganttbar{Exploring authorization logics}{2013-11}{2014-01} \\
+  \ganttbar{Initial SecPAL implementation}{2014-02}{2014-04} \\
+  \gantttbar{First year review}{2014-05}{2014-05} \\
+  \ganttgroup{App Store}{2014-08}{2015-04} \\
+  \ganttbar{Design}{2014-11}{2014-11} \\
+  \ganttbar{Implementation}{2014-12}{2015-01} \\
+  \ganttbar{Experimentation}{2015-01}{2015-02} \\
+  \ganttbar{Write up}{2015-02}{2015-04} \\
+  \ganttgroup{Security Policies}{2015-05}{2016-01}} \\
+  \ganttgroup{Stretch goals}{2015-11}{2016-02} \\
+  \ganttbar{SecPAL knowledge distribution protocol}{2015-11}{2016-02} \\
+  \ganttgroup{Writing}{2014-07}{2017-01}                \\
+  \ganttbar{Technical report}{2014-07}{2014-10}         \\
+  \ganttbar{Second year presentation}{2015-06}{2015-06} \\
+  \ganttbar{Thesis}{2016-01}{2017-01}
+\end{ganttchart}
+\end{landscape}
 
 
 \end{document}
