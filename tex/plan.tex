@@ -19,53 +19,6 @@ nature was felt to be ideal for describing a mobile-device and app-store
 ecosystem as there isn't a single authority making decisions about what can and
 cannot be installed onto a device.  
 
-\begin{marginfigure}\label{secpal:bnf}
-  \begin{grammar}\footnotesize
-<E> ::= <Variable> \alt <Constant>
-
-<Variable> ::= <Lower> <TokenChar>*
-
-<Constant> ::= <Upper> <TokenChar>*
-
-<D> ::= '0' \alt 'inf'
-
-<VerbPhrase> ::= ('can-say' <D> <Fact>) \alt <Predicate>
-
-<Predicate> ::= <TokenChar>+ <PredicateArg>?
-
-<PredicateArg> ::= '(' ( <E> ( ',' <E> )* )? ')'
-
-<Fact> ::= <E> <VerbPhrase>
-
-<Claim> ::= <Fact> ('if' <Fact> ( ',' <Fact>)*)? (';' <C>)?
-
-<Assertion> ::= <E> 'says' <Claim> '.'
-
-<AC> ::= <Assertion>*
-
-<Ec> ::= <Apply> \alt <Entity> \alt <Value>
-
-<Apply> ::= <TokenChar>+ '(' (<Ec> (',' <Ec>)*)? ')'
-
-<Entity> ::= <E>
-
-<C> ::= <Conj> \alt <C~>
-
-<C~> ::= <Equals> \alt <Not> \alt <Boolean>
-
-<Boolean> ::= 'True' \alt 'False'
-
-<Not> ::= '!' <C~>
-
-<Equals> ::= Ec '=' Ec
-
-<Conj> ::= <C~> ',' <C>
-
-<Value> ::= <Float> \alt <Int> \alt <String>
-  \end{grammar}
-  \caption{Simplified BNF grammar for SecPAL as we have implemented it.}
-\end{marginfigure}
-
 When considering the policies we wanted to allow users to delegate decisions to
 experts who might be third party certification services or static analysis
 services running on a remote server or on the device itself.  There should be
@@ -99,7 +52,7 @@ some digital evidence to show Angry-Birds won't leak her information.
 Alice says Evidence shows AngryBirds meets NoInfoLeaks.
 \end{lstlisting}
 
-\subsection{Example}
+\subsection{Alice Installs An App}
 
 To provide a better idea of the logic might be used we will describe a story
 where a user is trying to install an app on their mobile phone.  This example is
@@ -221,33 +174,6 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
 
 \subsection{Third year}
 
-
-\begin{landscape}
-\begin{ganttchart}[%
-  hgrid, vgrid,
-  time slot format=isodate-yearmonth,
-  compress calendar
-]{2013-09}{2017-03}
-  \gantttitlecalendar{year,month}                       \\
-  \gantttgroup{Initial work}{2013-09}{2014-09} \\
-  \ganttbar{Background reading}{2013-09}{2014-09} \\
-  \ganttbar{Exploring authorization logics}{2013-11}{2014-01} \\
-  \ganttbar{Initial SecPAL implementation}{2014-02}{2014-04} \\
-  \gantttbar{First year review}{2014-05}{2014-05} \\
-  \ganttgroup{App Store}{2014-08}{2015-04} \\
-  \ganttbar{Design}{2014-11}{2014-11} \\
-  \ganttbar{Implementation}{2014-12}{2015-01} \\
-  \ganttbar{Experimentation}{2015-01}{2015-02} \\
-  \ganttbar{Write up}{2015-02}{2015-04} \\
-  \ganttgroup{Security Policies}{2015-05}{2016-01}} \\
-  \ganttgroup{Stretch goals}{2015-11}{2016-02} \\
-  \ganttbar{SecPAL knowledge distribution protocol}{2015-11}{2016-02} \\
-  \ganttgroup{Writing}{2014-07}{2017-01}                \\
-  \ganttbar{Technical report}{2014-07}{2014-10}         \\
-  \ganttbar{Second year presentation}{2015-06}{2015-06} \\
-  \ganttbar{Thesis}{2016-01}{2017-01}
-\end{ganttchart}
-\end{landscape}
 
 
 \end{document}
