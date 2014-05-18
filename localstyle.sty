@@ -1,4 +1,5 @@
 \ProvidesPackage{localstyle}
+\usepackage[utf8]{inputenc}
 
 \usepackage{url}
 \@ifpackageloaded{natbib}{}{\usepackage[square,numbers]{natbib}}
@@ -18,19 +19,25 @@
 \acrodef{PII}{personally identifiable information}
 \acrodef{AC}{assertion context}
 \acrodef{BYOD}{bring your own device}
+\acrodef{EDB}{extensional database}
+\acrodef{IDB}{intensional database}
+\acrodef{SLD}{selective linear definite clause}
+\acrodef{CWA}{closed world assumption}
+\acrodef{OWA}{open world assumption}
 
 % Handle tufte figures gracefully
 \@ifundefined{marginfigure}{%
-  \newenvironment{marginfigure}{\begin{figure}}{\end{figure}}
+  \newenvironment{marginfigure}{\begin{figure}\centering}{\end{figure}}
 }{}
 \@ifundefined{figure*}{%
-  \newenvironment{figure*}{\begin{figure}}{\end{figure}}
+  \newenvironment{figure*}{\begin{figure}\centering}{\end{figure}}
 }{}
 
 % Code
 \usepackage{listings}
 \lstset{%
-  basicstyle=\tt,
+  basicstyle=\sffamily,
+  columns=flexible,
   tabsize=2,
   showstringspaces=true
 }
@@ -46,6 +53,7 @@
 
 % Maths
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{proof}
 
 % BNF Diagrams
@@ -54,4 +62,6 @@
 % Gantt Charts
 \usepackage{pgfgantt}
 \usepackage{pdflscape}
-\usepackage[a4paper]{geometry}
+\@ifpackageloaded{geometry}{}{\usepackage[a4paper]{geometry}}
+
+

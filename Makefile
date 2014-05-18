@@ -6,7 +6,7 @@ DOCUMENT=report.tex
 STYLE=localstyle.sty
 
 all: report.pdf tidy
-report.pdf: $(wildcard tex/*) $(wildcard img/*) $(DOCUMENT) $(STYLE)
+report.pdf: $(wildcard img/*) $(DOCUMENT) $(STYLE)
 	@$(LATEX) $(DOCUMENT)
 
 release: report.pdf
