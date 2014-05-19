@@ -1,9 +1,9 @@
-\documentclass[a4paper]{article}
-%\documentclass[sfsidenotes,symmetric]{tufte-book}
+%\documentclass[a4paper]{article}
+\documentclass[a4paper,12pt,sfsidenotes]{tufte-book}
 \usepackage{localstyle} % local style file
 
 \title{Using Authorization Logics To Model Security Decisions in Mobile
-  Systems\\\vspace{1em}Thesis Proposal}
+  Systems\\\vspace{2em}Thesis Proposal}
 \author{Joseph~Hallett}
 \date\today
 
@@ -174,9 +174,9 @@ meets the security policy.
 
 Should the app be removed?  If the app is used every day by then the user may
 not be pleased that the phone has decided to break their favorite
-app\footnote{Though anecdotal evidence would suggest users tend to blame apps
+app; though anecdotal evidence would suggest users tend to blame apps
   for failing rather than the frameworks they apps rely on; regardless of who is
-  really to blame.}; equally just stopping updates for the app increases app
+  really to blame. Equally just stopping updates for the app increases app
 version fragmentation and reduces security by rejecting bug fixes.  Allowing the
 update isn't correct either as it allows a means to break the security policy.
 
@@ -240,6 +240,14 @@ Linux's permissions model\cite{Drake:2014uq}.
 
 \subsection{Permissions and Apps}
 
+\begin{marginfigure}\label{img:brightestflashlight}
+  \centering
+  \includegraphics[width=0.8\textwidth]{img/brightestflashlight.png}
+  \caption{The \emph{Brightest Flashlight Free} app prompting for it's permissions
+    at install time. This app is over privileged as a flashlight app should have
+    no need for GPS or phone data, or network access.}
+\end{marginfigure}
+
 On top of the traditional permissions level Android has API permissions that
 apps must request at install time. API permissions control access to
 functionality such as the internet, reading or writing external storage, or to
@@ -250,7 +258,8 @@ for\cite{Felt:2012hm}. This has led to malware and \ac{PUS} that requests
 excess permissions; which leads to apps sending premium text messages (a common
 monetization strategy\cite{Chien:2011vw}) or stealing private information.
 
-There are tools, however, which can detect when an app is over privileged. The
+There are tools which can detect when an app is over privileged (like the app in
+Figure~\ref{img:brightestflashlight}). The
 \emph{Stowaway} tool\cite{Felt:2011kj} mapped Android permissions onto the API
 calls to access the functionality they enabled. This allowed them to detect
 when apps were over privileged by looking for apps which had the permissions but
@@ -258,14 +267,6 @@ none of the associated API calls. The \emph{PScout} tool\cite{Au:2012ju}
 improved upon Stowaway by increasing the accuracy of the permissions map and by
 deriving the map from the Android source code, rather than the fuzzing based
 methods Stowaway used.
-
-\begin{marginfigure}\label{img:brightestflashlight}
-  \centering
-  \includegraphics[width=0.8\textwidth]{img/brightestflashlight.png}
-  \caption{The \emph{Brightest Flashlight Free} app prompting for it's permissions
-    at install time. This app is over privileged as a flashlight app should have
-    no need for GPS or phone data, or network access.}
-\end{marginfigure}
 
 One criticism of the API permissions is that they are quite broad. For instance
 the \emph{internet} permission allows an app to send or receive anything on the
@@ -281,7 +282,6 @@ its bounds then the request is either denied or fake data supplied in its place.
 This does require modifications to the Android OS however. The \emph{AppGuard}
 tool\cite{Backes:2013ec} offers something in between: it rewrites apps to use a
 security monitor to enforce security policies at runtime.
-
 
 \subsection{Intents and Collusion}
 
@@ -369,8 +369,8 @@ By providing a translation into \emph{Datalog} (specifically \emph{Datalog with
   constraints} or \emph{Datalog$^C$\cite{Li:2003ix}}), the RT family of
 languages was shown to be tractable, unlike earlier languages. Datalog is a
 query language similar to \emph{Prolog} but that doesn't support nested
-sub-queries or functions and has a safety condition\footnote{All variables in
-  the head must occur in the body.}. Datalog is a subset of first-order logic
+sub-queries or functions and has a safety condition that all variables in
+the head must occur in the body. Datalog is a subset of first-order logic
 and is known to be tractable: i{.}e{.} all queries can be done in polynomial
 time.
 
@@ -405,17 +405,6 @@ Properties are given to entities by creating arbitrary predicates for them, and
 a special \emph{says} modality allows statements to be imported from third
 parties.
 
-\begin{marginfigure}\label{code:binder}
-  \begin{lstlisting}[language=Prolog,morekeywords={*,says,:-},basicstyle=\scriptsize]
-can(X, read, file) :- employee(X, company).
-employee(X, company) :- hr says empolyee(X, company).
-hr says employee(john, company).
-  \end{lstlisting}
-  \caption{Statements in \emph{Binder} to say that in the current context only
-    employees can read a file, and that an employee they must have a statement
-    from HR to prove they are an employee.}
-\end{marginfigure}
-
 Authorisation is granted by checking to see if a predicate can be deduced from
 the knowledge base, however because Binder does not add any special predicates,
 and Datalog does not allow functions there can be no notion of state.
@@ -425,6 +414,19 @@ logic for decentralized systems. Early experiments indicate that it is highly
 suitable for modeling the distributed nature of software installation, app
 stores and mobile devices so we will describe it in more detail than other
 authorization languages.
+
+\begin{marginfigure}\label{code:binder}
+  \begin{lstlisting}[language=Prolog,morekeywords={*,says,:-}]
+can(X, read, file) :- 
+  employee(X, company).
+employee(X, company) :- 
+  hr says empolyee(X, company).
+hr says employee(john, company).
+  \end{lstlisting}
+  \caption{Statements in \emph{Binder} to say that in the current context only
+    employees can read a file, and that an employee they must have a statement
+    from HR to prove they are an employee.}
+\end{marginfigure}
 
 Syntactically {SecPAL} appears similar to Binder, however it has a richer syntax
 that allows for constraints and decisions to be made based on state (such as the
@@ -487,6 +489,10 @@ SecPAL says the statement is okay else it is rejected.
 \end{figure}
 
 \subsection{Access Control Systems}
+
+% TODO
+
+{\Huge TODO}
 
 \section{Review of Datalog}
 
@@ -627,7 +633,7 @@ RT$_1^C$\cite{Li:2003ix} use a form of Datalog$^C$ as their evaluation engine to
 allow for this extra expressiveness.
 
 Unfortunately while some constraints applied to domains are tractable (such as
-trees, ordering and discrete domains) \citeauthor*{Li:2003:ix} could not show
+trees, ordering and discrete domains) \citeauthor*{Li:2003ix} could not show
 all were.  Consequently policy languages that use constraint Datalog often apply
 additional restrictions to how constraints can be used.  Variable independence
 conditions\cite{Chomicki:2000tz} have been suggested as a \emph{middle-ground}
@@ -764,15 +770,22 @@ Whilst in the original SecPAL paper\cite{Becker:2010vh}
 this implementation uses a simpler goal-oriented \emph{brute-force} approach.
 It was written in this way to quickly evaluate whether SecPAL is a good fit for
 the problem, rather than to be an efficient production ready inference
-engine\footnote{In fact it could never be used for this as most Android devices
-  run using ARM processors which are poorly supported by Haskell compilers.}
+engine.  In fact it could not currently be used on a phone as most Android devices
+run using ARM processors which are poorly supported by Haskell compilers.
 That said it supports command history, dynamically loaded constraint-functions,
 comes with syntax highlighting plugins for Vim, and has handled simple assertion
 contexts with over a thousand statements: whilst it is not ideal it can serve as
 a reference for a later efficient implementation if required.
 
-\begin{figure*}\label{secpal:exampleproof}
-  \begin{lstlisting}[basicstyle=\footnotesize\ttfamily,columns=flexible,mathescape]
+An example of a proof generated by the tool is shown in
+Figure~\ref{secpal:exampleproof}.  The proof is presented as an inverted
+inference tree where indented statements are the proofs for each condition of
+the unindented line above.  Underlining indicates something is known to be true
+as it either exists in the assertion context or is true in itself. Variable
+substitutions are shown in brackets to aid debugging.
+
+\begin{figure}\label{secpal:exampleproof}
+  \begin{lstlisting}[basicstyle=\small\ttfamily,columns=flexible,mathescape]
 AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
   AC, inf [app\AngryBirds] |= Alice says AngryBirds meets NotMalware.
     AC, inf [app\AngryBirds] |= Alice says Google can-say inf app meets NotMalware.
@@ -795,56 +808,86 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
   AC, inf |= True
   ---------------
   \end{lstlisting}
-  \caption{Proof output by the SecPAL tool when evaluating Alice's query.  The
-    proof is presented as an inverted inference tree where indented statements
-    are the proofs for each condition of the unindented line above.  Underlining
-    indicates something is known to be true as it either exists in the assertion
-    context or is true in itself. Variable substitutions are shown in brackets
-    to aid debugging}
+  \caption{Proof output by the SecPAL tool when evaluating Alice's query.}
+\end{figure}
+
+\subsection{Thesis Proposal}
+
+I would like to focus on developing security policies for mobile systems in the
+remaining years of my PhD.  My first year has focussed on exploring SecPAL
+and ensuring it is the right logic to model the issues surrounding smart phones.
+The next two years will be spent exploring what happens when these policies
+interact with users.
+
+The first step will be to complete the work done in the first year and show that
+a logic of authorization can model the security decisions made inside Android,
+and that it is capable of describing complex security policies.  This will
+culminate in a technical report that describes the authorization logic, why it
+was chosen over other policy languages and showing some of the applications of
+the logic to mobile systems and the problems associated with them.
+
+The next step will be to develop an app store that uses security policies as a
+filtering mechanism for it's users.  Authorization logics have not been used in
+this application before and current markets are not filtering by a user's
+policies (though the Play Store is at least advertising apps to users on the
+basis of past app selections).
+
+Creating an app store also allows users to interact with the research.
+Encouraging users to sign up for and use an app store with security policies
+increases the impact of the research, provides a practical example to illustrate
+how it can be applied to a real world problem.  It also will offer a platform to
+test real policies against and show how different analysis tools can make
+different guarantees.  
+
+The store can also act as a framework and baseline to compare different store's
+policies against.  By doing the policy checks at the app store level it avoid
+the need for users to root their phone (thereby reducing their device security)
+and allows for a wider range of users to interact with the project. 
+
+Creating a secure app store is a non-trivial engineering challenge; especially
+when combined with the danger provided by user supplied policy files. The
+engineering difficulty in developing such a store can be mitigated by sensible
+software development practices. 
+
+The second stage of the project will be to increase the complexity of the
+policies and to show how the policies interact with the user.  One area will be
+on compositional policies where a user might have one policy for apps at home
+and another for how they should use their phone at work.  Showing that SecPAL
+could support policies of this kind is, as hinted earlier, easy in SecPAL or
+many other authorization languages; however it is
+not clear what to do when these policies change, or when new policies are
+composed with them, or when two composed policies contradict each other.
+
+Another area to look at will be to show how policies can be written to take into
+account of the \emph{app collusion problem}.  Whilst tools have been written to
+detect and attempt to prevent these kinds of attacks there has not been an
+attempt to model the decisions to collude and with whom in a logic of
+authorization.  Collusion is not, in itself, a sign of malicious intent.  By
+developing an authorization logic to model these decisions will allow for a
+richer policy language for mobile devices.
+
+The final area to look at to do with policy language will be to ensure the language
+is flexible enough to handle different scenarios when handling updates to
+applications.  This will include looking at the whether permissions increase
+over time or if developers actively prune the lists; as well as developing
+policies that can describe what to do when a well-used app no longer meets the
+security policy.
+
+% TODO stretch goals.  
+
+At the end of the project I want to have shown how authorization logics can be
+extended to describe and mitigate decision making problems on mobile devices.
+
+\begin{figure*}\label{fig:gantt}
+  \includegraphics[width=1.4\linewidth,angle=90]{gantt.pdf}
+  \caption{Gantt chart showing progress plans through out funded period of PhD
+  study.}
 \end{figure*}
 
 
+
 \appendix
-\section{Bibliography}
 \bibliography{report}
-
-\newgeometry{margin=5mm}
-\begin{landscape}
-  \thispagestyle{empty}
-
-  \begin{figure*}[!h]\label{ganttchart}
-    \begin{ganttchart}[%
-      hgrid, vgrid,
-      time slot format=isodate-yearmonth,
-      compress calendar,
-      y unit chart=4mm 
-    ]{2013-09}{2017-03}\footnotesize
-      \gantttitlecalendar{year,month}                              \\
-      \ganttgroup{Initial work}{2013-09}{2014-09}                  \\
-      \ganttbar{Background reading}{2013-09}{2014-09}              \\
-      \ganttbar{Exploring authorization logics}{2013-11}{2014-01}  \\
-      \ganttbar{Initial SecPAL implementation}{2014-02}{2014-04}   \\
-      \ganttbar{First year review}{2014-05}{2014-05}               \\
-      \ganttgroup{App Store}{2014-09}{2015-01}                     \\
-      \ganttbar{Design}{2014-09}{2014-09}                          \\
-      \ganttbar{Implementation}{2014-10}{2014-12}                  \\
-      \ganttbar{Experimentation}{2015-01}{2015-02}                 \\
-      \ganttbar{Write up}{2015-02}{2015-04}                        \\
-      \ganttgroup{Security Policies}{2015-05}{2016-01}             \\
-      \ganttgroup{Stretch goals}{2015-11}{2016-02}                 \\
-      \ganttbar{Knowledge distribution protocol}{2015-11}{2016-02} \\
-      \ganttgroup{Writing}{2014-07}{2017-03}                       \\
-      \ganttbar{Technical report}{2014-07}{2014-10}                \\
-      \ganttbar{Second year presentation}{2015-06}{2015-06}        \\
-      \ganttbar{Thesis}{2016-03}{2017-03}
-    \end{ganttchart}
-    \caption{Gantt chart showing planned progress of the project.}
-  \end{figure*}
-\end{landscape}
-\normalsize
-\restoregeometry
-
-
 
 \end{document}
 

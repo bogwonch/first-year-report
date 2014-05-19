@@ -5,9 +5,14 @@ FINAL=1st-year-report.pdf
 DOCUMENT=report.tex
 STYLE=localstyle.sty
 
-all: report.pdf tidy
+all: report.pdf gantt.pdf tidy
 report.pdf: $(wildcard img/*) $(DOCUMENT) $(STYLE)
 	@$(LATEX) $(DOCUMENT)
+
+report.tex: gantt.tex gantt.pdf
+
+gantt.pdf: gantt.tex
+	xelatex gantt
 
 release: report.pdf
 	@cp report.pdf $(FINAL)
@@ -18,3 +23,4 @@ clean:
 
 tidy:
 	@latexmk -c
+
