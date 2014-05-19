@@ -18,8 +18,8 @@
 
 When an app is installed on Android it prompts the user to accept a list of
 privileges granted to the app.  The user makes the decision based on what they
-know about the app and their own security policies.  In practice a large number
-of users accept the permissions whatever.  This is problematic because some apps
+know about the app and their own security policies.  In practice most
+users accept the permissions whatever.  This is problematic because some apps
 are over privileged\cite{Felt:2011kj} and some are malicious\cite{Zhou:2012cf}.
 Other apps are considered to be \ac{PUS} because though they are not malicious
 in themselves they handle data in a way that is not in the user's interests.
@@ -36,7 +36,7 @@ vetted to be installed on their device.  \emph{The aim of this project is to
   automatically.}
 
 Mobile operating systems are similar to existing systems but come with a
-different trust model and are used in a different manner.  Software is
+different trust model and are used differently.  Software is
 downloaded from app stores, Apps run within sandboxes and must collaborate and
 collude to share data with other apps. These devices contain more personal data
 than ever before: sensors tracking users' locations,  gyroscopes measuring how
@@ -53,7 +53,7 @@ iOS~and~Android, the comparisons is informal: we say iOS is more closed, more of
 a \emph{walled garden}, Android is more permissive.  With a formal language to
 describe system policy we can make a precise comparison.  It allows us to 
 
-There is decades of research on analysis tools.  These tools can infer complex
+There are decades of research on analysis tools.  These tools can infer complex
 security properties about the code and systems they analyze.  What there is
 missing is a glue layer between the assurances these tools can give and the
 policies users are trying to enforce.  By using an \emph{authorization logic} as
@@ -158,7 +158,7 @@ security services such as static analysis tools or proof checkers.
 
 Between each of the nodes different policies could be enforced: for example
 consider an \emph{app store} and \emph{proxy store}.  Here we have a master app
-store that sells a large number of apps.  A company provides its employees each
+store that sells many apps.  A company provides its employees each
 with a phone that they can install apps on but they have their own security
 and usage policy set by their IT department.  They want to ensure that their
 employees can't install anything that breaks it so on all the devices they
@@ -219,7 +219,7 @@ apps for money and are selective about what they will sell.  Apps are vetted,
 usually in secret, for quality and security using (we believe) a combination of
 static and dynamic analysis tools as well as traditional manual inspection.
 The policies the app stores apply to their apps form an authorization decision
-(i{.}e{.} \emph{the analysis team says app can be sold}) and their is a
+(i{.}e{.} \emph{the analysis team says app can be sold}) and there is a
 delegation of trust to the analysts and their tools but how these policies and
 trust relations filter through to the end users is not clear.
 
@@ -231,7 +231,7 @@ To solve this we have taken an existing authorization logic,
 SecPAL\cite{Becker:2006vh}, and extended it with a series of predicates that can
 describe how security policies are met inside a mobile ecosystem.  Future work
 will include describing the current security policies for Android and other
-mobile OSs as well as some of the app stores.  This will allow comparisons to be
+mobile OSs as well as the app acceptance policy for some app stores.  This will allow comparisons to be
 made between them, and (with a database of apps) comparing what kinds of apps
 different markets allow.
 
@@ -363,7 +363,7 @@ Linux's permissions model\cite{Drake:2014uq}.
 \begin{marginfigure}\label{img:brightestflashlight}
   \centering
   \includegraphics[width=0.8\textwidth]{img/brightestflashlight.png}
-  \caption{The \emph{Brightest Flashlight Free} app prompting for it's permissions
+  \caption{The \emph{Brightest Flashlight Free} app prompting for its permissions
     at install time. This app is over privileged as a flashlight app should have
     no need for GPS or phone data, or network access.}
 \end{marginfigure}
@@ -480,7 +480,7 @@ expressible in the PolicyMaker languages such as:
 \begin{quote}
   ``Anyone who is a preferred customer and a student can get a discount.''
 \end{quote}
-Several different versions of RT were described: the simplest being
+Several versions of RT were described: the simplest being
 \emph{RT$_0$}\cite{Li:2003tj} and with \emph{RT$_1$} and \emph{RT$_2$} adding support for
 parameterized-roles and logical-objects respectively; each with extensions to
 provide other features.
@@ -619,7 +619,7 @@ SecPAL says the statement is okay else it is rejected.
 Datalog is a database language created from a simplification of logic
 programming.  It is based on first order logic and is known to be both sound and
 complete.  Since Datalog is used as the basis for several of the authorization
-logics, including SecPAL, we will review some of the evaluation strategies used
+logics, including SecPAL, we will review several evaluation strategies used
 for querying Datalog knowledge bases.
 
 \begin{marginfigure}
@@ -715,7 +715,7 @@ to construct the node $rl$.  If a node has no subgoals and its constraint
 is met, then it is an answer node with answer $s$.
 
 To tables are also used: the \emph{answer} table is mapping from literals to
-answer nodes.  The \emph{wait} table table maps from literals to nodes which
+answer nodes.  The \emph{wait} table maps from literals to nodes which
 have not been fully answered.  For a query $p$: $ans(p)$ and $wait(p)$ are the
 entries in each table pertaining to the query $p$.
 
@@ -808,7 +808,7 @@ between the checking of the user's security policy for the device (the
 \emph{device policy}) and the policies any tool was checking for an app (the
 \emph{application policy}).  This means that any analysis tool needn't use the
 same logic for checking the application policy, as the device uses for checking
-it's own policy.  In the security policy static analysis tools are treated as
+the device policy.  In the security policy static analysis tools are treated as
 oracles: they can utter statements about their inputs but we do not know (or
 care) how they came to these conclusions.
 
@@ -845,7 +845,7 @@ Suppose Alice has a smart phone.  Alice has a security policy that says:
       wont install anything that Google says is malware.''
 \end{quote}
 
-Alice trusts Google to decide whether something is malware or not (or at at
+Alice trusts Google to decide whether something is malware or not (or at
 least recommend an anti-virus vendor who can be trusted), and she trusts the
 \emph{NLLTool} to decide whether an app will leak her location
 data.  Alice has heard about digital evidence and is happy that if an app can
@@ -894,7 +894,7 @@ Figure~\ref{secpal:exampleac}.
 \caption{The full assertion context used to evaluate Alice's query.}
 \end{marginfigure}
 
-Alice then uses SecPAL to decide whether or not the assertion context supports
+Alice then uses SecPAL to decide whether the assertion context supports
 the idea that \code{Alice says app is-installable.}
 
 \subsection{Implementation}
@@ -962,11 +962,11 @@ The first step will be to complete the work done in the first year and show that
 a logic of authorization can model the security decisions made inside Android,
 and that it is capable of describing complex security policies.  This will
 culminate in a technical report that describes the authorization logic, why it
-was chosen over other policy languages and showing some of the applications of
+was chosen over other policy languages and showing some applications of
 the logic to mobile systems and the problems associated with them.
 
 The next step will be to develop an app store that uses security policies as a
-filtering mechanism for it's users.  Authorization logics have not been used in
+filtering mechanism for the users.  Authorization logics have not been used in
 this application before and current markets are not filtering by a user's
 policies (though the Play Store is at least advertising apps to users on the
 basis of past app selections).
@@ -979,7 +979,7 @@ test real policies against and show how different analysis tools can make
 different guarantees.  
 
 The store can also act as a framework and baseline to compare different store's
-policies against.  By doing the policy checks at the app store level it avoid
+policies against.  By doing the policy checks at the app store level it avoids
 the need for users to root their phone (thereby reducing their device security)
 and allows for a wider range of users to interact with the project. 
 
@@ -1019,7 +1019,7 @@ extended to describe and mitigate decision making problems on mobile devices.
 
 \begin{figure*}\label{fig:gantt}
   \includegraphics[width=1.4\linewidth,angle=90]{gantt.pdf}
-  \caption{Gantt chart showing progress plans through out funded period of PhD
+  \caption{Gantt chart showing progress plans throughout funded period of PhD
   study.}
 \end{figure*}
 
