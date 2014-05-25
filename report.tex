@@ -1,9 +1,9 @@
 %\documentclass[a4paper]{article}
-\documentclass[a4paper,12pt,sfsidenotes]{tufte-book}
+\documentclass[a4paper,sfsidenotes]{tufte-book}
 \usepackage{localstyle} % local style file
 
-\title{Using Authorization Logics To Model Security Decisions in Mobile
-  Systems\\\vspace{2em}Thesis Proposal}
+%\title{Using Authorization Logics To Model Security Decisions in Mobile Systems\\\vspace{2em}Thesis Proposal}
+\title{Security Policies\\For Humans\\Thesis Proposal}
 \author{Joseph~Hallett}
 \date\today
 
@@ -62,9 +62,6 @@ control in distributed systems.  Our static analysis tools can be trusted to
 give statements about code, with other principles, that can be combined to
 implement a security policy.
 
-
-\section{Project description}
-
 The aim of the thesis is to show how authorization logics can be used to make
 security decisions in mobile devices.  Currently security decisions are made
 manually by smart phone users and it is our belief that by automating these
@@ -72,7 +69,6 @@ choices users can avoid having to make security decisions and their overall
 security be improved.  To do this we plan to look at the following areas: 
 
 \begin{itemize}
-
   \item \emph{To instantiate a logic of authorization that allows us to model
       the trust relationships between the components of an operating system and
       the users.}  This will include analysis tools as principals and allow
@@ -113,8 +109,131 @@ security be improved.  To do this we plan to look at the following areas:
 
 \end{itemize}
 
+\subsection{Project Context (App Guarden)}
+
+\begin{figure}\label{fig:ag}
+  \includegraphics[width=\linewidth]{img/appguarden.eps}
+  \caption{Overview of the different entities in App Guarden.  Each of the ovals
+  represents a different device inside the system; each rectangle or trapezium
+  represents  different supplier of apps, and each diamond is an authority that
+  makes statements about apps and other software decisions.  Arrow boxes show
+policies.  Arrows represent transfers of information or apps, and dotted line
+indicate that the two entities are connected in some other way.}
+\end{figure}
+
+This thesis will form part of the \emph{App
+Guarden}\footnote{\url{http://groups.inf.ed.ac.uk/security/appguarden/Overview.html}}
+project.  The App Guarden project aims to improve the quality of mobile security
+by developing new tools to analyze apps and the app stores that sell them.
+
+\begin{marginfigure}
+  \label{fig:proxy}
+  \includegraphics[width=\linewidth]{img/proxystore.eps}
+  \caption{Security policies and the proxying store}
+\end{marginfigure}
+
+\begin{marginfigure}
+  \label{fig:de}
+  \includegraphics[width=\linewidth]{img/digitalevidence.eps}
+  \caption{Checking services and an app store.}
+\end{marginfigure}
+
+\begin{marginfigure}
+  \label{fig:mcafee}
+  \includegraphics[width=\linewidth]{img/mcafee.eps}
+  \caption{Use of an expert checker.}
+\end{marginfigure}
+
+\begin{marginfigure}
+  \label{fig:altstore}
+  \includegraphics[width=\linewidth]{img/altstore.eps}
+  \caption{A device using multiple stores with different policies.}
+\end{marginfigure}
+
+This work contributes to this by developing the security policies that describe
+what the user wants and showing how they can be enforced using the tools that
+can check security policies within the code.  The end result might be a system
+as shown in Figure~\ref{fig:ag} where devices are interacting with stores and
+security services such as static analysis tools or proof checkers. 
+
+Between each of the nodes different policies could be enforced: for example
+consider an \emph{app store} and \emph{proxy store}.  Here we have a master app
+store that sells a large number of apps.  A company provides its employees each
+with a phone that they can install apps on but they have their own security
+and usage policy set by their IT department.  They want to ensure that their
+employees can't install anything that breaks it so on all the devices they
+provide they install a special proxy app store.  The proxy app store takes apps
+from the main store but discards any apps which might break the policy it is
+supplied with.  Users may download apps from the company store, but they might
+exercise their own judgement and only download apps that meet their own
+policies.  At each stage (as shown in Figure~\ref{fig:proxy})
+judgements are being made about what is acceptable from an app store, and the
+policies are refined.
+
+Another example might be an app store that supplies apps with \emph{digital
+evidence}.  When the app store sells an app it wants to reassure its users that
+it real guarantees that the app it is selling meets the security guarantees it
+claims.  Being able to infer these properties is complex and takes both time and
+battery power; this is difficult as many phones are battery constrained.  To
+avoid this the app store uses an inference service to produce digital evidence
+to be supplied with the app that shows (with the aid of a checking service that
+could be running on the device) that an app meets the policy (as shown in
+Figure~\ref{fig:de}). Other people in the App Guarden project are working on the
+development of such tools.
+
+An alternative form of this could be where a store delegates to an expert third
+party to make statements about the apps it sells.  One might imagine a scenario
+where an app store might claim \emph{``We don't sell viruses in our store, but
+don't take our word for it: here's a well known anti-virus company that will
+verify our claim''} (as shown in Figure~\ref{fig:mcafee}).
+
+If a user is using multiple stores (for example a Jailbroken iPhone user might
+buy apps from both the App Store and the Cydia Store) then the policies the user
+might be applying become complex (as described in Figure~\ref{fig:altstore}).
+This leads to interesting questions around how policies should be composed and
+the equivalence of security policies when they are; as well as questions about
+the overall device policy in a system.
+
+The work for this thesis will not concern itself with the development of tools
+to check the apps perform as they should; rather it will focus on modeling the
+trust relationships between these tools and the other entities in a mobile
+environment.  This allows this part of the work to focus on the relationships
+and device policies rather than the intricacies of code analysis.
+
+
 \subsection{A Logic of Authorization For Mobile Devices}
 
+Logics of authorization are used to decide whether an entity can carry out a
+task.  When we apply these logics to files and information we create an access
+control system; when we apply the logics to designing systems we create a
+security specification language.  A review of the history and applications of
+the logics is given later in this proposal (page~\pageref{sec:pollang}); but in
+summary they have shown themselves to be increasingly useful for modelling the
+complex security and trust policies in modern systems.
+
+Mobile devices, whilst technically similar to traditional computers, have more
+information about their users, don't offer the user the traditional file system
+interfaces, sandbox everything, and use closed software markets (app stores) to
+distribute software.  The app stores typically allow developers to sell their
+apps for money and are selective about what they will sell.  Apps are vetted,
+usually in secret, for quality and security using (we believe) a combination of
+static and dynamic analysis tools as well as traditional manual inspection.
+The policies the app stores apply to their apps form an authorization decision
+(i{.}e{.} \emph{the analysis team says app can be sold}) and their is a
+delegation of trust to the analysts and their tools but how these policies and
+trust relations filter through to the end users is not clear.
+
+These differences amount to a different model of trust
+than the traditional machines, and a new set of authorization problems that it
+is not obvious how to express in other authorization logics. 
+
+To solve this we have taken an existing authorization logic,
+SecPAL\cite{Becker:2006vh}, and extended it with a series of predicates that can
+describe how security policies are met inside a mobile ecosystem.  Future work
+will include describing the current security policies for Android and other
+mobile OSs as well as some of the app stores.  This will allow comparisons to be
+made between them, and (with a database of apps) comparing what kinds of apps
+different markets allow.
 
 \subsection{Compositional Policies Over Time}
 
@@ -230,6 +349,7 @@ reversed: the store offers many proofs to the user to increase their trust in
 its wares; rather than the user offering one specific proof to prove they have
 the right to complete a certain action.
 
+
 \section{Review of Android Security}
 
 Android is a Linux-based operating system designed for mobile phones and
@@ -324,7 +444,7 @@ malicious apps.
 
 % TODO: INCLUDE SECTION ON ANDROID ROMS AND MALWARE
 
-\section{Review of Policy Languages}
+\section{Review of Policy Languages}\label{sec:pollang}
 
 \subsection{Logics of Authorization}
 
@@ -573,6 +693,8 @@ alternatively it is possible because Prolog has an infinite number of constants
 (i.e. the integers) it is possible to construct queries which return an infinite
 number of answers.
 
+\subsection{Datalog Evaluation in SecPAL}
+
 Whilst the bottom up strategy is more commonly used with Datalog programs;
 \citeauthor*{Becker:2009vt}'s paper describing SecPAL\cite{Becker:2010vh} points out that since
 their programs may change dramatically from query to query recomputing every
@@ -586,7 +708,24 @@ SecPAL programs.  The algorithm uses the top-down strategy and tabling to speed
 the inference; they also show the algorithm is sound, complete and always
 terminates. 
 
-% TODO DESCRIBE SECPAL ALGORITHM
+To do this they construct a proof tree where each node is either a literal leaf
+$p$; or a tuple node consisting of a literal $p$, a set of subgoals $qs$, a
+constraint, the partial answer $s$, its children nodes $nds$ and the rule used
+to construct the node $rl$.  If a node has no subgoals and its constraint
+is met, then it is an answer node with answer $s$.
+
+To tables are also used: the \emph{answer} table is mapping from literals to
+answer nodes.  The \emph{wait} table table maps from literals to nodes which
+have not been fully answered.  For a query $p$: $ans(p)$ and $wait(p)$ are the
+entries in each table pertaining to the query $p$.
+
+To evaluate a query $p$ for a given program with answer table $ans$ the
+algorithm proceeds as follows:
+
+\begin{algorithm}
+  \Fn
+\end{algorithm}
+
 
 \subsection{Datalog Variants}
 
@@ -890,4 +1029,3 @@ extended to describe and mitigate decision making problems on mobile devices.
 \bibliography{report}
 
 \end{document}
-

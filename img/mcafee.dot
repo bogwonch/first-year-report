@@ -1,0 +1,16 @@
+digraph mcafee {
+  overlap = false;
+  splines = true;
+
+  appStore [label="App Store"                  shape=box     fontname="Helvetica"]
+  phone    [label="Phone"                      shape=oval    fontname="Helvetica"]
+  checker  [label="Expert Anti-Virus\nCompany" shape=diamond fontname="Helvetica"]
+    
+  appStore -> phone;
+  appStore -> checker [arrowhead=none style=dotted];
+  phone    -> checker;
+  checker  -> phone;
+
+  {rank=same checker phone}
+}
+

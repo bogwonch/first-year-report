@@ -1,0 +1,24 @@
+digraph proxystore {
+  overlap = false;
+  splines = true;
+  rankdir = LR;
+
+  appStore   [label="App Store"         shape=box  fontname="Helvetica"]
+  policy1    [label="Store Policy"      shape=cds  fontname="Helvetica"]
+  altStore   [label="Alternative Store" shape=box  fontname="Helvetica"]
+  policy2    [label="Store Policy"      shape=cds  fontname="Helvetica"]
+  userPolicy [label="User Policy"       shape=cds  fontname="Helvetica"]
+  phone      [label="Phone"             shape=oval fontname="Helvetica"]
+
+  policy1    -> appStore;
+  policy2    -> altStore;
+  appStore   -> phone;
+  altStore   -> phone;
+  userPolicy -> phone;
+
+  {rank=same appStore   altStore}
+  {rank=same policy1 policy2 userPolicy}
+
+
+}
+

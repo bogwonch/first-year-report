@@ -1,0 +1,19 @@
+digraph proxystore {
+  overlap = false;
+  splines = true;
+
+  appStore      [label="App Store"      shape=box          fontname="Helvetica"]
+  proxyStore    [label="Proxy Store"    shape=invtrapezium fontname="Helvetica"]
+  companyPolicy [label="Company Policy" shape=cds          fontname="Helvetica"]
+  userPolicy    [label="User Policy"    shape=cds          fontname="Helvetica"]
+  phone         [label="Company\nPhone" shape=oval         fontname="Helvetica"]
+
+  appStore      -> proxyStore -> phone;
+  companyPolicy -> proxyStore;
+  userPolicy    -> phone;
+
+  {rank=same; companyPolicy proxyStore}
+  {rank=same; userPolicy phone}
+
+}
+

@@ -1,6 +1,7 @@
 \ProvidesPackage{localstyle}
 \usepackage[utf8]{inputenc}
 
+\frenchspacing
 \usepackage{url}
 \@ifpackageloaded{natbib}{}{\usepackage[square,numbers]{natbib}}
 
@@ -73,3 +74,11 @@
 
 %
 \usepackage[nottoc,numbib]{tocbibind}
+
+% Diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{dot2texi}
+
+% Algorithms
+\usepackage{algorithm2e}

@@ -1,4 +1,4 @@
-LATEX_OPTS=-pdf -quiet
+LATEX_OPTS=-pdf -quiet --latex=lualatex --latexoption=--src-specials --latexoption=--shell-escape
 LATEX=latexmk $(LATEX_OPTS)
 
 FINAL=1st-year-report.pdf

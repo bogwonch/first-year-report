@@ -1,0 +1,49 @@
+digraph appguarden {
+  overlap = false;
+  splines = true;
+
+  altStore      [label="Alternative Store"  shape=box          fontname="Helvetica"]
+  appStore      [label="App Store"          shape=box          fontname="Helvetica"]
+  checker       [label="Checking\nService"  shape=diamond      fontname="Helvetica"]
+  companyPolicy [label="Company Policy"     shape=cds          fontname="Helvetica"]
+  expert        [label="Expert\nService"    shape=diamond      fontname="Helvetica"]
+  inferer       [label="Inference\nService" shape=diamond      fontname="Helvetica"]
+  phone         [label="Phone"              shape=oval         fontname="Helvetica"]
+  phone2        [label="Phone"              shape=oval         fontname="Helvetica"]
+  phone4        [label="Company\nPhone"     shape=oval         fontname="Helvetica"]
+  policy1       [label="Store Policy"       shape=cds          fontname="Helvetica"]
+  policy2       [label="Store Policy"       shape=cds          fontname="Helvetica"]
+  proxyStore    [label="Proxy Store"        shape=invtrapezium fontname="Helvetica"]
+  userPolicy    [label="User Policy"        shape=cds          fontname="Helvetica"]
+  userPolicy2   [label="User Policy"        shape=cds          fontname="Helvetica"]
+
+/*
+  {rank=same appStore      policy2}
+  {rank=same companyPolicy proxyStore}
+  {rank=same policy1       altStore}
+  {rank=same userPolicy    phone}
+  {rank=same userPolicy2   phone4}
+  */
+
+  altStore      -> phone;
+  appStore      -> expert  [arrowhead=none style=dotted];
+  appStore      -> inferer;
+  appStore      -> phone2;
+  appStore      -> phone;
+  appStore      -> proxyStore;
+  checker       -> phone2;
+  companyPolicy -> proxyStore;
+  expert        -> phone;
+  inferer       -> appStore;
+  inferer       -> checker [arrowhead=none style=dotted];
+  phone2        -> checker;
+  phone        -> expert;
+  policy1       -> appStore;
+  policy2       -> altStore;
+  proxyStore    -> phone4;
+  userPolicy    -> phone;
+  userPolicy2   -> phone4;
+
+}
+
+

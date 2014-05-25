@@ -1,0 +1,25 @@
+digraph digitalevidence {
+  overlap = false;
+  splines = true;
+
+  subgraph cluster_store {
+    style=filled;
+    color=white;
+    appStore      [label="App Store"         shape=box     fontname="Helvetica"]
+    phone         [label="Phone"             shape=oval    fontname="Helvetica"]
+    checker       [label="Checking\nService"  shape=diamond fontname="Helvetica"]
+    inferer       [label="Inference\nService" shape=diamond fontname="Helvetica"]
+    
+    {rank=same appStore inferer}
+    {rank=same phone checker}
+  }
+
+  //companyPolicy -> appStore;
+  inferer       -> appStore;
+  appStore      -> inferer;
+  appStore      -> phone;
+  phone         -> checker;
+  checker       -> phone;
+  inferer       -> checker [style=dotted arrowhead=none];
+}
+
