@@ -15,16 +15,25 @@
 
 % Acronyms
 \usepackage{acronym}
-\acrodef{PUS}{potentially unwanted software}
-\acrodef{RBAC}{role based access control}
-\acrodef{PII}{personally identifiable information}
 \acrodef{AC}{assertion context}
+\acrodef{AOSP}{Android Open Source Project}
 \acrodef{BYOD}{bring your own device}
+\acrodef{CWA}{closed world assumption}
 \acrodef{EDB}{extensional database}
 \acrodef{IDB}{intensional database}
-\acrodef{SLD}{selective linear definite clause}
-\acrodef{CWA}{closed world assumption}
+\acrodef{OTA}{over the air}
 \acrodef{OWA}{open world assumption}
+\acrodef{PII}{personally identifiable information}
+\acrodef{PUS}{potentially unwanted software}
+\acrodef{RBAC}{role based access control}
+\acrodef{SLD}{selective linear definite clause}
+
+\@ifundefined{marginfigure}{%
+  \newcommand{\marginlength}{0.35\linewidth}
+}{%
+  \newcommand{\marginlength}{\linewidth}
+}
+%\newcommand{\marginlength}{\@ifundefined{marginfigure}{0.3\linewidth}{\linewidth}}
 
 % Handle tufte figures gracefully
 \@ifundefined{marginfigure}{%
@@ -35,20 +44,59 @@
 }{}
 
 % Code
+\@ifpackageloaded{xcolor}{}{\usepackage[usenames,dvipsnames]{xcolor}}
 \usepackage{listings}
 \lstset{%
-  basicstyle=\sffamily,
-  columns=flexible,
+  basicstyle=\ttfamily,
+  %columns=flexible,
   tabsize=2,
-  showstringspaces=true
+  showstringspaces=true,
+  numbers=left,
+  numberstyle=\tiny\ttfamily\color{Gray},
+  commentstyle=\ttfamily\color{Gray}
 }
 \newcommand{\code}[1]{\lstinline{#1}}
 
 \lstdefinelanguage{SecPAL}{%
+  morecomment=[l]{//},
   morekeywords={%
     says,if,can,say,can,act,as,shows,meets
   }
 }[keywords,comments,strings]
+
+\lstdefinelanguage{PolicyMaker}{%
+  morecomment=[l]{//},
+  morekeywords={%
+    policy,ASSERTS,WHERE,PREDICATE,regexp,pgp
+  }
+}[keywords,comments,strings]
+
+\lstdefinelanguage{KeyNote}{%
+  morecomment=[l]{//},
+  morekeywords={%
+  Authorizer,Licensees,KeyNote,Version,Local,Constants,%
+  Conditions,app_domain,name,address%
+  }
+}
+    
+\lstdefinelanguage{BNF}{%
+  morecomment=[l]{//},
+  morekeywords={::=,|},
+  mathescape=true
+}
+
+\lstdefinelanguage{Cassandra}{%
+  morekeywords={%
+    canActivate,hasActivated,<-
+  }
+}
+
+\lstdefinelanguage{Kirin}{%
+  morekeywords={%
+    restrict,and,permission,receive
+  }
+}
+
 
 %\usepackage{alltt}
 
@@ -79,3 +127,6 @@
 
 % Algorithms
 \usepackage{algorithm2e}
+
+% Nicely typeset tables
+\usepackage{booktabs}
