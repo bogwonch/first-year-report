@@ -1,5 +1,9 @@
 ### https://raw.github.com/github/gitignore/master/tex.gitignore
 
+*.DS_Store
+*.eps
+*.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof

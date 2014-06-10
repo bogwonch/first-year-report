@@ -1,0 +1,24 @@
+digraph taint {
+  compound=true;
+  overlap=false;
+  rankdir=LR;
+  splines=true;
+  graph [fontname="Helvetica"]
+
+  net [label="The\nInternet" shape=none fontcolor=crimson fontname="Helvetica"];  
+
+  subgraph cluster_source {fontname="Helvetica"
+    label="Source App";
+    perm [label="INTERNET" shape=none fontcolor=black fontname="Helvetica"];      
+    act [label="Activity" shape=rectangle color=crimson fontcolor=crimson fontname="Helvetica"];
+  }
+
+  subgraph cluster_sink {fontname="Helvetica"
+    label="Sink App";
+    perm2 [label="" shape=none fontname="Helvetica"];
+    oncreate [label="OnCreate" shape=rectangle color=crimson fontcolor=crimson fontname="Helvetica"];
+  }
+
+  net -> act;
+  act -> oncreate [label=send fontname="Helvetica" fontcolor=crimson color=crimson];
+}
