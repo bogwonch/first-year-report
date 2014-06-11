@@ -7,6 +7,7 @@
 
 % For structuring the document
 %\usepackage{subfiles}
+\@ifpackageloaded{hyperref}{}{\usepackage[unicode=true]{hyperref}}
 
 % For graphics
 \usepackage{graphicx}
@@ -27,6 +28,10 @@
 \acrodef{PUS}{potentially unwanted software}
 \acrodef{RBAC}{role based access control}
 \acrodef{SLD}{selective linear definite clause}
+\acrodef{LSM}{Linux security module} 
+\acrodef{MAC}{Mandatory Access Control}
+\acrodef{DAC}{Discretionary Access Control}
+\acrodef{RBAC}{Role-Based Access Control}
 
 \@ifundefined{marginfigure}{%
   \newcommand{\marginlength}{0.35\linewidth}
@@ -97,6 +102,18 @@
   }
 }
 
+\lstdefinelanguage{selinux}{%
+  morecomment=[l]{//},
+  morekeywords={%
+  allow,neverallow,getattr,read,write,set
+  }
+}
+
+\lstdefinelanguage{grsec}{%
+  morekeywords={%
+  role,subject
+  }
+}
 
 %\usepackage{alltt}
 

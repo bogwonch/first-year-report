@@ -1,11 +1,17 @@
-%\documentclass[a4paper]{article}
-\documentclass[a4paper,sfsidenotes]{tufte-book}
+\documentclass[a4paper, 9pt]{article}
+%\documentclass[a4paper,sfsidenotes]{tufte-book}
 \usepackage{localstyle} % local style file
 
 \title{Using Authorization Logics To Model Security Decisions in Mobile Systems\\\vspace{2em}Thesis Proposal}
 %\title{Security Policies\\For Humans\\Thesis Proposal}
 \author{Joseph~Hallett}
 \date\today
+
+\hypersetup{%
+  pdftitle={Thesis Proposal},
+  pdfauthor={Joseph Hallett},
+  hidelinks
+}
 
 \bibliographystyle{plainnat}
 \begin{document}
@@ -321,7 +327,7 @@ exist to distribute pirated apps.
   \end{tabular}
   \caption{Summary of different app stores available for Android using data
     taken from the \emph{One Platform Foundation} list of App Stores:
-    \url{http://www.onepf.org/appstores/}.}
+    \texttt{http://www.onepf.org/appstores/}.}
     \label{tab:stores}
   \end{figure*}
 
@@ -705,13 +711,10 @@ pgp:``0x56781234''
   \caption{Example usage of the PolicyMaker authorization language.      
     The policy block says that only key 0x12345678 can include in their message
     that they are Alice at Microsoft.  
-
     The first request is from the key 0x12345678. It would be authorized as the
     regular expression matches.  
-
     The second request is from a different key.  It would not be authorized by the
-    policy.%
-  } 
+    policy.} 
 \label{sec:pollang}
 \end{figure}
 
@@ -1037,12 +1040,264 @@ ensures that when the SecPAL program is translated into Datalog all constraints
 become ground (they do not contain variables).  This ensures they're easy to
 solve. 
 
-%TODO <++> Describe safety condition
+First they define a fact to be \emph{flat} if it does not contain a
+\emph{can-say} statement.
 
-%\subsection{Access Control Systems}
-% TODO
-%{\Huge TODO}
+\DontPrintSemicolon
+\SetKwComment{tcc}{\# }{}
+\SetKwProg{Fn}{}{\string:}{}
+\SetKwProg{Block}{}{}{}
+\SetKwFunction{FFlat}{is-flat}
+\SetKwFunction{FSafeIn}{safe-in}
+\SetKwFunction{FSafe}{safe}
+\SetKwFunction{FElem}{$\in$}
+\SetKwFunction{FVars}{Vars}
+\SetKwFor{For}{for}{\string:}{}
+\SetKwFor{ForAny}{$\exists$}{\string:}{}
+\SetKwFor{ForAll}{$\forall$}{\string:}{}
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\SetKwSwitch{Match}{With}{Other}{match}{\string:}{with}{otherwise}{}{}
+\SetKwSwitch{Switch}{Case}{Other}{switch}{\string:}{case}{otherwise}{}{}
+\SetKwIF{If}{ElseIf}{Else}{if}{\string:}{else if}{else}{}
+\SetKwFor{Where}{where}{\string:}{}
+\SetKwData{vF}{f}
+\SetKwData{vFs}{fs}
+\SetKwData{vE}{e}
+\SetKwData{vA}{a}
+\SetKwData{vC}{c}
+\SetKwData{vX}{x}
+\SetKwData{vClaim}{claim}
+\SetKwData{vCondA}{condition-1}
+\SetKwData{vCondB}{condition-2}
+\SetKwData{vCondC}{condition-3}
+\SetKwData{vTrue}{True}
+\SetKwData{vFalse}{False}
+\SetKwData{vwild}{*}
+\begin{algorithm}[H]
+  \Input{a fact \vF}
+  \Output{a boolean indicating if \vF is flat}
+  \Fn{\FFlat{\vF:Fact}}{%
+    \Match{\vF}{
+      \With{\vwild can-say \vwild \vwild}{\vFalse}
+      \Other{\vTrue}
+    }
+  }
+\end{algorithm}
 
+A variable is \emph{safe-in} a claim if a variable in the claimed fact $f$ turns up in one of the
+conditional facts of the claim ($fs$) and not just the constraint.
+
+\begin{algorithm}[H]
+  \Input{an entity \vE and a claim \vC}
+  \Output{a boolean indicating if the variable \vE is safe in the claim \vC}
+  \Fn{\FSafeIn{\vE:Constant, \vwild}}{\vTrue}
+  \Fn{\FSafeIn{\vE:Variable, \vC:Claim}}{
+    \Match{\vC}{
+      \With{\vF:Fact if \vFs:[Fact]}{
+        \If{\vE \FElem \FVars{\vF}}{
+          \ForAny{\vF \FElem \vFs}{\vE \FElem \FVars{\vF}}}
+        \Else{\vTrue}
+      }
+    }
+  }
+\end{algorithm}
+
+Finally an assertion is \emph{safe} if three conditions are met:
+
+\begin{enumerate}
+  \item If the asserted fact is flat, all variables in that fact are also safe;
+    otherwise the delegated entity must be a safe variable or constant.
+  \item All variables in the constraint must turn up in the claimed fact or
+    conditional facts.
+  \item All the conditional facts are flat.
+\end{enumerate}
+
+\begin{algorithm}[H]
+  \Input{an assertion \vA}
+  \Output{a boolean indicating if the assertion is safe}
+  \Fn{\FSafe{\vA:Assertion}}{
+    \Match{\vA}{
+      \With{\vwild says \vClaim}{
+        \Match{\vClaim}{
+          \With{\vF if \vFs, \vC}{
+            \Match{\vF}{
+              \With{\vX \vwild}{
+                \vCondA $\wedge$ \vCondB $\wedge$ \vCondC
+              } } } } } }\;
+    \Where{}{
+      \vCondA = \Block{}{
+        \If{\FFlat{\vF}}{
+          \ForAll{\vE \FElem \FVars{\vF}}{
+            \FSafeIn{\vE, \vClaim}
+          }}
+        \Else{\FSafeIn{\vX, \vClaim}} }\;
+      \vCondB = \FVars{\vC} $\subseteq$ \FVars{vFs}\;
+      \vCondC = \ForAll{\vF \FElem \vFs}{\FFlat{\vF}}
+    }
+  }
+\end{algorithm}
+
+
+
+\subsection{Access Control Systems}
+
+Access control is an area where logics of authorization have been successfully
+applied.  Access control systems control which users can have access to which
+files (or capabilities) on a system.  These systems tend to fall into four categories:
+
+\begin{description}
+  \item[\ac{DAC}] where files have owners who control access to what they own.
+    An example would be the standard UNIX and Linux permissions system.
+  \item[\ac{MAC}] where an administrator controls what users may or may not do
+    with their files and whether they can disclose the contents to others.
+    Examples would be SELinux, TOMOYO Linux SMACK or AppArmour
+  \item[\ac{RBAC}] where access to files is granted on the to users holding
+    roles; for instance only people working in personnel have access to
+    employees records.  Grsecurity is an example of an \ac{RBAC} system and SELinux has some \ac{RBAC} functionality too.
+  \item[Rule-based] where access is granted based on arbitrary rules: for
+    instance someone in personnel may only access records during working hours.
+\end{description}
+
+Android uses two different access control systems: the
+\ac{DAC} scheme traditionally used by Linux, and SELinux a \ac{MAC} system
+developed by the NSA.  The Tizen mobile
+operating system uses SMACK instead.
+
+The \ac{DAC} system used by Linux (and other systems descended from UNIX) is
+simple.  Every file is owned by a user and a group.  Permission can be granted
+(or revoked) by manipulating a bitfield associated with the file; this allows
+users to read, write or execute the file.  These permissions can be granted to
+three sets of people: the owner, users in the group associated with the file,
+and finally any users on the system.
+
+The \ac{DAC} systems, such as Linux are problematic for secure systems as they
+allow users to control the files they own.  This means that if a user is in
+control of what files get disclosed to other users.  This is problematic for
+military systems as a malicious user might chose to disclose \emph{top secret}
+information they own to a user without clearance.  \ac{MAC} improves on this by
+allowing an administrator to set the permissions and decide what can be
+disclosed by any user.  The US \emph{Department of Defence} mandated the use of
+\ac{MAC} over \ac{DAC} in their \emph{Orange Book}\cite{LiliQiu:1985wq} for all but
+the least secure systems.
+
+SELinux is based on the Flask security architecture\cite{Spencer:1999vm}.
+Entities are represented using classes such as \emph{file}, \emph{dir} (for
+directories) or \emph{socket} (for network sockets).  SELinux then defines
+operations that can be performed on the classes.  The operations are more
+precise than Linux's \ac{DAC} system (actually SELinux builds on the existing
+\ac{DAC} system and only comes into effect if the \ac{DAC} system would
+authorize a decision) and include operations such as creating symbolic links,
+appending and renaming.  Users of SELinux have identities, and can be assigned
+roles that they are allowed to enter.  Types (also called domains, a
+simplification from Flask) are what must be held to authorize a decision.  
+
+The SELinux policy file is made by concatenating together a series of policy
+files.  These policy files consist primarily of type and allow definitions.
+For example consider Android SELinux policy files.  By default apps run in the
+the \emph{appdomain} domain.  To allow apps to read and write to the wallpaper
+file (which gives the image displayed on the home screen of the phone):
+
+\begin{lstlisting}[language=selinux]
+allow appdomain wallpaper_file:file { getattr read write };
+\end{lstlisting}
+
+The wallpaper file would be tagged with the \code{wallpaper_file} type in the
+filesystems extended attributes to associate the file with the tag.
+
+If the policy author wanted to ban apps from setting system preferences, unless
+they were also running is some special system domains the rule would be:
+
+\begin{lstlisting}[language=selinux]
+neverallow { appdomain 
+            -system_app 
+            -radio 
+            -shell 
+            -bluetooth 
+            -unconfineddomain
+           }
+    property_type:property_service set;
+\end{lstlisting}
+
+SELinux can be complicated to configure.  The policy language is implemented
+using the M4 preprocessor (which is somewhat arcane), and the policy file can be
+long: Android's basic policy rules are around three thousand lines long.
+
+SMACK is a \ac{LSM}, proposed by Casey Schaufler\cite{Shaufler:_OMTJQq8}, that
+aims to simplify \ac{MAC} configuration.  It has been used in the MeeGo and
+Tizen mobile operating systems.  Like SELinux it uses extended attributes to
+label files.
+
+SMACK builds on the traditional \ac{DAC} model allowing policies that describe
+who can read, write, execute and additionally append to files.  If the labels of
+the process are a superset of the labels of the file the process wishes to
+access then the process is authorized to access the file.
+
+The policy language is written in the form \emph{subject~object~capabilities}.
+Several example use cases are given in the original proposal including an
+implementation of a read-down hierarchical security level system shown in
+Figure~\ref{smack:hierarchical}.
+
+\begin{marginfigure}
+  \begin{lstlisting}
+C        Unclass rx
+S        C       rx
+S        Unclass rx
+TS       S       rx
+TS       C       rx
+TS       Unclass rx
+  \end{lstlisting}
+  \caption{A hierarchical security policy for the SMACK access control system.
+    Top secret (TS) can read secret (S), classified (C) and unclassified
+    (unclas) documents; secret can read classified and unclassified but cannot
+  read secret documents and so on.}
+\end{marginfigure}
+
+Role based schemes
+improve over \ac{MAC} ones by shifting the capabilities from the users to the
+roles they perform; users can assume certain roles when they need to carry out
+work and shift to a different role after.  This allows the policy to be more
+flexible as the privileges granted to a role are not defined for any specific
+user.  This means that a users can run with different limitations
+depending on the roles they currently hold; effectively sandboxing processes.
+
+Grsecurity contains a \ac{RBAC} system for Linux system\footnote{Grsecurity is
+  a rather large patch for the Linux kernel that hardens it preventing many
+  attacks as well as an \ac{RBAC} system.}.  It is used in some hardenened consumer
+electronics systems and some hardened Android devices.  As well as enforcing
+access control decisions on files (including a pretend this file doesn't exist
+mode), it can also limit network connections, DNS
+resolution, capabilities a process can hold and stop certain kernel operations.
+
+In the listing bellow an admin role is declared.  It is a $s$pecial
+$A$dministrative role.  All processes started by a user with this
+role\footnote{Technically all subjects (processes) started under the root file
+  system which is almost the same thing.} may $r$elax debugging restrictions,
+  $v$iew and $k$ill all processes as well as $a$dministrate the system.
+For all files under the '/' path they may $r$ead and $w$rite files, $c$reate and
+$d$elete files or directories, $m$ark files as setuid or setgid, hardlink files,
+e$x$ecute or map into executable memory, and any new binaries $i$nherit being
+owned by the admin role.
+
+\begin{lstlisting}[language=grsec]
+role admin sA
+  subject / rvka 
+    / rwcdmlxi
+\end{lstlisting}
+
+An unprivileged ssh daemon should be more restricted.  It should run as a
+specific sshd $u$ser on the system, all files should be $h$idden, apart from the
+\texttt{/var/run/sshd} file.  All capabilities have been disabled as has binding
+and connecting to network sockets.
+
+\begin{lstlisting}[language=grsec]
+role sshd u
+  subject /
+    /  h
+    /var/run/sshd r
+    -CAP_ALL
+    bind disabled
+    connect disabled
+\end{lstlisting}
 \section{Review of Datalog}
 \label{sec:datalog}
 
@@ -1125,7 +1380,7 @@ number of answers.
 \subsection{Datalog Evaluation in SecPAL}
 
 The bottom up strategy is commonly used with Datalog programs.
-\citeauthor*{Becker:2009vt}'s paper describing SecPAL~\cite{Becker:2010vh} points
+\citeauthor*{Becker:2009vt}'s paper describing SecPAL~\cite{Becker:2006vh} points
 out that since their programs may change dramatically for every query
 recomputing all possible fact each time  will not be efficient. The \ac{SLD}
 resolution strategy is also not appropriate (despite Datalog's finite Herbrand
@@ -1150,65 +1405,113 @@ have not been fully answered.  For a query $p$: $ans(p)$ and $wait(p)$ are the
 entries in each table pertaining to the query $p$.
 
 To evaluate a query $p$ for a given program with answer table $ans$ the
-algorithm proceeds as follows in Figure~\ref{fig:speval}.
+algorithm proceeds as follows:
 
-\begin{figure}\label{fig:speval}
-  \begin{lstlisting}[language=Python, mathescape=true]
-def evaluate(p, prog):
-  if $\exists$ p$^\prime$ $\in$ prog.answers | unifies(p, p$^\prime$)
-    p$^\prime$
-  else:
-    resolveClause(p, prog):
+\SetKwFunction{FEval}{evaluate}
+\SetKwFunction{FUnifies}{unifies}
+\SetKwFunction{FResolveC}{resolve-clause}
+\SetKwFunction{FResolve}{resolve}
+\SetKwFunction{FProcessNode}{process-node}
+\SetKwFunction{FCanRename}{can-rename}
+\SetKwFunction{FAns}{ans}
+\SetKwFunction{FWait}{wait}
+\SetKwFunction{FProcessAns}{process-answer}
+\SetKwData{vP}{p}
+\SetKwData{vPp}{p$^\prime$}
+\SetKwData{vProg}{prog}
+\SetKwData{vQ}{q}
+\SetKwData{vQa}{q$_0$}
+\SetKwData{vQq}{q$^\prime$}
+\SetKwData{vQs}{qs}
+\SetKwData{vNd}{nd}
+\SetKwData{vNdd}{nd$^\prime$}
+\SetKwData{vNddd}{nd$^{\prime\prime}$}
+\SetKwData{vRl}{rl}
+\begin{algorithm}
+  \tcc*[h]{Evaluate a query against a program by checking}\;
+  \tcc*[h]{first to see if we already know the answer, }\;
+  \tcc*[h]{otherwise by resolving the query.}\;
+  \Fn{\FEval{\vP:Query, \vProg:Program}}{
+    \If{$\exists$ \vPp \FElem \vProg.answers\string: \FUnifies{\vP, \vPp}}{
+      \vPp
+    }
+    \Else{
+      \FResolveC{\vP, \vProg}
+    }
+  }\;
+\end{algorithm}
 
-def resolveClause(p, prog):
-  ans(p) = {}
-  for q in prog.qs + prog.c:
-  if $\exists$ nd = resolve((p,q+qs,c,[],rl), p):
-    processNode(nd, prog)
+\begin{algorithm}
+  \tcc*[h]{Resolve a query by looking for a sub-query in}\;
+  \tcc*[h]{the program that can be resolved (equal after}\;
+  \tcc*[h]{renaming) and process that.}\;
+  \Fn(){\FResolveC{\vP:Query, \vProg:Program}}{
+    \FAns{\vP} $\gets$ \{\}\;
+    \For{\vQ \FElem \vProg.qs $+$ \vProg.c}{
+      \If{$\exists$ \vNd = \FResolve{\vP,\vQ$+$\vQs,\vC,$[]$,\vRl}}{
+        \FProcessNode{\vNd, \vProg}
+      }
+    }
+  }\;
+\end{algorithm}
 
-def processNode(nd, prog)
-  (p,qs,c,_,_,_) = nd
-  if qs == []:
-    process_answer(nd)
-  else:
-    (q0, _) = qs
-    if $\exists$ q$^\prime$ in prog.ans | canRename(q0, q$^\prime$):
-      wait(q$^\prime$) += nd
-      for nd$^\prime$ in wait(q$^\prime$):
-        if $\exists$ nd$^{\prime\prime}$ = resolve(nd, nd$^\prime$):
-          processNode(nd$^{\prime\prime}$)
-    else:
-      wait(q0) += nd
-      resolveClause(q0, prog)
+\begin{algorithm}
+  \tcc*[h]{When processing a node if it has no subgoals}\;
+  \tcc*[h]{then start to process the answer, else start}\;
+  \tcc*[h]{with the first sub-goal. If we know the}\;
+  \tcc*[h]{solution to the subgoal after renaming then add}\;
+  \tcc*[h]{it to the wait list, and start processing them.}\;
+  \tcc*[h]{Otherwise add it to the wait list and work try}\;
+  \tcc*[h]{to resolve the sub goal clause.}\;
+  \Fn(){\FProcessNode{\vNd:Node, \vProg:Program}}{
+    \Match{\vNd}{
+      \With{(\vP, \vQs, \vC, \vwild, \vwild, \vwild)}{
+        \If{\vQs = $[]$}{
+          \FProcessAns{\vNd}
+        }
+        \Else{
+          \Match{\vQs}{
+            \With{(\vQa, \vwild)}{
+              \If{$\exists$ \vQq \FElem \vProg.ans | \FCanRename{\vQa, \vQq}}{
+                \FWait{\vQq} $\xleftarrow{+}$ \vNd\;
+                \For{\vNdd \FElem \FWait{\vQq}}{
+                  \If{$\exists$ \vNddd = \FResolve{\vNd, \vNdd}}{
+                    \FProcessNode{\vNddd}
+                  }
+                }
+              }
+              \Else{
+                \FWait{\vQa} $\xleftarrow{+}$ \vNd\;
+                \FResolveC{\vQa, \vProg}
+              }
+            }
+          }
+        }
+      }
+    }
+  }\;
+\end{algorithm}
 
-def processAnswer(nd):
-  (p,[],c,_,_,_) = nd
-  if nd not in ans(p):
-    ans(p) += nd
-  for nd$^\prime$ in wait(p):
-    if $\exists$ nd$^{\prime\prime}$ = resolve(nd$^\prime$, nd):
-      processNode(nd$^{\prime\prime}$)
-\end{lstlisting}
-\caption{%
-  If a query $p$ is in the answers of a program then we don't need to evaluate
-  it: just return the answers. (Lines 1 through 5). 
-  
-  Alternately find a sub-query in the program than
-  can be resolved (equal to a node after renaming) and process that. (Lines 7
-  through 11).
-
-  When processing a node if it has no subgoals then start to process the answer,
-  else start with the first sub-goal.  If we know the solution to the subgoal
-  after renaming then add it to the wait list, and start processing them.
-  Otherwise add it to the wait list and work try to resolve the sub goal
-  clause. (Lines 13 through 26)
-
-  When processing an answer if we already didn't already know it add it to the
-  list of answers.  Then continue processing any waiting subgoals. (Lines 28
-  through 34).
-}
-\end{figure}
-
+\begin{algorithm}
+  \tcc*[h]{When processing an answer if we already}\;
+  \tcc*[h]{didn’t already know it add it to the list of}\;
+  \tcc*[h]{answers. Then continue processing any waiting}\;
+  \tcc*[h]{subgoals.}\;
+  \Fn(){\FProcessAns{\vNd:Node}}{
+    \Match{\vNd}{
+      \With{(\vP, $[]$, \vC, \vwild, \vwild, \vwild)}{
+        \If{\vNd $\not\in$ \FAns{\vP}}{
+          \FAns{\vP} $+=$ \vNd
+        }
+        \For{\vNdd \FElem \FWait{\vP}}{
+          \If{$\exists$ \vNddd = \FResolve{\vNdd, \vNd}}{
+            \FProcessNode{\vNddd}
+          }
+        }
+      }
+    }
+  }
+\end{algorithm}
 
 \subsection{Datalog Variants}
 
@@ -1388,8 +1691,8 @@ We have implemented the SecPAL logic.
 The implementation was done in Haskell and is around a
 thousand lines of code, plus five hundred lines of test cases.
 
-In the original SecPAL paper~\cite{Becker:2010vh}
-\citeauthor*{Becker:2010vh} describe an efficient implementation using Datalog.
+In the original SecPAL paper~\cite{Becker:2006vh}
+\citeauthor*{Becker:2006vh} describe an efficient implementation using Datalog.
 We use a simple top-down approach.
 This was to quickly evaluate whether SecPAL is a good fit for
 the problem. It is not an efficient production ready inference
