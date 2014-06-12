@@ -1302,11 +1302,13 @@ role sshd u
 \section{Review of Datalog}
 \label{sec:datalog}
 
-Datalog is a database language. It was created from a simplification of general logic
-programming.  The language is based on first order logic; it is both sound and
-complete.  Datalog is used as the basis for several of the authorization
-logics including SecPAL. We will review several evaluation strategies used
-for querying Datalog knowledge bases.
+Datalog is a database language. It was created from a simplification of general
+logic programming.  The language is based on first order logic; evaluation of
+Datalog is both sound and complete (under the \ac{CWA}).  Datalog is used as the
+basis for several of the authorization logics including SecPAL. We will review
+several evaluation strategies used for querying Datalog knowledge bases as most
+common method (bottom-up) is not particularly suitable for authorization logic
+applications.
 
 \begin{marginfigure}
   \label{datalog:example}
@@ -1332,10 +1334,10 @@ sibling(X,Y) :- person(X),
   describing what it means to be a sibling.}
 \end{marginfigure}
 
-Datalog programs are presented as series of Horn~clauses in the syntactically
-same way as the Prolog language (see Figure~\ref{datalog:example}).  There are
-additional restrictions, however, that all variables in the head of a clause
-must be present in the body; and that no parameter can be a nested predicate.
+Datalog programs are presented as series of Horn~clauses in the
+same way as Prolog (see Figure~\ref{datalog:example}).  There are
+additional restrictions, however: all variables in the head of a clause
+must be present in the body, and no parameter can be a nested predicate.
 
 Datalog programs are split into two sets.
 The \ac{EDB} has all ground (containing no free variables) facts.
@@ -1344,10 +1346,10 @@ The \ac{IDB} has rules for deriving more facts.
 \subsection{Evaluation Strategies}
 
 The \emph{bottom-up} or \emph{Gauss-Seidel} method is a simple evaluation
-strategy~\cite{Ceri:1989ff}.  Given a Datalog program try every constant with
-every rule from the \ac{IDB}.  When a rule is found to be true add it to the set
+strategy~\cite{Ceri:1989ff}.  Given a Datalog program we try every constant with
+every rule from the \ac{IDB}.  When a rule is found to be true we add it to the set
 of facts.  Repeat until a fixed point (or the required fact) is known.  If a
-queried fact is still unknown when it stops then it is false; as Datalog assumes
+queried fact is still unknown when the search terminates then it is false; as Datalog assumes
 the \ac{CWA}.  The strategy is complete and will always
 terminate. Querying the database is fast once all facts have been inferred 
 and large joins are quick.
@@ -1363,30 +1365,52 @@ interesting will not be in the magic set.
 The \ac{SLD} resolution algorithm works top down. It starts with a goal and then
 constructs a proof tree. Transitions are applications of rules from the
 \ac{IDB}. Nodes are either facts (the leaves) or further branches.  If there is
-a subtree from the query node to true facts then it is true.  The Prolog
-language (which Datalog is a more constrained form of) uses this strategy.  Its
-use of memory efficient as it searches the tree in a depth-first manner.
+a subtree from the query node to true facts then it is true.  Prolog uses this
+strategy.  Its memory efficient as it searches the tree in a depth-first manner.
 Breadth-first and other tree traversal searches are also possible as are
 parallel strategies.  The \emph{top-down} strategy is less commonly used with
-Datalog programs. Tabling is often used with this strategy to speed queries by
-memoizing previously inferred facts.
+Datalog programs. Saving previous search results (called tabling) is often used
+with this strategy to speed queries.
 
-The \ac{SLD} resolution may
-not terminate if there are a set of rules that set up an infinite loop (for
-instance the rule \code{a(X) :- a(X).}).
-Because Prolog has an infinite number of constants
-(integers for example) it is possible to construct queries which return an infinite
-number of answers.
+
+The \ac{SLD} resolution may not terminate if there are a set of rules that set
+up an infinite loop (for instance the rule \code{a(X) :- a(X).}).  Because
+Prolog has an infinite number of constants (integers for example) it is also
+possible to construct queries which return an infinite number of answers.
+Datalog does not suffer from this as it's programs must contain all known
+constants because of the \ac{CWA} (and therefore there are a finite number of
+them).
+
 
 \subsection{Datalog Evaluation in SecPAL}
 
 The bottom up strategy is commonly used with Datalog programs.
-\citeauthor*{Becker:2009vt}'s paper describing SecPAL~\cite{Becker:2006vh} points
-out that since their programs may change dramatically for every query
-recomputing all possible fact each time  will not be efficient. The \ac{SLD}
-resolution strategy is also not appropriate (despite Datalog's finite Herbrand
-universe) as SecPAL's \emph{can-say} and \emph{can-act-as} assertions could
-allow infinite recursion.
+\citeauthor*{Becker:2009vt}'s paper describing SecPAL~\cite{Becker:2006vh}
+points out that since their programs may change dramatically for every query, as
+statements may be added as the device runs in response to changing
+circumstances, recomputing all possible fact each time  will not be efficient.
+The \ac{SLD} resolution strategy is also not appropriate (despite Datalog's
+finite Herbrand universe) as SecPAL's \emph{can-say} and \emph{can-act-as}
+assertions could allow infinite recursion; as shown in Figure~\ref{secpal:inf}.
+
+\begin{marginfigure}\centering
+  \begin{lstlisting}[language=SecPAL]
+A says B can-say inf X.
+B says A can-say inf X.
+  \end{lstlisting}
+  \begin{align*}
+    \infer{ AC,\infty \models A\textsf{~says~}X }{%
+    \infer{AC,\infty \models A \textsf{~says~} B \textsf{~can-say}_\infty~X}{} &
+    \infer{AC,\infty \models B \textsf{~says~} X}{%
+      \infer{AC,\infty \models B \textsf{~says~} A \textsf{~can-say}_\infty~X}{} &
+    \infer*[\infty]{AC,\infty \models A \textsf{~says~} X}{}
+      }
+    }
+  \end{align*}
+  \caption{A SecPAL assertion context, and partial proof tree that shows how an
+    infinite loop would occur when evaluated with \ac{SLD} resolution.}
+  \label{secpal:inf}
+\end{marginfigure}
 
 They present an algorithm for efficiently evaluating the Datalog. This is used
 with a Datalog translation of
@@ -1400,14 +1424,15 @@ constraint, the partial answer $s$, its children nodes $nds$ and the rule used
 to construct the node $rl$.  If a node has no subgoals and its constraint
 is met, then it is an answer node with answer $s$.
 
-To tables are also used: the \emph{answer} table is mapping from literals to
+Two tables are also used: the \emph{answer} table is mapping from literals to
 answer nodes.  The \emph{wait} table maps from literals to nodes which
 have not been fully answered.  For a query $p$: $ans(p)$ and $wait(p)$ are the
 entries in each table pertaining to the query $p$.
 
 To evaluate a query $p$ for a given program with answer table $ans$ the
-algorithm proceeds as follows:
+algorithm proceeds as in Figure~\ref{secpal:datalog}.
 
+\begin{figure}
 \SetKwFunction{FEval}{evaluate}
 \SetKwFunction{FUnifies}{unifies}
 \SetKwFunction{FResolveC}{resolve-clause}
@@ -1428,7 +1453,7 @@ algorithm proceeds as follows:
 \SetKwData{vNdd}{nd$^\prime$}
 \SetKwData{vNddd}{nd$^{\prime\prime}$}
 \SetKwData{vRl}{rl}
-\begin{algorithm}
+\begin{algorithm}[H]\small
   \tcc*[h]{Evaluate a query against a program by checking}\;
   \tcc*[h]{first to see if we already know the answer, }\;
   \tcc*[h]{otherwise by resolving the query.}\;
@@ -1440,9 +1465,6 @@ algorithm proceeds as follows:
       \FResolveC{\vP, \vProg}
     }
   }\;
-\end{algorithm}
-
-\begin{algorithm}
   \tcc*[h]{Resolve a query by looking for a sub-query in}\;
   \tcc*[h]{the program that can be resolved (equal after}\;
   \tcc*[h]{renaming) and process that.}\;
@@ -1454,9 +1476,6 @@ algorithm proceeds as follows:
       }
     }
   }\;
-\end{algorithm}
-
-\begin{algorithm}
   \tcc*[h]{When processing a node if it has no subgoals}\;
   \tcc*[h]{then start to process the answer, else start}\;
   \tcc*[h]{with the first sub-goal. If we know the}\;
@@ -1473,7 +1492,7 @@ algorithm proceeds as follows:
         \Else{
           \Match{\vQs}{
             \With{(\vQa, \vwild)}{
-              \If{$\exists$ \vQq \FElem \vProg.ans | \FCanRename{\vQa, \vQq}}{
+              \If{$\exists$ \vQq \FElem \vProg.ans $\vert$ \FCanRename{\vQa, \vQq}}{
                 \FWait{\vQq} $\xleftarrow{+}$ \vNd\;
                 \For{\vNdd \FElem \FWait{\vQq}}{
                   \If{$\exists$ \vNddd = \FResolve{\vNd, \vNdd}}{
@@ -1491,9 +1510,7 @@ algorithm proceeds as follows:
       }
     }
   }\;
-\end{algorithm}
 
-\begin{algorithm}
   \tcc*[h]{When processing an answer if we already}\;
   \tcc*[h]{didn’t already know it add it to the list of}\;
   \tcc*[h]{answers. Then continue processing any waiting}\;
@@ -1513,20 +1530,24 @@ algorithm proceeds as follows:
     }
   }
 \end{algorithm}
+\caption{Algorithm used to evaluate Datalog by SecPAL.}
+\label{secpal:datalog}
+\end{figure}
 
 \subsection{Datalog Variants}
 
 Datalog does not support negation. It is not possible to write
 rules which depend on false facts.  This is inconvenient as it is
 natural to write rules which rely upon a negative result: for example
-an app is safe to run if it is not malware.
+an app is safe to run if it is not malware.  Whilst this extension to Datalog is
+not strictly required (the \ac{CWA} can be used) it makes programs clearer.
 
-A version Datalog with negation called \emph{Datalog$^\lnot$}~\cite{Ceri:1989ff} is
-made by allowing negation in clause bodies. Two sets of known
-facts are defined: those that are true and those that are false.
-When deciding if a fact is satisfied by a Datalog program if the fact is not
-negated then it must be inferable by the rules of the program; if the fact is
-negated then it must not be satisfiable.  
+A version of Datalog with negation called
+\emph{Datalog$^\lnot$}~\cite{Ceri:1989ff} is made by allowing negation in clause
+bodies. Two sets of known facts are defined: those that are true and those that
+are false.  When deciding if a fact is satisfied by a Datalog program if the
+fact is not negated then it must be inferable by the rules of the program; if
+the fact is negated then it must not be satisfiable.  
 
 In unmodified Datalog if the bottom-up strategy
 is used all possible facts are inferred. These facts form a single, minimal
@@ -1539,8 +1560,10 @@ negated and defining an evaluation order~\cite{Apt:1986vj}.
 
 Constraint Datalog (Datalog$^C$~\cite{Li:2003ix}) is based
 on constraint logic programming.  Constraint logic programming allows
-relationships to be defined with general relationships (for example:
-less than $<$) rather than with just defined predicates.  Being able to
+relationships to be defined with general relationships (ordering by time
+for example)\footnote{Full logic programming languages like Prolog often
+support these relations. Datalog, however, does not as it would require all
+possible times to be named, and described in order to each other.} rather than with just the pre-defined predicates.  Being able to
 define relations in terms of general relations is convenient for
 authorization logics as it lets things be defined in terms of time or
 other general (and infinite) concepts. 
@@ -1550,14 +1573,13 @@ can open a gate: the day guard can open it from 6~am to 6~pm. The night guard
 can open it from 6~pm to 6~am. Another example is an access control policy that
 allows users to view all files within a directory.
 
-Expressing these relations in Datalog is hard as the number of
-files within that directory or sub-directories could be infinite. The number of
-times in the watchmen's shifts is also infinite.
-Datalog would require each of these times and files to be instantiated. This is
-not ideal as it makes programs unwieldy. Policy languages, such as
-Cassandra~\cite{Becker:2004fi}, SecPAL~\cite{Becker:2006vh} and
-RT$_1^C$~\cite{Li:2003ix} use a form of Datalog$^C$ as their evaluation engine to
-avoid this.
+Expressing these relations in Datalog is hard as the number of files within that
+directory or sub-directories could be infinite. The number of times in the
+watchmen's shifts is also infinite.  Datalog would require each of these times
+and files to be instantiated. This is not ideal as it makes programs unwieldy.
+Policy languages, such as Cassandra~\cite{Becker:2004fi},
+SecPAL~\cite{Becker:2006vh} and RT$_1^C$~\cite{Li:2003ix} all use a form of
+Datalog$^C$ as their evaluation engine to avoid this.
 
 While some constraints applied to domains are tractable (such as
 trees, ordering and discrete domains) \citeauthor*{Li:2003ix} could not show
@@ -1568,50 +1590,67 @@ as they can simplify the query evaluation while still keeping the extra
 expressiveness Datalog with constraints allows.
 
 
+\section{Work Done In First Year}
 
-\section{Proposal}
-
-\subsection{Work Done In First Year}
-
-The first year of my study has been on developing an
-authorization logic that can express the security policies for
-a smart phone. Specifically the policies when a user is installing apps.
-We have considered what kinds of policies and trust
-relationships a user might wish to express and shown how they can be expressed
+In the first year of my study I have worked on developing an authorization logic
+that can express the user-oriented security policies for a smart
+phone~\cite{Hallett:2014un}. Specifically the policies used when a user is
+installing apps.  We have considered what kinds of policies and trust
+relationships a user might wish to express and shown how they can be written
 in the language.
 
-To do this we initially looked at a variety of authorization logics.  These
-included BLF~\cite{Whitehead:2004bu} and Binder~\cite{DeTreville:2002ff}. We
-settled 
-on SecPAL as it was simple, extensible and readable.  SecPAL's
-decentralized nature is ideal for describing a mobile-device and
-app-store ecosystem:  there isn't a single authority making decisions about
+To do this we have been looking at a variety of authorization logics.  These
+include BLF~\cite{Whitehead:2004bu} and Binder~\cite{DeTreville:2002ff}.  SecPAL
+seems to be an ideal basis for the work as it is simple, extensible and
+readable.  SecPAL's decentralized nature is ideal for describing a mobile-device
+and app-store ecosystem:  there isn't a single authority making decisions about
 what can and cannot be installed onto a device.  
 
-We wanted to allow users to delegate decisions to
+We want to allow users to delegate decisions to
 experts. These might be third party certification or static analysis
 services; running on a remote server or on the device itself.  Users should be
 able to use digital evidence~\cite{Stark:2009uc} as a means of increasing
 trust in a tool. This might allow proof checking to be done with
 less strain on a mobile's battery. 
 
-We wanted to separate
-the checking of the user's security policy for the device (the
-\emph{device policy}) from the policies any tool was checking for an app (the
-\emph{application policy}).  This meant that any analysis tool needn't use the
-same logic as the app checking tool.  In the security policy static analysis tools are treated as
-oracles: they can utter statements about their inputs but we do not know (or
-care) how they came to these conclusions.
+We want to separate the checking of the user's security policy for the device
+(the \emph{device policy}) from the policies any tool was checking for an app
+(the \emph{application policy}).  This meant that any analysis tool needn't use
+the same logic as the app checking tool.  In the security policy static analysis
+tools are treated as oracles: they can utter statements about their inputs but
+we do not know (or care) how they came to these conclusions.
 
-We extended SecPAL with two predicates.  The \emph{meets}
-predicate says an entity believes an app meets an application
-policy.  If Alice believed the \emph{Angry-Birds} app met her
-policy to not leak information about her:
+We extended SecPAL with two predicates:  
+
+\begin{description}
+  \item[\ttfamily meets] 
+The \emph{meets} predicate says an
+entity believes an app meets an application policy. 
+
+The \emph{application policy} is a property that Alice expects an app to have.
+This may be a rule that no personal information can be leaked over the network
+and she may expect this to be checked by another tool which could describe the
+policy in terms of the code.  We do not need this second policy to be written in
+SecPAL, but we do need to name it so that the \emph{device policy} enforced by
+SecPAL knows that it should or should not be enforced.
+
+For example: if Alice believed the \emph{AngryBirds} app met her policy to not
+leak information about her:
 
 \begin{lstlisting}[language=SecPAL]
 Alice says AngryBirds meets NoInfoLeaks.
 \end{lstlisting}
 
+We have not said anything about the \emph{NoInfoLeaks} policy here, other than
+naming it and requiring \emph{AngryBirds} to \emph{meet} it.  To check the
+policy Alice might describe a tool, that should be configured separately, that
+she trusts to make a judgement as to whether the policy is met.
+
+\begin{lstlisting}[language=SecPAL]
+Alice says CheckingTool can-say 0 app meets NoInfoLeaks.
+\end{lstlisting}
+
+\item[\ttfamily shows-meets]
 To express proof carrying code~\cite{Necula:1996tr} and digital
 evidence we say that evidence \emph{shows} a policy is met.  
 We introduce the \emph{shows-meets} predicate (whose notation we sugar
@@ -1621,21 +1660,22 @@ digital evidence to show Angry-Birds won't leak her information.
 \begin{lstlisting}[language=SecPAL]
 Alice says Evidence shows AngryBirds meets NoInfoLeaks.
 \end{lstlisting}
+\end{description}
+
+
 
 \subsection{Alice Installs An App}
 
 To illustrate we describe a story
-where a user is trying to install an app.  This example is
+where a user is trying to install an app.\footnote{This example is
 built from work presented as a paper at the ESSoS Doctoral
-Symposium~\cite{Hallett:2014un}, and as a poster at the FMATS workshop.
+Symposium~\cite{Hallett:2014un}, and as a poster at the FMATS workshop.}
 
 Suppose Alice has a smart phone.  Alice has a security policy that says:
-
 \begin{quote}
     ``No app installed on my phone will send my location to an advertiser, and I
-      wont install anything that Google says is malware.''
+      won't install anything that Google says is malware.''
 \end{quote}
-
 Alice trusts Google to decide whether something is malware or not; or at least
 recommend an anti-virus vendor. She trusts the \emph{NLLTool} to decide whether
 an app will leak her location.  Alice is happy that if an app can come with a
@@ -1688,9 +1728,8 @@ that \code{Alice says app is-installable.}
 
 \subsection{Implementation}
 
-We have implemented the SecPAL logic.
-The implementation was done in Haskell and is around a
-thousand lines of code, plus five hundred lines of test cases.
+We have implemented the SecPAL logic in Haskell and is around a
+1000 lines of code, plus 500 lines of test cases.
 
 In the original SecPAL paper~\cite{Becker:2006vh}
 \citeauthor*{Becker:2006vh} describe an efficient implementation using Datalog.
@@ -1739,7 +1778,7 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
 \label{secpal:exampleproof}
 \end{figure}
 
-\subsection{Thesis Proposal}
+\section{Thesis Proposal}
 
 \begin{figure*}
   \includegraphics[width=1.3\linewidth,angle=90]{gantt.pdf}
@@ -1771,9 +1810,11 @@ how it can be applied to a real world problem.  It also will offer a platform to
 test real policies against and show how different analysis tools can make
 different guarantees.  
 
-The store will act as a framework to compare different store's
+The store will act as a framework to compare different stores
 policies with.  By checking policies in the app store it avoids
-needing for users to root their phone (reducing their device security).
+needing for users to root their phone\footnote{This can reduce their
+devices security as it allows malware potential access to the root account.  It
+is a known infection strategy by malware~\cite{Svajcer:2012wy}.}.
 It also allows for a wide range of users to interact with the project. 
 
 Creating a secure app store is a non-trivial engineering challenge; especially
@@ -1807,7 +1848,7 @@ security policy.
 
 % TODO stretch goals.  
 
-At the end of the project I want to have shown how authorization logics can be
+At the end of the PhD I want to have shown how authorization logics can be
 extended to describe and mitigate decision making problems on mobile devices.
 
 
