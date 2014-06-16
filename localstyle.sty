@@ -5,6 +5,9 @@
 \usepackage{url}
 \@ifpackageloaded{natbib}{}{\usepackage[square,numbers]{natbib}}
 
+% For floating packages and the wonderful H for really here figures
+\@ifpackageloaded{float}{}{\usepackage[]{float}}
+
 % For structuring the document
 %\usepackage{subfiles}
 \@ifpackageloaded{hyperref}{}{\usepackage[unicode=true]{hyperref}}
@@ -64,7 +67,7 @@
 
 \lstdefinelanguage{SecPAL}{%
   morecomment=[l]{//},
-  morekeywords={says,if,can,say,can,act,as,shows,meets}
+  morekeywords={says,if,can,say,can,act,as,shows,meets,breaks,unsure,of}
 }[keywords,comments,strings]
 
 \lstdefinelanguage{PolicyMaker}{%

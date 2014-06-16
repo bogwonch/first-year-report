@@ -196,7 +196,7 @@ mobile OSs as well as the app acceptance policy for some app stores.  This will 
 made between them, and (with a database of apps) comparing what kinds of apps
 different markets allow.
 
-\subsection{Compound Policies Over Time}
+\subsection{Compound Policies Over Time}\label{sec:polovertime}
 
 Consider a user who has a smart phone and is buying apps.  The
 user must decide if they want to install an app: to do this they apply a series
@@ -1780,11 +1780,6 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
 
 \section{Thesis Proposal}
 
-\begin{figure*}
-  \includegraphics[width=1.3\linewidth,angle=90]{gantt.pdf}
-  \caption{Gantt chart showing progress plans throughout funded period of PhD
-  study.}\label{fig:gantt}
-\end{figure*}
 
 A schedule for completing the project is shown in Figure~\ref{fig:gantt}.
 
@@ -1796,19 +1791,354 @@ interact with users.
 
 First will be to complete the work done in the first year. I will show that
 a logic of authorization can model the security decisions made inside Android;
-that it is capable of describing complex security policies.  This will
-result in a technical report. The report will describe the authorization logic, why it
-was chosen over other policy languages.  I will show some applications of
-the logic to mobile systems and the problems associated with them.
+that it is capable of describing complex security policies. 
+
+There are several policies idioms that cannot be expressed in SecPAL (or any
+other policy language I know of).  For example consider the \emph{late-adopting}
+user who will only install an app if two or more of their friends say it is
+good; or the \emph{hipster} user who will only install an app if no one else is
+using it.  In SecPAL the one approach for the late-adopting user would be to say
+that:
+\begin{lstlisting}[language=SecPAL, mathescape=true]
+User says x can-say 0 app is-recommended-by(x)
+  if x is-friend.
+
+User says app is-good
+  if app is-recommended-by(x),
+     app is-recommended-by(y);
+     x $\not=$ y.
+\end{lstlisting}
+This seems to work but there are some problems: firstly we cannot express the
+\emph{hipster} case like this as we don't want want anyone to say the app is
+recommended and SecPAL cannot express this.  Secondly the phrasing is clunky as
+this relationship is very similar to SecPAL's \emph{can-say} relationship (which
+cannot be used here as conditional facts don't come with an origin).  It also
+isn't obvious how a friend can delegate the recommendation to one of their
+friends as they might do with the \emph{can-say} relationship. This seems
+natural: a conversation might be \emph{``Do you recommend this app? Oh I think
+my friend uses it why don't you ask them?''}. 
+
+If we were to alter SecPAL's syntax and allow conditions with an explicit origin
+we could write:
+\begin{lstlisting}[language=SecPAL, mathescape=true]
+User says x can-assert inf app is-good
+  if x is-friend.
+
+User says app is-good
+  if x says app is-good,
+     y says app is-good;
+     x $\not=$ y.
+\end{lstlisting}
+This seems more natural but requires changing the language. We need to add a new
+\emph{can-assert} rule that, like can-say, allows delegation but doesn't make
+statements true unless used in a conditional statement.  These changes may
+invalidate some of the safety and termination proofs from the original
+paper~\cite{Becker:2006vh} which is undesirable.  This still doesn't account for
+the hipster case. 
+
+A third alternative would be to borrow the \emph{find-all}
+construct from Prolog. Find-all allows the programmer to find all the statements
+that satisfy a given predicate.  For example to find all of Alice's cousins one
+could write in Prolog:
+\begin{lstlisting}[language=Prolog]
+  findall(X, cousin(Alice, X), cousins).
+\end{lstlisting}
+A similar construct could be brought into SecPAL:
+\begin{lstlisting}[language=SecPAL, mathescape=true]
+User says x can-assert inf app is-good
+  if x is-friend.
+
+User says app is-good
+  if findall(_, app is-good, recommenders);
+     sizeof(recommenders) $\geq$ 2.
+
+Hipster says app is-good
+  if findall(_, app is-good, recommenders);
+    sizeof(recommenders) = 0.
+\end{lstlisting}
+This accounts for the hipster case and helps keep policies short (one could
+imagine a user saying that it wouldn't install an app unless a million people
+recommended it which would lead to unwieldy policies in the earlier versions).
+This changes the language dramatically: \code{findall} isn't a Datalog
+instruction so this may not even be translatable.
+
+Another problem occurs when we are using a checking tool.  Suppose we have a
+tool which can infer complex properties about apps; for particularly complex and
+large apps however the checking becomes infeasible\footnote{For instance in a
+  meeting with developers of \emph{FlowDroid} they claimed their tool could
+  analyze the Facebook app, but took 75GB of RAM to do so. Whilst this was
+  feasible on a compute cluster, this could not be done on a mobile phone.}. You
+could imagine a security policy for a phone where the user uses the tool on some
+small apps but for large apps the user is allowed to make the judgement:
+\begin{lstlisting}[language=SecPAL,mathescape=true]
+Phone says FlowDroid can-say 0 app meets FlowPolicy
+  if sizeof(app) $<$ 500MB.
+
+Phone says User can-say inf app meets FlowPolicy
+  if sizeof(app) $\geq$ 500MB.
+\end{lstlisting}
+The \code{500MB} is a rather arbitrary constant here. If we wanted to change the
+policy it would need to be changed in multiple places.  A better solution might
+be to allow \emph{FlowDroid} to answer that it doesn't know about the app
+(perhaps it ran out of resources) and then make a decision based on that.
+\begin{lstlisting}[language=SecPAL]
+Phone says FlowDroid can-say 0 app meets FlowPolicy.
+Phone says FlowDroid can-say 0 app unsure-of FlowPolicy.
+
+Phone says User can-say inf app meets FlowPolicy
+  if app unsure-of FlowPolicy.
+\end{lstlisting}
+
+Suppose the user decided to make an exception and allow the app.
+Later, after FlowDroid is given access to more memory perhaps, FlowDroid
+analyses the app and finds proof that the app does not meet the policy.
+FlowDroid revokes its statement that it is unsure of the app meeting the policy,
+and the phone no longer believes the app meets the policy.
+
+In this case it works, but suppose instead the user decided to trust two
+different tools to decide whether the policy is met.  Both tools initially say
+they're unsure if an app meets the policy; the user provides the exception.
+Later one of them revokes its statement.  This time the phone still believes the
+app meets the policy as it still has the override and the statement about one of
+the tools being unsure.
+
+This suggests that using the \ac{CWA} may not be a helpful assumption. An alternative
+would be to allow negation in SecPAL (and use Datalog$^\lnot$).  Adding an
+explicit \emph{breaks} predicate instead of \emph{unsure-of} we write:
+\begin{lstlisting}[language=SecPAL, mathescape=true]
+Phone says User can-say inf app meets FlowPolicy
+  if $\lnot$ app meets FlowPolicy,
+     $\lnot$ app breaks FlowPolicy.
+\end{lstlisting}
+This changes the language however; which again may lead to invalid safety
+proofs. 
+
+It also raises questions about when two trusted tools disagree.  A cautious
+approach would be to always follow the \emph{breaks} statement: if there is
+doubt then trust no-one and reject everything.  With static analysis tools this
+might not be the right approach: false warnings are common amongst some tools
+(as anyone who has used the \emph{lint} tool can attest).  Suppose a malicious
+developer bribes a certification tool to be more strict with their competitor
+(or even just to devote less resources to checking it): they would create a
+denial-of-service for the app.
+
+Asking the user to pick between the tools isn't a good solution either.  Suppose
+\emph{Norton} and \emph{McAffee} disagree about whether an app is malware or
+not. Unless the policy author is skilled at malware-analysis they may not be
+able to decide who to trust here.  
+
+The solution to these problems, amongst others, is not immediately obvious.
+That basic Datalog, and therefore many policy languages, may not be able to
+describe possible solutions to the problems suggests the work is non-trivial.
+
+I plan to describe these problems fully in a technical report. The report will
+describe the authorization logic, why it was chosen over other policy languages.
+How common decisions made by mobile operating systems may be described in it;
+how policies users want (such as the late-adopting and hipster policies) may be
+expressed in the language; what problems we may encounter and their potential
+solutions.
+This technical report will be the first milestone for my PhD and will be used to
+provide the motivation and start to my thesis.
 
 Next I will develop an app store.  The store will use security policies to
-filter apps.
-Creating an app store allows interaction with my research.
-Encouraging users to use an app store with security policies
-increases the impact of the research. It provides a practical example to illustrate
-how it can be applied to a real world problem.  It also will offer a platform to
-test real policies against and show how different analysis tools can make
-different guarantees.  
+filter apps.  Creating an app store allows interaction with my research.
+Encouraging users to use an app store with security policies increases the
+impact of the research. It provides a practical example to illustrate how it can
+be applied to a real world problem.  It also will offer a platform to test real
+policies against and show how different analysis tools can make different
+guarantees.  
+
+To build the store we will base it on the proxy store model shown in
+Figure~\ref{fig:proxy}.  The final store architecture will resemble
+Figure~\ref{fig:appguardenstore}.  We will download apps plus metadata from the Play Store
+into our own \emph{App Guarden Store}.  From this master store we will create
+start to filter apps on the basis of policies.  The results from this filtering
+will become the \emph{curated stores}. 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{img/appguardenstore.eps}
+  \caption{Model of the App Guarden store architecture.}
+  \label{fig:appguardenstore}
+\end{figure}
+
+These curated stores will give us several areas for investigation:
+
+\begin{description}
+
+  \item[Policies and users:] policies should affect which apps are
+    available to the user. If an app cannot be reconciled with a user's policies
+    then the user should not be able to install the app.  Simply preventing the
+    user from installing (or even seeing that an app is available) is all very
+    well but how will users react to being told they cannot install their app?
+    Will they understand the reasoning why an app has been denied?  
+    
+    Users routinely circumvent security measures~\cite{Blythe:2013dt}. We don't
+    want users to remove protections, and we do not want users to write all
+    permissive policies.  Finding a balance between writing restrictive
+    security-enhancing policies, whilst still giving users a sense of control
+    and freedom, is necessary if authorization logics are to be a practical
+    tool.
+
+    To explore this we will develop a hypothetical policy for a company and
+    create a curated store where the policy is enforced.  The effects of
+    different policies will be measured by the number and kind of apps in the
+    \emph{company store}.  This will let us measure the restrictiveness of
+    policies on real apps, it will allow us to compare different checking tools,
+    we will be able to test theories about different clusters of apps.  For
+    instance if we had the theory that most flashlight apps are over-privileged
+    we can check it by writing a policy that rejects apps if
+    Stowaway~\cite{Felt:2011kj} says they are (Figure~\ref{fig:overpriv}): if
+    half or more apps categorized as flashlights are blocked then we have
+    evidence the theory is correct.
+
+    \begin{marginfigure}
+      \begin{lstlisting}[language=SecPAL]
+Phone says app is-acceptable
+  if app meets NotOverPrivileged.
+
+Phone says Stowaway can-say 0
+  app meets NotOverPrivileged.
+      \end{lstlisting}
+      \caption{Policy to filter over-privileged apps.}
+      \label{fig:overpriv}
+    \end{marginfigure}
+
+    To test how users will interact with the store a user study will look at how
+    well users comprehend their security policies and their apps.   One question
+    we could answer is \emph{do users understand why an app is unsafe?}  To test
+    this we could give users a policy, a decision made by a policy enforcer, and
+    a justification:  the user would then be asked if they think the enforcer
+    made the right decision.  If the users agree with the enforcer and
+    justification (when they are correct) would suggest that users understand
+    the policy enforcement.  Checking if users then still install the app would
+    test whether users sufficiently understood the risks (or just didn't care).
+    
+    We will also start looking at what happens when policies and apps change.  A security
+    policy is not a constant document.  Policies require updating when
+    circumstances and risks change as well as when a policy needs relaxing or
+    tightening for a specific app. Apps are updated by their developers.
+    Sometimes these apps need more permissions for new features.  As was discussed in
+    Section~\ref{sec:polovertime}; it is not alway clear what to do in these
+    circumstances. Several solutions are available:
+
+    \begin{itemize}
+      \item Remove the apps.
+      \item Run the apps in a restrictive sandbox.
+      \item Prompt the user for exceptions to the policies.
+    \end{itemize}
+
+    None of these solutions are ideal. By testing these solutions against
+    devices using apps we control we can find exactly what the trade-offs are.
+    Which solutions do users prefer and what are their reactions?  If the policy
+    is going to be broken what aspects get broken most often?  If the breakage
+    causes information to leak, how much information?  Other solutions may
+    present themselves: and user's (or at least administrators) should be able
+    to choose between them with knowledge of what that entails.
+    
+  \item[Compound policies:]
+
+    In Section~\ref{sec:polovertime} we introduced the idea that a policy on a
+    device may be formed from several different policies.  For instance an
+    employee may use their own personal phone for work too.  This is called
+    \ac{BYOD}.
+    
+    Compound policies have some interesting problems surrounding them.
+    Suggesting solutions to these problems, and evaluating them is novel;
+    existing work on security policies looks at when there is just one policy.
+
+    \begin{itemize}
+    
+      \item \emph{How are policies composed?}  Is there only one strategy for
+        composing them?  A simple strategy might be to always take the more
+        restrictive policy if there is a conflict but otherwise ensure it meets
+        both.  
+        
+        Alternatively you may accept apps which meet either policy but
+        introduce additional restrictions on them
+        The \emph{Qubes OS}~\cite{Rutkowska:2010wr} (a hypervisor
+        operating system for X86 computers) separated apps needing to run with
+        different security policies into separate virtual machines.  Approaches
+        relying on separate virtual systems for different composed security
+        policies are becoming more viable on mobile platforms; this may be
+        preferable to policy composition.
+
+        When the policies are composed can you show that an app meets both
+        policies together if you have proofs it meets both policies separately?
+        Intuitively the answer seems to be yes: if you know policy $A$ is met
+        and policy $B$ is met then policies $A\wedge B$ should be met too.
+        Being able to show this, and generate certificates for their proofs
+        migh make checking policies more efficient as the less work would have
+        to be done by the inference engine (and potentially the static analysis
+        tools).
+
+      \item \emph{What happens when policies agree?} Suppose a new, stricter,
+        policy is required.  The developer takes a pre-existing policy and adds
+        extra rules to it.  Later this new policy is composed with the old.
+        Apps that met the new policy will already meet the old one so do we need
+        to do any additionaly checking at all.
+    
+
+
+    \end{itemize}
+
+  \item[Policies under attack:]  Security policies should prevent apps behaving
+    in an undesirable way.  Security doesn't remain constant, however, and as
+    defences become more popular malware authors search for new ways to
+    circumvent them.  This aspect of the store will look at what happens here.
+
+    There are several ways that a security policy could be circumvented:
+
+    \begin{itemize} 
+      
+      \item \emph{Misplaced trust.}  Checking policies requires trust in other
+        entities.  Suppose we trust a tool to decide whether an app has a
+        security property.  What happens when the tool gets the decision wrong?
+        There are often limits to what analysis tools can
+        check~\cite{Livshits:ww}.  Alternatively the owners of a tool may be
+        coerced or bribed into giving an incorrect answer.  
+        
+        This kind of failure will lead to decisions being authorized which
+        shouldn't have been. How this affects the security of the device and
+        knowing what must be done to recover from it is important for policies
+        to be resiliant.  A variation of this might be an service which stops
+        decisions being authorized.  For example, suppose a video streaming
+        service bribed an antivirus service to say all its competitors were
+        malicious.  Knowing how to recover from this (especially after a user
+        may have installed the video streamer out of frustration) is not
+        obvious\footnote{Though perhaps a similar solution to Microsoft's
+        Internet Explorer being compelled to advertise alternatives might work
+          well.}.
+
+      \item \emph{Policy is incomplete.}  A user might have a policy that their
+        address book should not be leaked; and they might enforce the policy by
+        using taint analysis to check all data being sent out over the internet.
+        If a malicious app is distributing the contacts by Bluetooth or
+        text-message then the analysis may not catch it.  This can be
+        particularly annoying for users as they can have a simple policy but the
+        checks needed to enforce it can be long and technical.
+
+        By developing \emph{malware} which aims to slip past security
+        policies we will be able to find better policy idioms.  This will lead
+        to a more reliable policies.
+
+      \item \emph{Exploitation.}  No software scheme will be without bugs, and
+        sometimes these bugs can be exploited.  If someone can crash or control
+        the policy checker then it cannot be trusted to decide policies.
+        This is hard to prevent, but some thought should be given to it.
+    
+    \end{itemize}
+  
+    Testing for these issues can be difficult as it is hard to use real apps
+    without checking they will or will note meet a policy by hand; and synthetic
+    malware and \ac{PUS} may be trivially detectable\footnote{\emph{Schneier's
+    Law}\cite{Schneier:ws} states that: \begin{quote}``anyone can invent a security
+      system that he himself cannot break.''\end{quote}}.  It is important to
+    consider, and if possible evaluate, these failures as they are an obvious
+    way to attack a system.  Any claim that authorization logics will solve all
+    the problems in mobile devices are over-inflated~\cite{Kruger:1999dd}.
+
+\end{description}
 
 The store will act as a framework to compare different stores
 policies with.  By checking policies in the app store it avoids
@@ -1822,15 +2152,15 @@ when combined with the danger provided by user supplied policy files. The
 engineering difficulty in developing such a store can be mitigated by sensible
 software development practices. 
 
-Next we will  increase the complexity of the
-policies and show how the policies interact with the user.  One area will be
-on compositional policies; where a user might have one policy for apps at home
-and another for how they should use their phone at work.  Showing that SecPAL
-could support policies of this kind is, as hinted earlier, easy; however it is
-not clear what to do when these policies change, or when new policies are
-composed with them, or when two composed policies contradict each other.
+Next we will  increase the complexity of the policies and show how the policies
+interact with the user.  One area will be on compositional policies; where a
+user might have one policy for apps at home and another for how they should use
+their phone at work.  Showing that SecPAL could support policies of this kind
+is, as hinted earlier, easy; however it is not clear what to do when these
+policies change, or when new policies are composed with them, or when two
+composed policies contradict each other.
 
-Another area  will be to show how policies can be written to take into
+Another area will be to show how policies can be written to take into
 account of the \emph{app collusion problem}.  Whilst tools have been written to
 detect and attempt to prevent these kinds of attacks there has not been an
 attempt to model the decisions to collude and with whom in a logic of
@@ -1845,13 +2175,18 @@ over time or if developers actively prune the lists; as well as developing
 policies that can describe what to do when a well-used app no longer meets the
 security policy.
 
-
 % TODO stretch goals.  
 
 At the end of the PhD I want to have shown how authorization logics can be
 extended to describe and mitigate decision making problems on mobile devices.
 
-
+\vfill
+\begin{figure*}
+  \includegraphics[width=1.3\linewidth,angle=90]{gantt.pdf}
+  \caption{Gantt chart showing progress plans throughout funded period of PhD
+  study.}\label{fig:gantt}
+\end{figure*}
+\pagebreak
 
 
 \appendix

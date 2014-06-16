@@ -1,0 +1,33 @@
+digraph appguardenstore {
+  overlap = false;
+  splines = true;
+  rankdir = LR;
+
+  PlayStore [label="Google\nPlay Store" shape=box          fontname="Helvetica"];
+  MalwStore [label="Malware\nStore"     shape=box          fontname="Helvetica"];
+  AGStore   [label="App Guarden\nStore" shape=box          fontname="Helvetica"];
+  PStore1   [label="Infected Store"     shape=invtrapezium fontname="Helvetica"];
+  PStore2   [label="Company Store"      shape=invtrapezium fontname="Helvetica"];
+  PStore3   [label="Curated Store"      shape=invtrapezium fontname="Helvetica"];
+  pol1      [label="User Policy"        shape=cds          fontname="Helvetica"];
+  pol2      [label="Company Policy"     shape=cds          fontname="Helvetica"];
+  pol3      [label="User Policy"        shape=cds          fontname="Helvetica"];
+  phone1    [label="Infected Phone"     shape=oval         fontname="Helvetica"];
+  phone2    [label="Company\nPhone"     shape=oval         fontname="Helvetica"];
+  phone3    [label="BYOD\nPhone"        shape=oval         fontname="Helvetica"];
+  
+  PlayStore -> AGStore;
+  MalwStore -> PStore1;
+  AGStore   -> PStore1;
+  AGStore   -> PStore2;
+  AGStore   -> PStore3;
+  pol1      -> PStore1 -> phone1;
+  pol2      -> PStore2 -> phone2;
+  pol3      -> PStore3 -> phone3;
+  PStore2   -> phone3;
+
+  {rank=same; pol1 PStore1} {rank=same pol2 PStore2} {rank=same pol3 PStore3}
+  {rank=same; PlayStore MalwStore}
+
+}
+
