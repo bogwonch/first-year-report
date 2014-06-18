@@ -2,7 +2,14 @@
 %\documentclass[a4paper,sfsidenotes]{tufte-book}
 \usepackage{localstyle} % local style file
 
-\title{Using Authorization Logics To Model Security Decisions in Mobile Systems\\\vspace{2em}Thesis Proposal}
+% Oh for some fun!
+%\usepackage{mathspec}
+%\setmainfont{PragmataPro}
+%\setmonofont{PragmataPro}
+%\setmathfont(Digits,Latin,Greek)[StylisticSet=3]{PragmataPro} % fraktur math!
+%\setsansfont{PragmataPro}
+
+\title{Using Authorization Logics To Make Decisions in Mobile Systems\\\vspace{2em}Thesis Proposal}
 %\title{Security Policies\\For Humans\\Thesis Proposal}
 \author{Joseph~Hallett}
 \date\today
@@ -679,7 +686,7 @@ statements about others and what is allowed.
 
 \emph{PolicyMaker}~\cite{Blaze:dj}, grew out of the logics of authentication
 proposed by
-\citeauthor*{Wobber:1994dh}~\cite{Lampson:1992jg}~\cite{Wobber:1994dh}.
+\citeauthor*{Wobber:1994dh}~\cite{Lampson:1992jg,Wobber:1994dh}.
 PolicyMaker allows other principals (identified through asymmetric keys) to be
 trusted for actions or to declare further relationships. The language was
 minimal. It did not specify how the policies should be checked: they suggested
@@ -1393,7 +1400,7 @@ The \ac{SLD} resolution strategy is also not appropriate (despite Datalog's
 finite Herbrand universe) as SecPAL's \emph{can-say} and \emph{can-act-as}
 assertions could allow infinite recursion; as shown in Figure~\ref{secpal:inf}.
 
-\begin{marginfigure}\centering
+\begin{figure*}\centering
   \begin{lstlisting}[language=SecPAL]
 A says B can-say inf X.
 B says A can-say inf X.
@@ -1410,7 +1417,7 @@ B says A can-say inf X.
   \caption{A SecPAL assertion context, and partial proof tree that shows how an
     infinite loop would occur when evaluated with \ac{SLD} resolution.}
   \label{secpal:inf}
-\end{marginfigure}
+\end{figure*}
 
 They present an algorithm for efficiently evaluating the Datalog. This is used
 with a Datalog translation of
@@ -1780,14 +1787,12 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
 
 \section{Thesis Proposal}
 
+I would like to focus on developing security policies for mobile systems.  My
+first year has focussed on exploring SecPAL and ensuring it is the right logic
+to model the issues surrounding smart phones.  The next two years will be spent
+exploring what happens when these policies interact with users.
 
-A schedule for completing the project is shown in Figure~\ref{fig:gantt}.
-
-I would like to focus on developing security policies for mobile systems.
-My first year has focussed on exploring SecPAL
-and ensuring it is the right logic to model the issues surrounding smart phones.
-The next two years will be spent exploring what happens when these policies
-interact with users.
+\subsection{Policy Language for Mobile Devices}\label{sec:proposallang}
 
 First will be to complete the work done in the first year. I will show that
 a logic of authorization can model the security decisions made inside Android;
@@ -1940,6 +1945,8 @@ solutions.
 This technical report will be the first milestone for my PhD and will be used to
 provide the motivation and start to my thesis.
 
+\subsection{Exploring Policies}
+
 Next I will develop an app store.  The store will use security policies to
 filter apps.  Creating an app store allows interaction with my research.
 Encouraging users to use an app store with security policies increases the
@@ -1962,11 +1969,40 @@ will become the \emph{curated stores}.
   \label{fig:appguardenstore}
 \end{figure}
 
+The store will act as a framework to compare different stores
+policies with.  By checking policies in the app store it avoids
+needing for users to root their phone\footnote{This can reduce their
+devices security as it allows malware potential access to the root account.  It
+is a known infection strategy by malware~\cite{Svajcer:2012wy}.}.
+It also allows for a wide range of users to interact with the project. 
+
+Creating a secure app store is a non-trivial engineering challenge; especially
+when combined with the danger provided by user supplied policy files. The
+engineering difficulty in developing such a store can be mitigated by sensible
+software development practices. 
+
+Technically, creating an app store for Android is not difficult.  Android allows
+apps to be installed by the system installer; after confirmation by the user.
+To implement the \emph{shop} one could embed a website in an app that downloads and
+opens apps from an external \emph{server}.  The server can provide apps to the
+device from an \emph{apps database} and allow \emph{users} to register
+themselves and their \emph{policies}.  Finally apps can be sent to \emph{expert
+checking services} who can send their results to the app database and the
+\emph{device} wanting to check their statements.  This is shown in
+Figure~\ref{fig:implement}.
+
+\begin{marginfigure}
+  \includegraphics[width=\marginlength]{img/shop.eps}
+  \caption{Components which speak to each other in an implementation of the App
+  Guarden curated stores.}
+  \label{fig:implement}
+\end{marginfigure}
+
 These curated stores will give us several areas for investigation:
 
 \begin{description}
 
-  \item[Policies and users:] policies should affect which apps are
+  \item[Policies and users:] Policies should affect which apps are
     available to the user. If an app cannot be reconciled with a user's policies
     then the user should not be able to install the app.  Simply preventing the
     user from installing (or even seeing that an app is available) is all very
@@ -2036,9 +2072,7 @@ Phone says Stowaway can-say 0
     present themselves: and user's (or at least administrators) should be able
     to choose between them with knowledge of what that entails.
     
-  \item[Compound policies:]
-
-    In Section~\ref{sec:polovertime} we introduced the idea that a policy on a
+  \item[Compound policies:] In Section~\ref{sec:polovertime} we introduced the idea that a policy on a
     device may be formed from several different policies.  For instance an
     employee may use their own personal phone for work too.  This is called
     \ac{BYOD}.
@@ -2046,6 +2080,12 @@ Phone says Stowaway can-say 0
     Compound policies have some interesting problems surrounding them.
     Suggesting solutions to these problems, and evaluating them is novel;
     existing work on security policies looks at when there is just one policy.
+
+    To explore compound policies we will suppose a scheme where a phone is used
+    at home and at work.  The device must follow two policies: the user's
+    personal policy describes how the user expects the device to behave; a
+    corporate one describes how the device should behave at work.  Under this
+    scenario several questions can be asked:
 
     \begin{itemize}
     
@@ -2063,23 +2103,39 @@ Phone says Stowaway can-say 0
         policies are becoming more viable on mobile platforms; this may be
         preferable to policy composition.
 
+        What happens when the policies disagree?  A user may have a policy that
+        they don't want their location exfiltrated; their employer, however, may
+        require that they can track their employees location during work hours.  
+        In this scenario we can't take the more conservative policy and not leak
+        any information as this disagrees with the corporate policy.  We can't
+        sandbox the different apps as this will still leak the location to the
+        employer and break the user's policy.  Scenarios like this suggest
+        policy composition is not a simple problem.
+
+      \item \emph{Reusing Proofs}
         When the policies are composed can you show that an app meets both
         policies together if you have proofs it meets both policies separately?
         Intuitively the answer seems to be yes: if you know policy $A$ is met
         and policy $B$ is met then policies $A\wedge B$ should be met too.
         Being able to show this, and generate certificates for their proofs
-        migh make checking policies more efficient as the less work would have
+        might make checking policies more efficient as the less work would have
         to be done by the inference engine (and potentially the static analysis
         tools).
 
-      \item \emph{What happens when policies agree?} Suppose a new, stricter,
+        What happens when policies agree? Suppose a new, stricter,
         policy is required.  The developer takes a pre-existing policy and adds
         extra rules to it.  Later this new policy is composed with the old.
         Apps that met the new policy will already meet the old one so do we need
-        to do any additionaly checking at all.
-    
+        to do any extra checking at all?  
 
-
+      \item \emph{What happens to existing apps?} Polices on devices should be
+        expected to change over time.  A new policy could be made by composing a
+        new set of rules (from a company) with an existing set (from the user):
+        but what should happen to the users existing software?  In
+        Section~\ref{sec:polovertime} several possibilities were discussed; none
+        of which seemed satisfying.  The App Guarden store will allow us to
+        explore and find the consequences of each of them.
+        
     \end{itemize}
 
   \item[Policies under attack:]  Security policies should prevent apps behaving
@@ -2140,45 +2196,186 @@ Phone says Stowaway can-say 0
 
 \end{description}
 
-The store will act as a framework to compare different stores
-policies with.  By checking policies in the app store it avoids
-needing for users to root their phone\footnote{This can reduce their
-devices security as it allows malware potential access to the root account.  It
-is a known infection strategy by malware~\cite{Svajcer:2012wy}.}.
-It also allows for a wide range of users to interact with the project. 
 
-Creating a secure app store is a non-trivial engineering challenge; especially
-when combined with the danger provided by user supplied policy files. The
-engineering difficulty in developing such a store can be mitigated by sensible
-software development practices. 
+The next stage of the project will be to create complex policies that deal with
+problems specific to the Android operating system.  These policies will then be
+tested on devices using the app store framework.
 
-Next we will  increase the complexity of the policies and show how the policies
-interact with the user.  One area will be on compositional policies; where a
-user might have one policy for apps at home and another for how they should use
-their phone at work.  Showing that SecPAL could support policies of this kind
-is, as hinted earlier, easy; however it is not clear what to do when these
-policies change, or when new policies are composed with them, or when two
-composed policies contradict each other.
+One topic will be to show how policies can be written to take into account of
+the \emph{app collusion problem}.  The app collusion problem is shown in
+Figure~\ref{fig:collude}.  A user has a policy that no app that can access the
+contacts should have access to the internet.  A device has two apps, the first
+can read the contacts, and the second can access the internet.  Individually
+they both meet the policy, however if the first app was to send the contact
+information to the second app (through an \ac{RPC} mechanism like Binder's
+Intents on Android) then the second app could take that data and leak it
+breaking the policy.  A taint analysis tool, like
+\emph{TaintDroid}~\cite{Enck:2010uw}, can detect when this attack occurs.
 
-Another area will be to show how policies can be written to take into
-account of the \emph{app collusion problem}.  Whilst tools have been written to
-detect and attempt to prevent these kinds of attacks there has not been an
-attempt to model the decisions to collude and with whom in a logic of
-authorization.  Collusion is not, in itself, a sign of malicious intent.  By
-developing an authorization logic to model these decisions will allow for a
-richer policy language for mobile devices.
+\begin{marginfigure}
+  \includegraphics[width=\marginlength]{img/collusion.eps}
+  \caption{Two apps who could collude to leak contacts over the internet}
+  \label{fig:collude}
+\end{marginfigure}
 
-The final area to look at to do with policy language will be to ensure the language
+Whilst there are tools to detect and attempt to prevent these kinds of attacks
+there has not been an attempt to model the decisions to collude and with whom in
+a logic of authorization.  Collusion is not, in itself, a sign of malicious
+intent.  For example consider a policy that says:
+\begin{quote}
+  ``an app shouldn't send who I follow on social network to another app.''
+\end{quote}
+Suppose a user wishes to save something posted by a friend to an online
+bookmarking service: rather than saving just the link they save a link to the
+post itself; as is common on social networks like \emph{Twitter}.  The app has
+broken the policy now as the bookmarking service is aware that the user follows
+the friend.  Whilst this is an information leak that breaks the policy; it is
+one the user intended.  It might be prudent to remind the user that this will
+tell the bookmarking service information about them; stopping the action
+will likely annoy the user.
+
+Another area to look at to do with policy language will be to ensure the language
 is flexible enough to handle different scenarios when handling updates to
 applications.  This will include looking at the whether permissions increase
 over time or if developers actively prune the lists; as well as developing
 policies that can describe what to do when a well-used app no longer meets the
-security policy.
+security policy.  
 
-% TODO stretch goals.  
 
-At the end of the PhD I want to have shown how authorization logics can be
+
+\subsection{Possible Extensions}
+
+This project is expected to take three-and-a-half years.  If time permits a
+couple of extra ideas that would prove interesting to look at.
+
+Android uses SELinux to enforce restrictions on apps.  Currently Android app
+processes are run in several domains: the \emph{appdomain} (a domain for apps
+started from the Zygote process), \emph{system\_app} for apps run as the system
+user, \emph{untrusted\_app} which is used for apps by default and any system
+apps not signed by the platform key, \emph{platform\_app} for apps signed by the
+platform key, and \emph{isolated\_app} for apps which declare they should run
+with out any permissions and limited communications~\cite{google:sepolicy}.
+Access to specific functionality is controlled by the Linux \ac{DAC}.
+
+These SELinux domains are declared statically in the Android policy files:
+however this needn't be so.  SELinux allows the policy to be changed at runtime.
+An app, that perhaps would not meet the users device policy, could come with a
+set of SELinux rules that add additional restrictions to the app to ensure it
+met the device policy.  An alternative would be to generate rules for an
+\ac{IDS} that could detect when the authorization logic has failed.
+
+This would increase the trust in the system as it is adding additional run-time
+restrictions that enforce the policy on top of the checks that the policy is
+met.  Generating \ac{IDS} test would aid debugging as it would identify cases
+where the authorization logic has identified a false positive (i.e.~a policy
+breaking app that was allowed onto the device) and could become digital evidence
+that the app did not meet the policy; implying trust has been misplaced in the
+checks.
+
+Another area would be to develop a protocol for distributing knowledge.  
+Whilst SecPAL describes informally a method for transmitting \emph{says}
+statements (they're signed by the speaker's asymmetric key).  When an entity
+wishes to use this statement it gets the public key of the speaker and checks
+the signature matches the message (as shown in Figure~\ref{alg:speaking}).  
+
+\SetKwFunction{FSays}{says}
+\SetKwFunction{FSign}{sign}
+\SetKwFunction{FCheck}{check}
+\SetKwFunction{RETURN}{return}
+\SetKwFunction{FHears}{hears}
+\SetKwData{vSpeaker}{s}
+\SetKwData{vMessage}{m}
+\SetKwData{vMessagep}{m$^\prime$}
+\SetKwData{vID}{id}
+\SetKwData{vKeys}{K}
+\SetKwData{vKey}{k}
+\SetKwData{vSig}{\sigma}
+\begin{marginfigure}
+  \begin{algorithm}[H]
+    \Fn{\FSays{\vSpeaker:speaker, \vMessage:message}}{
+      \vSig $\gets$ \FSign{\vMessage $\Vert$ \vSpeaker.id, \vSpeaker.k} \tcc*[H]{\vSpeaker.k is the speaker's secret-key}
+      \RETURN{\vMessage $\Vert$ \vSpeaker.id $\Vert$ \vSig}\;
+    }\;
+
+    \Fn{\FHears{\vMessage:message, \vKeys:Key-store}}{
+      \Match{\vMessage}{
+        \With{(\vMessagep $\Vert$ \vID $\Vert$ \vSig)}{
+          \vKey $\gets$ \vKeys[ \vID] \tcc*[H]{\vKey is a public-key}\;
+          \If{\FCheck{\vMessagep $\Vert$ \vSpeaker.id, \vSig, \vKey} = \vTrue}{
+            \RETURN{\vSpeaker.id says \vMessagep}
+          }
+        }
+      }
+    }
+  \end{algorithm}
+  \caption{Method for speaking and listening in SecPAL.}
+  \label{alg:speaking}
+\end{marginfigure}
+
+This describes the mechanism behind the says mechanic; but does not say how the
+information is actually transmitted.  It does not describe how the listener gets
+the message and why the speaker said it in the first place.
+The mechanism for distributing redactions is not described. 
+
+One way to do this
+might be with a framework similar to a public-keys infrastructure.
+Statements can be stored at a central repository (with redactions), with a
+key-store.  
+
+This might work for tools and in an app-store context; but when queries are made
+by private individuals they might be discouraged from making publicly available
+statements about apps they have on their phone.  For example someone having an
+affair might not wish to say they have a dating app on their phone.  When a
+user's policy is to only install apps that their friends already used (as
+discussed in Section~\ref{sec:proposallang}) how do they ask their friends for
+this information?  
+
+Can we extend SecPAL to express a policy that decides when an
+entity will distribute information?
+One possible way to do this would be to add rules to SecPAL that describe what
+information an entity can-ask; this would be an extension of SecPAL's syntax
+similar to the \emph{can-say} rule.  Taking the earlier example a user will allow
+friends to ask whether they think an app is good or not; but only if the app
+isn't a dating app:
+
+\begin{lstlisting}[language=SecPAL,mathescape=true]
+User says x can-ask-if app is-good
+  if x is-a-friend;
+  category(app) $\not=$ `dating'.
+\end{lstlisting}
+
+Devices would have an API to allow queries to them and the device would check if
+the \emph{can-ask-if} phrase is satisfied before distributing the statement
+asked for or a \emph{no-responce} response.  If SecPAL had been extended
+to allow negative statements then one could also be returned.
+
+\subsection{Conclusion}
+
+This proposal describes the aims and goals for my PhD.  It describes several
+problems that need answering, and makes a case that researching how
+authorization logics can be used in mobile devices is interesting, non-trivial
+and may offer some worthwhile solutions to problems related to mobile devices.
+
+The proposal provides a review of Android security tools, and the mechanisms
+already present in the systems.  It describes existing logics of authorization,
+including those used for access control, and describes Datalog which is
+frequently used in their implementation. 
+
+My thesis is that logics of authorization can be applied to mobile devices; and
+that, by applying policies, we can improve device security.  This will be
+accomplished by taking the decision making procedure from the users and instead
+enforcing their policies; instead of asking them to make a case-by-case
+decision.
+
+The work will include showing a logic of authorization can model current
+security decisions, creating an app store framework that empowers users to
+describe their policies and have them enforced for them, and then creating new
+policies that tackle problems specific to mobile devices that existing
+authorization logics have not looked at and which do not have easy answers.
+
+By the end of the PhD I want to have shown how authorization logics can be
 extended to describe and mitigate decision making problems on mobile devices.
+A schedule for completing the project is shown in Figure~\ref{fig:gantt}.
 
 \vfill
 \begin{figure*}

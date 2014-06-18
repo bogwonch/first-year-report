@@ -1,5 +1,5 @@
 \ProvidesPackage{localstyle}
-\usepackage[utf8]{inputenc}
+\@ifpackageloaded{inputenc}{}{\usepackage[utf8]{inputenc}}
 
 \frenchspacing
 \usepackage{url}
@@ -21,6 +21,7 @@
 \usepackage{acronym}
 \acrodef{AC}{assertion context}
 \acrodef{AOSP}{Android Open Source Project}
+\acrodef{IDS}{intrusion detection system}
 \acrodef{BYOD}{bring your own device}
 \acrodef{CWA}{closed world assumption}
 \acrodef{EDB}{extensional database}
@@ -30,6 +31,7 @@
 \acrodef{PII}{personally identifiable information}
 \acrodef{PUS}{potentially unwanted software}
 \acrodef{RBAC}{role based access control}
+\acrodef{RPC}{remote procedure call}
 \acrodef{SLD}{selective linear definite clause}
 \acrodef{LSM}{Linux security module} 
 \acrodef{MAC}{Mandatory Access Control}

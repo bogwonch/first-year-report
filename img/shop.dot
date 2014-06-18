@@ -1,0 +1,29 @@
+digraph shop {
+
+  Policies [label="Policies"         shape=cds       fontname=Helvetica];
+  Server   [label="Server"           shape=rectangle fontname=Helvetica];
+  Device   [label="Device"           shape=oval      fontname=Helvetica];
+  Users    [label="Users\nDB"        shape=Mcircle   fontname=Helvetica];
+  Apps     [label="Apps\nDB"         shape=Mcircle   fontname=Helvetica];
+  Shop     [label="Shop"             shape=rectangle fontname=Helvetica];
+  Checks   [label="Expert\nServices" shape=diamond   fontname=Helvetica];
+
+  {rank=source Apps Users};
+  {rank=same Policies Server Checks};
+  {rank=sink Device};
+
+  Apps     -> Server;
+  Policies -> Device;
+  Policies -> Server;
+  Server   -> Apps;
+  Server   -> Users;
+  Server   -> Shop -> Device;
+  Users    -> Policies;
+  Device   -> Shop -> Server;
+  Checks -> Apps;
+  Apps     -> Checks;
+  Checks -> Device;
+
+
+}
+
