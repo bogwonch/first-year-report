@@ -1,6 +1,14 @@
 \ProvidesPackage{localstyle}
 \@ifpackageloaded{inputenc}{}{\usepackage[utf8]{inputenc}}
 
+% If not using tufte, load a complete set of fonts
+\@ifclassloaded{article}{\usepackage{lmodern}}
+%\@ifclassloaded{report}{\usepackage{lmodern}}
+%\@ifclassloaded{book}{\usepackage{lmodern}}
+
+% Sane font sizing (larger / smaller)
+\@ifpackageloaded{relsize}{}{\usepackage[]{relsize}}
+
 \frenchspacing
 \usepackage{url}
 \@ifpackageloaded{natbib}{}{\usepackage[square,numbers]{natbib}}
@@ -57,8 +65,9 @@
 \@ifpackageloaded{xcolor}{}{\usepackage[usenames,dvipsnames]{xcolor}}
 \usepackage{listings}
 \lstset{%
-  basicstyle=\ttfamily,
-  %columns=flexible,
+  basicstyle=\tt,
+  keywordstyle=\ttfamily\bfseries,
+  columns=flexible,
   tabsize=2,
   showstringspaces=true,
   numbers=left,
@@ -66,10 +75,12 @@
   commentstyle=\ttfamily\color{Gray}
 }
 \newcommand{\code}[1]{\lstinline{#1}}
+\newcommand{\secpal}[1]{\lstinline[language=SecPAL]{#1}}
 
 \lstdefinelanguage{SecPAL}{%
   morecomment=[l]{//},
-  morekeywords={says,if,can,say,can,act,as,shows,meets,breaks,unsure,of}
+  morekeywords={says,if,can,say,can,act,as,shows,assert,ask,meets,breaks,unsure,of},
+  literate=* {\ inf}{{$_\infty$}}1 {can-say\ 0}{{can-say$_0$\ }}9
 }[keywords,comments,strings]
 
 \lstdefinelanguage{PolicyMaker}{%
@@ -121,6 +132,7 @@
 % Maths
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{mathtools}
 \usepackage{proof}
 
 % Gantt Charts
@@ -145,6 +157,18 @@
 
 % Algorithms
 \usepackage{algorithm2e}
+\DontPrintSemicolon
+\SetKwComment{tcc}{\# }{}
+\SetKwProg{Fn}{}{\string:}{}
+\SetKwProg{Block}{}{}{}
+\SetKwFor{For}{for}{\string:}{}
+\SetKwFor{ForAny}{$\exists$}{\string:}{}
+\SetKwFor{ForAll}{$\forall$}{\string:}{}
+\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+\SetKwSwitch{Match}{With}{Other}{match}{\string:}{with}{otherwise}{}{}
+\SetKwSwitch{Switch}{Case}{Other}{switch}{\string:}{case}{otherwise}{}{}
+\SetKwIF{If}{ElseIf}{Else}{if}{\string:}{else if}{else}{}
+\SetKwFor{Where}{where}{\string:}{}
 
 % Nicely typeset tables
 \usepackage{booktabs}

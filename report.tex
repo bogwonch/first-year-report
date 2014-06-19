@@ -6,7 +6,7 @@
 %\usepackage{mathspec}
 %\setmainfont{PragmataPro}
 %\setmonofont{PragmataPro}
-%\setmathfont(Digits,Latin,Greek)[StylisticSet=3]{PragmataPro} % fraktur math!
+%\setmathfont(Digits,Latin,Greek)[StylisticSet=3]{PragmataPro} % Fraktur math!
 %\setsansfont{PragmataPro}
 
 \title{Using Authorization Logics To Make Decisions in Mobile Systems\\\vspace{2em}Thesis Proposal}
@@ -1021,23 +1021,27 @@ are evaluated against a set of known statements (the \ac{AC}) and an initially
 infinite delegation level ($D$). If the rules show that the query is valid then
 SecPAL says the statement is okay else it is rejected.
 
+\newcommand{\bnfcomment}[1]{\slshape{\color{gray}\smaller\smaller (#1)}}
 \begin{marginfigure}
-  \begin{lstlisting}[language=BNF]
-e ::= x  // variables
-    | A  // constants
-pred ::= ``possesses''  // predicates
-       | ``can'' 
-       | ... 
-D ::= 0      // no delegation
-    | ``$\infty$''  // delegation
-verbphrase ::= pred e$_1$ ... e$_n$  
-             | ``can say'' D fact 
-             | ``can act as'' e
-fact ::= e verbphrase
-claim ::= fact ``if'' fact$_1$, ..., fact$_n$, c 
-assertion ::= A ``says'' claim
-AC ::= assertion$_{1\dots n}$ // assertion context
-  \end{lstlisting}
+  \begin{tabular}{r r l c}\smaller
+    e          & $\Coloneqq$ & \secpal{x}                                       & \bnfcomment{variables}         \\
+               & $\vert$     & \secpal{A}                                       & \bnfcomment{constants}         \\
+    pred       & $\Coloneqq$ & \secpal{has} $\vert$ \secpal{can} $\vert$ \dots  & \bnfcomment{predicates}        \\
+    D          & $\Coloneqq$ & 0                                                & \bnfcomment{no delegation}     \\
+               & $\vert$     & $\infty$                                         & \bnfcomment{delegation}        \\
+    vp         & $\Coloneqq$ & pred e$_1$ \dots e$_n$                           & \bnfcomment{verb phrase}       \\
+               & $\vert$     & \secpal{can-say}$_D$ fact                       \\
+               & $\vert$     & \secpal{can-act-as}  e                          \\
+    f          & $\Coloneqq$ & e vp                                             & \bnfcomment{fact}              \\
+    claim      & $\Coloneqq$ & f \secpal{if} f$_1$,\dots, f$_n$; c             \\
+    assert     & $\Coloneqq$ & e \secpal{says} claim.                          \\
+    AC         & $\Coloneqq$ & assert$_1$ \dots assert$_n$                      & \bnfcomment{assertion context} \\
+    c          & $\Coloneqq$ & $\top$                                           & \bnfcomment{no constraint}     \\
+               & $\vert$     & e$^\prime_1 =$ e$^\prime_2$                      & \bnfcomment{constraints}       \\
+               & $\vert$     & \dots                                           \\
+    e$^\prime$ & $\Coloneqq$ & e $\vert$ function(e$_1$,\dots e$_n$)           \\
+
+  \end{tabular}
   \caption{BNF specification of the SecPAL language.}
 \label{secpal:grammar}
 \end{marginfigure}
@@ -1050,23 +1054,11 @@ solve.
 First they define a fact to be \emph{flat} if it does not contain a
 \emph{can-say} statement.
 
-\DontPrintSemicolon
-\SetKwComment{tcc}{\# }{}
-\SetKwProg{Fn}{}{\string:}{}
-\SetKwProg{Block}{}{}{}
 \SetKwFunction{FFlat}{is-flat}
 \SetKwFunction{FSafeIn}{safe-in}
 \SetKwFunction{FSafe}{safe}
 \SetKwFunction{FElem}{$\in$}
 \SetKwFunction{FVars}{Vars}
-\SetKwFor{For}{for}{\string:}{}
-\SetKwFor{ForAny}{$\exists$}{\string:}{}
-\SetKwFor{ForAll}{$\forall$}{\string:}{}
-\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
-\SetKwSwitch{Match}{With}{Other}{match}{\string:}{with}{otherwise}{}{}
-\SetKwSwitch{Switch}{Case}{Other}{switch}{\string:}{case}{otherwise}{}{}
-\SetKwIF{If}{ElseIf}{Else}{if}{\string:}{else if}{else}{}
-\SetKwFor{Where}{where}{\string:}{}
 \SetKwData{vF}{f}
 \SetKwData{vFs}{fs}
 \SetKwData{vE}{e}
@@ -1216,13 +1208,13 @@ they were also running is some special system domains the rule would be:
 
 \begin{lstlisting}[language=selinux]
 neverallow { appdomain 
-            -system_app 
-            -radio 
-            -shell 
-            -bluetooth 
-            -unconfineddomain
-           }
-    property_type:property_service set;
+    -system_app 
+    -radio 
+    -shell 
+    -bluetooth 
+    -unconfineddomain
+  }
+  property_type:property_service set;
 \end{lstlisting}
 
 SELinux can be complicated to configure.  The policy language is implemented
@@ -1328,14 +1320,15 @@ mother(alice, claire).
 father(alice, david).
 mother(bob, claire).
 father(bob, david).
-sibling(X,Y) :- person(X),
-                person(Y),
-                person(M),   
-                person(F),
-                mother(X,M),
-                mother(Y,M), 
-                father(X,F), 
-                father(Y,F).
+sibling(X,Y) :- 
+  person(X),
+  person(Y),
+  person(M),   
+  person(F),
+  mother(X,M),
+  mother(Y,M), 
+  father(X,F), 
+  father(Y,F).
   \end{lstlisting}
   \caption{A simple Datalog program and describing a family, and a relation
   describing what it means to be a sibling.}
@@ -2346,7 +2339,7 @@ User says x can-ask-if app is-good
 
 Devices would have an API to allow queries to them and the device would check if
 the \emph{can-ask-if} phrase is satisfied before distributing the statement
-asked for or a \emph{no-responce} response.  If SecPAL had been extended
+asked for or a \emph{no-response} response.  If SecPAL had been extended
 to allow negative statements then one could also be returned.
 
 \subsection{Conclusion}
@@ -2372,6 +2365,26 @@ security decisions, creating an app store framework that empowers users to
 describe their policies and have them enforced for them, and then creating new
 policies that tackle problems specific to mobile devices that existing
 authorization logics have not looked at and which do not have easy answers.
+
+% What will I produce that we didn't already know?
+
+Mobile systems have specific problems.  Existing uses of authorization logic
+have focused on systems in general, such as \emph{Binder} or \emph{SPKI/SDSI},
+or on very specific cases (such as access control) within a system.  Mobile
+devices have problems, such as collusion; app permissions; and personal data,
+that require greater attention than other settings.  This research aims to give
+a greater insight into how these problems arise and the trust relationships
+required to make the \emph{right decision}.
+
+% Why do we care?
+
+This project is important because it allows us to improve decision making for
+mobile devices.  This will lead to better security for users as it allows
+policies to be described that match what the device is doing and how it should
+behave.  These policies can be enforced automatically allowing for a consistent
+enforcement of policy and less strain for the user.  These policies allow
+precise comparison of different systems; this will allow an accurate comparison
+of security between them.
 
 By the end of the PhD I want to have shown how authorization logics can be
 extended to describe and mitigate decision making problems on mobile devices.

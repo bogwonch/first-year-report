@@ -7,7 +7,7 @@ STYLE=localstyle.sty
 
 all: report.pdf gantt.pdf tidy
 report.pdf: $(wildcard img/*) $(DOCUMENT) $(STYLE)
-	@$(LATEX) $(DOCUMENT)
+	$(LATEX) $(DOCUMENT)
 
 report.tex: gantt.tex gantt.pdf
 
