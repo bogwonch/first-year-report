@@ -9,7 +9,7 @@
 %\setmathfont(Digits,Latin,Greek)[StylisticSet=3]{PragmataPro} % Fraktur math!
 %\setsansfont{PragmataPro}
 
-\title{Using Authorization Logics To Make Decisions in Mobile Systems\\\vspace{2em}Thesis Proposal}
+\title{Authorization Logics For Mobile Ecosystems\\\vspace{1em}Thesis Proposal}
 %\title{Security Policies\\For Humans\\Thesis Proposal}
 \author{Joseph~Hallett}
 \date\today
@@ -61,7 +61,7 @@ for the same family of malware.  These terms can be used interchangeably.}:
 these are apps which are generally not malicious but may have features that goes
 against what the user wants.  On a PC this might be a browser tool bar bundled
 with another program.  On Android \ac{PUS} might be an aggressive advertising
-framework that leaks private information or repeatedly polls GPS information
+framework that leaks private information or repeatedly polls GPS information,
 draining the phones battery~\cite{Svajcer:2013tp}.
 
 More generally users and computers make decisions. Whether it is to update an
@@ -70,9 +70,9 @@ policies and trust relationships of the user and device.  These security
 policies may include the use of tools or experts to decide whether something is
 malicious.  For instance a user may trust a firewall program to enforce their
 network policy; and they may trust a tool like
-\emph{Shorewall}~\cite{Shorewall:uh,Tongaonkar:2007ua} to write
+{Shorewall}~\cite{Shorewall:uh,Tongaonkar:2007ua} to write
 policy for them.  Alternately a user might wish to be able to install apps but
-only trust apps \emph{Amazon} have vetted to be installed on their device.
+only trust apps {Amazon} have vetted to be installed on their device.
 \emph{Broadly, the aim of this research is to formalize these security policies
 so they can be studied precisely and enforced automatically.}
 
@@ -90,17 +90,18 @@ and the stores and users surrounding them.
 
 Formalizing policies allows comparisons to be made between different systems and
 the user's policies.  Common comparisons the two biggest mobile OSs, iOS and
-Android, are informal: iOS is closed, more of a \emph{walled garden}. Apps go
+Android, are informal: iOS is closed, more of a \emph{walled
+garden}\cite{Bajarin:2011vb,Arthur:wglr}. Apps go
 through a vigorous review process and Apple is selective about what it sells.
 Android is more permissive.  With a formal language to describe system policy we
 can make a precise comparison. 
 
-To analyze permissions, detect malware, static analysis has been used.
-Static analysis tools infer (and occasionally enforce) complex security
-properties about the code.  What is missing is the link between the assurances
-these tools can give and the \emph{user-level policies} we want to enforce.  A
-user-level policy describes how a user wishes an app to behave; though a user
-may only specify them informally.
+To analyze permissions and detect malware both static and dynamic analysis has
+been used.  Static analysis tools infer (and occasionally enforce) complex
+security properties about the code.  What is missing is the link between the
+assurances these tools can give and the \emph{user-level policies} we want to
+enforce.  A user-level policy describes how a user wishes an app to behave;
+though a user may only specify them informally.
 
 By using an \emph{authorization logic} as the glue layer we can enforce the
 policy by building on the work on access control in distributed systems.  Static
@@ -159,7 +160,7 @@ improved.  To do this we plan:
 
 \subsection{A Logic of Authorization For Mobile Devices}
 
-Logics of authorization are used to decide whether someone may do something.
+Logics of authorization are used to decide whether some system may do something.
 This might be carrying out an action, accessing data, or describing what another
 entity can do. When we apply these logics to files and information we create an
 access control system. A review of the history and applications of
@@ -192,22 +193,22 @@ is how an app store should convince a device an app meets its policy; if
 checking a policy cannot be done on a phone (maybe the battery is running low)
 can checking be delayed?  What happens when two trusted principals disagree (as
 might happen with apps in different stores)?  Some languages, like
-Cassandra\cite{Becker:2004fi}, authorize on the basis of the speaker holding a
+Cassandra~\cite{Becker:2004fi}, authorize on the basis of the speaker holding a
 role; but what are the roles when a store has a changing policy?  
 
 To solve these problems we have taken an existing authorization logic,
-SecPAL~\cite{Becker:2006vh}, and extended it with a series of predicates that can
-describe how security policies are met inside a mobile ecosystem.  Future work
-will include describing the current security policies for Android and other
-mobile OSs as well as the app acceptance policy for some app stores.  This will allow comparisons to be
-made between them, and (with a database of apps) comparing what kinds of apps
-different markets allow.
+SecPAL~\cite{Becker:2006vh}, and extended it with a series of predicates that
+can describe how security policies are met inside a mobile ecosystem.  Future
+work will include describing the current security policies for Android and other
+mobile OSs as well as the app acceptance policy for some app stores.  This will
+allow comparisons to be made between them, and (with a database of apps)
+comparing what kinds of apps different markets allow.
 
 \subsection{Compound Policies Over Time}\label{sec:polovertime}
 
-Consider a user who has a smart phone and is buying apps.  The
-user must decide if they want to install an app: to do this they apply a series
-of judgements called their \emph{security policy}.  
+Consider a user who has a smart phone and is buying apps.  The user must decide
+if they want to install an app: to do this they apply a series of judgements
+which we may informally call their personal \emph{security policy}.  
 
 \begin{marginfigure}
   \label{fig:policies}
@@ -227,10 +228,11 @@ gain the security policy of the store and what it will sell.  If the phone runs
 in a corporate environment then they may also be subject to the company's
 corporate policy.  The operating system itself may have certain restrictions on
 what it will allow.  The APK app format used on Android can also be installed on
-Blackberry and Sailfish operating systems.  Each system may add
-additional restrictions that may make some apps not installable.  An example of
-how a compositional policy might be written is shown in
-Figure~\ref{example:composition}.
+Blackberry and Sailfish operating systems.  Each system may add additional
+restrictions that may make some apps not installable.  Sometimes these policies
+need to be combined to create a policy that will work in multiple environments
+and on a system with its own rules.  An example of how a compound policy might
+be written is shown in Figure~\ref{example:composition}.
 
 \begin{marginfigure}\label{example:composition}
   \begin{lstlisting}[language=SecPAL]
@@ -469,7 +471,30 @@ and reduce code size; and drops some type information (again for space).  Apps
 use a sandbox provided by the OS that is based on Linux's permissions
 model~\cite{Drake:2014uq}.
 
+\begin{figure*}
+  \centering
+  \includegraphics[width=\linewidth]{img/mobile-software-platform.eps}
+  \caption{Overview of a components in a mobile software platform like Android.
+    Diagram taken from the \emph{Mobile Platform Security} course at the
+  University of Helsinki}%~\cite{Asokan:9AWuNtvh}.}
+  \label{fig:mobilesoftwareplatform}
+\end{figure*}
+
 \subsection{Permissions and Apps}
+
+
+Android permissions come in three varieties: API permissions, file system
+permissions, and IPC permissions.  API permissions say what high level
+functionality an app may access.  For example the \texttt{INTERNET} permission
+allows apps to access the network.  To enforce this Android uses the
+Linux file system permissions in the operating system: the
+\texttt{/etc/permissions/platform.xml} file defines mapping between the API
+and file system permissions.  In this case any process started from an app with
+the \texttt{INTERNET} is assigned the \texttt{inet} file system permission which
+is used by the kernel to control access to network sockets.  Not all API
+permissions are enforced through file system permissions: those which do are
+shown in Figure~\ref{tab:perms}.  Other API permissions are enforced through
+checks in code.  
 
 \begin{marginfigure}
   \centering
@@ -480,19 +505,6 @@ model~\cite{Drake:2014uq}.
   was used maliciously.}
 \label{img:brightestflashlight}
 \end{marginfigure}
-
-Android permissions come in three varieties: API permissions, file system
-permissions, and IPC permissions.  API permissions say what high level
-functionality an app may access.  For example the \texttt{INTERNET} permission
-allows apps to access the network.  To enforce this Android uses the
-Linux file system permissions in the underlying operating system: the
-\texttt{/etc/permissions/platform.xml} file defines mapping between the API
-and file system permissions.  In this case any process started from an app with
-the \texttt{INTERNET} is assigned the \texttt{inet} file system permission which
-is used by the kernel to control access to network sockets.  Not all API
-permissions are enforced through file system permissions: those which do are
-shown in Figure~\ref{tab:perms}.  Other API permissions are enforced through
-checks in code.  
 
 Every app is assigned a new unique file system permission at install time:
 creating the sandboxes apps run in.  Apps with different file system permissions
@@ -601,7 +613,7 @@ rooting.  Mr.\ Hide provides five new fine grained permissions:
 The \emph{AppFence} tool~\cite{Hornyack:2011wq} doesn't modify apps.  Users can
 write policies for what data an app can receive. If an app breaks this then the
 it is stopped or fake data supplied instead.  This requires changes to Android
-however. The \emph{AppGuard} tool~\cite{Backes:2012vm,Backes:2013ec} rewrites
+however. The \emph{AppGuard} tool~\cite{Backes:2013vm} rewrites
 apps to use a security monitor.  This security monitor allows them to add extra
 checks when an app is sending or requesting data.  They give examples for apps
 with the \texttt{INTERNET} permissions and show how they can restrict internet
@@ -673,12 +685,13 @@ by malicious apps.  FlowDroid takes a list of sources and sinks (found using the
 is sent to a sink.  
 
 \section{Review of Policy Languages}
+\label{sec:authlang}
 
 \subsection{Logics of Authorization}
 
 When an action is performed, such as reading a file or installing an app,
 conditions must be met for it to go ahead. The conditions form the
-\emph{authorization~policy} for and we make a choice with respect to that policy
+\emph{authorization~policy} and we make a choice with respect to that policy
 when making a decision. When these policies describe what
 is needed to keep a secure system it is called the \emph{security~policy}.  The
 policies can contain \emph{trust} statements. Principals may be trusted to make
@@ -689,8 +702,8 @@ proposed by
 \citeauthor*{Wobber:1994dh}~\cite{Lampson:1992jg,Wobber:1994dh}.
 PolicyMaker allows other principals (identified through asymmetric keys) to be
 trusted for actions or to declare further relationships. The language was
-minimal. It did not specify how the policies should be checked: they suggested
-regular expressions, or  a special version of AWK. Any language could have been
+minimal. It does not specify how the policies should be checked: they suggest
+regular expressions, or  a special version of AWK. Any language could be
 used, however.  The author suggested it might work well as a model for the
 public-key infrastructure. If we want a policy that only allows Alice
 (identified by key ``\textsf{0x12345678}'') to say she is Alice at Microsoft we
@@ -726,20 +739,20 @@ pgp:``0x56781234''
 \end{figure}
 
 Checking whether a PolicyMaker policy is satisfied is
-NP-hard~\cite{Blaze:1998fq}.  It is not tractable as checking complicated policies can take
-exponential time. PolicyMaker allows arbitrary checking programs to be used in
-assertions.  Deciding whether a program will stop when given an
-arbitrary input is analogous to the halting problem.  So in general it is not
-known whether a PolicyMaker program which takes an arbitrary request and an
-unconstrained set of checking functions will terminate either.
-\citeauthor{Blaze:1998fq} give some restrictions that guarantee polynomial time
-checking: a function must be authentic (not fake another functions result),
-monotonic, and run in polynomial time for all inputs pertinent to a request.
-This reduced the expressiveness however.
+NP-hard~\cite{Blaze:1998fq}.  It is not tractable as checking PolicyMaker
+assertions can involve arbitrary programs written in Turing complete languages.
+Deciding whether a program will stop when given an arbitrary input is analogous
+to the halting problem.  So in general it is not known whether a PolicyMaker
+program which takes an arbitrary request and an unconstrained set of checking
+functions will terminate: it is undecidable.  \citeauthor{Blaze:1998fq} give some
+restrictions that guarantee polynomial time checking: a function must be
+authentic (not fake another functions result), monotonic, and run in polynomial
+time for all inputs pertinent to a request.  This reduced the expressiveness
+however.
 
-\emph{KeyNote}~\cite{Blaze:1999fa} which was a revised version of PolicyMaker
+\emph{KeyNote}~\cite{Blaze:1999fa} is a revised version of PolicyMaker
 for public-key infrastructure.  Like PolicyMaker it authorized actions based on
-keys and a series of conditions.  It dropped support for arbitrary program
+keys and a series of conditions.  It drops support for arbitrary program
 checkers; opting for its own specific language~\cite{Blaze:1999vc}.  An example
 of KeyNote is given in Figure~\ref{keynote:example}. 
 
@@ -771,8 +784,8 @@ key with a property.  For Keynote the local-constants have the same
 restrictions.  Consequently these languages were not as expressive as hoped.
 
 
-In comparison to KeyNote, \emph{SPKI/SDSI}~\cite{Ellison:1999ui} was more
-complex.  KeyNote even claimed this as an advantage over the SPKI/SDSI systems.
+In comparison to KeyNote, \emph{SPKI/SDSI}~\cite{Ellison:1999ui} is more
+complex.  KeyNote claims this as an advantage over the SPKI/SDSI systems.
 Entities are described through name certificates.  If Alice (with key
 $K_\text{Alice}$, had membership of the group \texttt{MSEmployees}; for a year;
 authorized by Microsoft (with key $K_{MS}$); she would present the name
@@ -782,9 +795,9 @@ a year with the authorization certificate:
 \[\left(K_{MS},\left(K_{MS}\;\texttt{MSEmployees}\right),\bot,\texttt{send\_email},\text{1-year}\right)\]
 Where $\bot$ indicates that delegation would not be allowed.  
 
-\emph{RT}~\cite{Li:2002if} built on PolicyMaker. RT allowed principals to be
-given roles; similar to a \ac{RBAC} system. Decisions were made based on which
-roles were held.
+\emph{RT}~\cite{Li:2002if} builds on PolicyMaker. RT allows principals to be
+given roles; similar to a \ac{RBAC} system. Decisions are made based on which
+roles are held.
 RT can express the general statements that were impossible in PolicyMaker.
 For example consider the earlier example: students and preferred customers get
 discounts. To write this in RT for the Amazon store the policy would be written:
@@ -818,8 +831,10 @@ by the appropriate people) then it would grant discount.
 Several versions of RT were described: the simplest being
 \emph{RT$_0$}~\cite{Li:2003tj} and with \emph{RT$_1$} and \emph{RT$_2$} adding
 support for parameterized-roles and logical-objects respectively. Extensions
-added support for constraints.  This allowed \emph{RT$_1^C$}\cite{Li:2003ix} to
-express policies involving time (or other infinite sets).
+added support for constraints.  A constraint is a limitation based on something
+outside of the policy language which may not be representable within it.  This
+allowed \emph{RT$_1^C$}\cite{Li:2003ix} to express policies involving time (or
+other infinite sets).
 
 The RT family is tractable as it can be translated into
 \emph{Datalog} (specifically \emph{Datalog with constraints}; also called
@@ -882,21 +897,17 @@ hr says employee(john, company).
 \subsection{SecPAL}
 
 \emph{{SecPAL}}~\cite{Becker:2006vh} is an authorization logic for decentralized
-systems. Early experiments indicate that it is good  for modeling the
-distributed nature of software installation, app stores and mobile devices. We
-will describe it in more detail than other languages.
-
-
-Syntactically {SecPAL} is similar to Binder. It has a richer syntax
+systems. Syntactically {SecPAL} is similar to Binder. It has a richer syntax
 that allows for constraints; and it can make decisions based on state (such as the
 time). {SecPAL} was designed to be readable: it has a more verbose, English like,
 syntax than other authorization logics.
 
 Like Binder it has an explicit \emph{says} statement. Unlike Binder it requires
-that all statements are said by a principal explicitly. {SecPAL} allows
-arbitrary predicates to be created. It adds two additional special modalities to
-the logic. The \emph{can-say} statement allows for explicit delegation and has
-two varieties.  The \emph{can-say$_\infty$} phrase allows for nested delegation,
+that all statements are said by a principal explicitly. This ensures all SecPAL
+statements have an issuer; an explicit origin. {SecPAL} allows arbitrary
+predicates to be created. It adds two additional special modalities to the
+logic. The \emph{can-say} statement allows for explicit delegation and has two
+varieties.  The \emph{can-say$_\infty$} phrase allows for nested delegation,
 whereas the \emph{can-say$_0$} statement does not.  This means you can
 distinguish between requiring a statement directly from someone and requiring a
 recommendation from someone.  For instance if Alice wanted Bob to recommend a
@@ -1179,7 +1190,7 @@ disclosed by any user.  The US \emph{Department of Defence} mandated the use of
 \ac{MAC} over \ac{DAC} in their \emph{Orange Book}\cite{LiliQiu:1985wq} for all but
 the least secure systems.
 
-SELinux is based on the Flask security architecture\cite{Spencer:1999vm}.
+SELinux is based on the Flask security architecture~\cite{Spencer:1999vm}.
 Entities are represented using classes such as \emph{file}, \emph{dir} (for
 directories) or \emph{socket} (for network sockets).  SELinux then defines
 operations that can be performed on the classes.  The operations are more
@@ -1781,172 +1792,213 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
 \section{Thesis Proposal}
 
 I would like to focus on developing security policies for mobile systems.  My
-first year has focussed on exploring SecPAL and ensuring it is the right logic
-to model the issues surrounding smart phones.  The next two years will be spent
-exploring what happens when these policies interact with users.
+first year has focussed on exploring SecPAL and trying to find the right logic
+language to model the issues surrounding smart phones.  The next two years will
+be spent exploring what happens when these policies interact with users.
 
-\subsection{Policy Language for Mobile Devices}\label{sec:proposallang}
+\subsection{Policy Language for Mobile Devices}
+\label{sec:proposallang}
 
 First will be to complete the work done in the first year. I will show that
 a logic of authorization can model the security decisions made inside Android;
 that it is capable of describing complex security policies. 
 
-There are several policies idioms that cannot be expressed in SecPAL (or any
-other policy language I know of).  For example consider the \emph{late-adopting}
-user who will only install an app if two or more of their friends say it is
-good; or the \emph{hipster} user who will only install an app if no one else is
-using it.  In SecPAL the one approach for the late-adopting user would be to say
-that:
-\begin{lstlisting}[language=SecPAL, mathescape=true]
-User says x can-say 0 app is-recommended-by(x)
-  if x is-friend.
+The logic of authorization must be able to describe how current systems work.
+There are already several situations where Android makes a decision as to
+whether an app is allowed to be installed or updated.  The reasoning behind
+these decisions is embedded in the code itself.  The authorization logic must be
+able to describe these policies: this will help clarify and formalize the
+policies already present.
 
-User says app is-good
-  if app is-recommended-by(x),
-     app is-recommended-by(y);
-     x $\not=$ y.
-\end{lstlisting}
-This seems to work but there are some problems: firstly we cannot express the
-\emph{hipster} case like this as we don't want want anyone to say the app is
-recommended and SecPAL cannot express this.  Secondly the phrasing is clunky as
-this relationship is very similar to SecPAL's \emph{can-say} relationship (which
-cannot be used here as conditional facts don't come with an origin).  It also
-isn't obvious how a friend can delegate the recommendation to one of their
-friends as they might do with the \emph{can-say} relationship. This seems
-natural: a conversation might be \emph{``Do you recommend this app? Oh I think
-my friend uses it why don't you ask them?''}. 
+One example of a decision already made by Android phones is whether to install
+or update an app.  Android allows a user to install any app they like.  Users
+have several methods available to them: they can install an app through an app
+store, or \emph{side-load} it through a file manager or the \ac{ADB} utility.  A
+request to install an app can be made explicitly by a user or by a program.
+Whichever method is used an intent is broadcast to install the app which is
+picked up by the app installer which confirms with the user that they wish the
+app to be installed (and are okay with the permissions requested), checks the
+app has been signed correctly, and decides whether it needs update or install
+the app.  If this is okayed then the package manager passes the app to the
+\emph{installd} service which does the actual installation on the file system.
+When is is complete a message is broadcast by the package to say the app has
+been installed (the \texttt{ACTION\_PACKAGE\_ADDED} intent) or updated (the
+\texttt{ACTION\_PACKAGE\_REPLACED} intent).
 
-If we were to alter SecPAL's syntax and allow conditions with an explicit origin
-we could write:
-\begin{lstlisting}[language=SecPAL, mathescape=true]
-User says x can-assert inf app is-good
-  if x is-friend.
+In this process there are several authorization decisions and delegations of
+trust.  Firstly there is the trust given by the Android system to the
+package-manager (a service called \texttt{com.android.server.pm}) to manage the
+installation.  All apps have a developer (identified by a public key within the
+app).  This developer creates the signature on the app (which is checked by the
+package manager).  We model this signature as a statement by the developer that
+the app is owned; since SecPAL statements are signed assertions importing the
+statement into the assertion context would involve checking the signature
+matches the app itself.  The package-manager asks the user whether the app
+should be installed: we model this as a constraint in SecPAL as this decision is
+made every time the app is installed and the decision made by the user is not
+stored as an assertion.  The app is only installed if it isn't already
+installed, again we model this as a constraint.  Finally the package manager
+only says the package was installed if the installation process carried out by
+\texttt{installd} succeded. 
 
-User says app is-good
-  if x says app is-good,
-     y says app is-good;
-     x $\not=$ y.
-\end{lstlisting}
-This seems more natural but requires changing the language. We need to add a new
-\emph{can-assert} rule that, like can-say, allows delegation but doesn't make
-statements true unless used in a conditional statement.  These changes may
-invalidate some of the safety and termination proofs from the original
-paper~\cite{Becker:2006vh} which is undesirable.  This still doesn't account for
-the hipster case. 
-
-A third alternative would be to borrow the \emph{find-all}
-construct from Prolog. Find-all allows the programmer to find all the statements
-that satisfy a given predicate.  For example to find all of Alice's cousins one
-could write in Prolog:
-\begin{lstlisting}[language=Prolog]
-  findall(X, cousin(Alice, X), cousins).
-\end{lstlisting}
-A similar construct could be brought into SecPAL:
-\begin{lstlisting}[language=SecPAL, mathescape=true]
-User says x can-assert inf app is-good
-  if x is-friend.
-
-User says app is-good
-  if findall(_, app is-good, recommenders);
-     sizeof(recommenders) $\geq$ 2.
-
-Hipster says app is-good
-  if findall(_, app is-good, recommenders);
-    sizeof(recommenders) = 0.
-\end{lstlisting}
-This accounts for the hipster case and helps keep policies short (one could
-imagine a user saying that it wouldn't install an app unless a million people
-recommended it which would lead to unwieldy policies in the earlier versions).
-This changes the language dramatically: \code{findall} isn't a Datalog
-instruction so this may not even be translatable.
-
-Another problem occurs when we are using a checking tool.  Suppose we have a
-tool which can infer complex properties about apps; for particularly complex and
-large apps however the checking becomes infeasible\footnote{For instance in a
-  meeting with developers of \emph{FlowDroid} they claimed their tool could
-  analyze the Facebook app, but took 75GB of RAM to do so. Whilst this was
-  feasible on a compute cluster, this could not be done on a mobile phone.}. You
-could imagine a security policy for a phone where the user uses the tool on some
-small apps but for large apps the user is allowed to make the judgement:
-\begin{lstlisting}[language=SecPAL,mathescape=true]
-Phone says FlowDroid can-say 0 app meets FlowPolicy
-  if sizeof(app) $<$ 500MB.
-
-Phone says User can-say inf app meets FlowPolicy
-  if sizeof(app) $\geq$ 500MB.
-\end{lstlisting}
-The \code{500MB} is a rather arbitrary constant here. If we wanted to change the
-policy it would need to be changed in multiple places.  A better solution might
-be to allow \emph{FlowDroid} to answer that it doesn't know about the app
-(perhaps it ran out of resources) and then make a decision based on that.
 \begin{lstlisting}[language=SecPAL]
-Phone says FlowDroid can-say 0 app meets FlowPolicy.
-Phone says FlowDroid can-say 0 app unsure-of FlowPolicy.
+Android says Com.Android.Server.PM can-say 0 app PACKAGE_ADDED.
 
-Phone says User can-say inf app meets FlowPolicy
-  if app unsure-of FlowPolicy.
+Com.Android.Server.PM says dev can-say 0 app is-owned;
+  developer(app) = dev.
+
+Com.Android.Server.PM says app PACKAGE_ADDED
+  if app is-owned;
+     Installed(app) = False,
+     UserInstallPrompt(app) = ``Okay'',
+     installd(app) = Success.
+\end{lstlisting}
+    
+The update process has additional restrictions: the old version of the app must
+have the same developer (more precisely it must have been signed by the same
+key), and the version number must be higher.  If there is no change in
+permissions (or they're reduced) then this is sufficient for the app to be
+installed, otherwise the user is prompted for a confirmation that the update is
+okay again.
+
+\begin{lstlisting}[language=SecPAL]
+Android says Com.Android.Server.PM can-say 0 app PACKAGE_REPLACED.
+
+Com.Android.Server.PM says app PACKAGE_REPLACED
+  if app is-owned,
+     app updates(old-app);
+     Installed(app) = True,
+     developer(app) = developer(old-app),
+     version(app) > version(old-app),
+     permissions(app) $\subseteq$ permissions(old-app),
+     installd(app) = Success.
+
+Com.Android.Server.PM says app PACKAGE_REPLACED
+  if app is-owned,
+     app updates(old-app);
+     Installed(app) = True,
+     developer(app) = developer(old-app),
+     version(app) > version(old-app),
+     permissions(app) $\supset$ permissions(old-app),
+     UserInstallPrompt(app) = ``Okay'',
+     installd(app) = Success.
 \end{lstlisting}
 
-Suppose the user decided to make an exception and allow the app.
-Later, after FlowDroid is given access to more memory perhaps, FlowDroid
-analyses the app and finds proof that the app does not meet the policy.
-FlowDroid revokes its statement that it is unsure of the app meeting the policy,
-and the phone no longer believes the app meets the policy.
+This example suggests that the SecPAL language might be suitable to describe the
+authorization decisions in Android as we have been able to describe the
+installation and update scenario with relative ease.  Installation is not the
+only decision we have to make on Android: a list of possible other areas is
+shown bellow
 
-In this case it works, but suppose instead the user decided to trust two
-different tools to decide whether the policy is met.  Both tools initially say
-they're unsure if an app meets the policy; the user provides the exception.
-Later one of them revokes its statement.  This time the phone still believes the
-app meets the policy as it still has the override and the statement about one of
-the tools being unsure.
+\begin{itemize}
+  \item Comparison of different app~stores app~submission policies.
+  \item Android permissions system.
+  \item Android's SELinux policies and processes.
+  \item \ac{RPC} calls and Intents.
+  \item Data sharing between apps.
+  \item Remote data access and debugging.
+\end{itemize}
 
-This suggests that using the \ac{CWA} may not be a helpful assumption. An alternative
-would be to allow negation in SecPAL (and use Datalog$^\lnot$).  Adding an
-explicit \emph{breaks} predicate instead of \emph{unsure-of} we write:
-\begin{lstlisting}[language=SecPAL, mathescape=true]
-Phone says User can-say inf app meets FlowPolicy
-  if $\lnot$ app meets FlowPolicy,
-     $\lnot$ app breaks FlowPolicy.
-\end{lstlisting}
-This changes the language however; which again may lead to invalid safety
-proofs. 
+To describe these scenarios we need a policy language that 
+We suspect we need an authorization language that has the following features:
 
-It also raises questions about when two trusted tools disagree.  A cautious
-approach would be to always follow the \emph{breaks} statement: if there is
-doubt then trust no-one and reject everything.  With static analysis tools this
-might not be the right approach: false warnings are common amongst some tools
-(as anyone who has used the \emph{lint} tool can attest).  Suppose a malicious
-developer bribes a certification tool to be more strict with their competitor
-(or even just to devote less resources to checking it): they would create a
-denial-of-service for the app.
+\begin{itemize}
 
-Asking the user to pick between the tools isn't a good solution either.  Suppose
-\emph{Norton} and \emph{McAffee} disagree about whether an app is malware or
-not. Unless the policy author is skilled at malware-analysis they may not be
-able to decide who to trust here.  
+  \item Describe decisions at different locations.  This means we can check the
+    policies locally and make a decision based on that location's information
+    rather than deferring to an all-seeing policy enforcer.  This suits the
+    problem better because individual devices and stores have to make decisions
+    on their own and may not have access to all known information.
 
-The solution to these problems, amongst others, is not immediately obvious.
-That basic Datalog, and therefore many policy languages, may not be able to
-describe possible solutions to the problems suggests the work is non-trivial.
+  \item Explicit speakers that can be checked. In practice this means some form
+    of signature scheme on assertions.  This is important as it will allow us to
+    be sure that our statements come from the correct place.  We plan to use the
+    language to make decisions that have security implications (such as
+    installing software) based on information we may get from the entities (like
+    an app store) that we access through a network.  Not being able to trace the
+    origin of statements seems dangerous.
 
-I plan to describe these problems fully in a technical report. The report will
-describe the authorization logic, why it was chosen over other policy languages.
-How common decisions made by mobile operating systems may be described in it;
-how policies users want (such as the late-adopting and hipster policies) may be
-expressed in the language; what problems we may encounter and their potential
-solutions.
-This technical report will be the first milestone for my PhD and will be used to
-provide the motivation and start to my thesis.
+  \item Allow for calling external functions (such as the
+    \texttt{UserInstallPrompt} constraint used when describing installation)
+    that can obtain extra information about entities that may require special
+    actions to fetch: for example an explicit ``okay'' from the user, or some
+    metadata about a function like its version.  If we don't allow the ability
+    to fetch this information on-the-fly then it will have to be requested
+    before checking the policy.  In the case of the \code{installd} function,
+    where we check if the actual installation succeeded, this is especially
+    important lest we install the app before we have made the decision whether
+    to install the app or not.
 
-\subsection{Exploring Policies}
+  \item Support for constraints.  Android apps have version numbers (for
+    example) that will need to be compared with other version numbers.  If we
+    cannot compare numbers and other infinite-domains simply then policies will
+    become tricky to express.
 
-Next I will develop an app store.  The store will use security policies to
-filter apps.  Creating an app store allows interaction with my research.
-Encouraging users to use an app store with security policies increases the
-impact of the research. It provides a practical example to illustrate how it can
-be applied to a real world problem.  It also will offer a platform to test real
-policies against and show how different analysis tools can make different
-guarantees.  
+  \item Delegation.  We want to make a decision based on information from an
+    external source.  This suggest that a \emph{can-say} mechanism is required
+    that will allow us to express how trust is distributed.
+
+\end{itemize}
+    
+Ideally we would also want that checking policies is efficient and does not too
+drain the batteries.  We want to use the language to be able to make decisions
+on a phone, which do not typically have large memory and where battery life is
+at a premium.  If we drain the battery whenever we make a decision then users
+will be excessively inconvenienced.  Whilst we are modelling the decisions on
+Android this is less important (the logic can be run on a more powerful system)
+but it may be a concern later.
+
+\begin{marginfigure}
+  \centering
+  \begin{tabular}{r c c c c c }
+    \toprule
+                        & \sideways{Policymaker} & \sideways{Cassandra} & \sideways{RT} & \sideways{Binder} & \sideways{SecPAL} \\
+    \midrule
+    Local checking      &                        &                      &               &                   &                   \\
+    \addlinespace
+    Explicit speakers   & \cross                 &                      &               &                   & \tick             \\
+    \addlinespace
+    External functions  & \tick                  &                      &               &                   & \tick             \\
+    \addlinespace
+    Constraints         &                        &                      &               &                   & \tick             \\
+    \addlinespace
+    Delegation          &                        &                      &               &                   & \tick             \\
+    \bottomrule        \\
+  \end{tabular}
+  \caption{Table showing each of the features we described as being desirable
+    and the authorization language described in Section~\ref{sec:authlang}.
+    The table compares which languages support which features.}
+  \label{tab:authlang}
+\end{marginfigure}
+
+A comparison of the features is shown in Figure~\ref{tab:authlang}.  
+Based on these requirements SecPAL seems to be a good fit; it has certainly been
+able to describe the scenarios we have encountered so far (though some
+hypothetical policies that SecPAL cannot express well are described later on
+page~\pageref{secpal:problems}). 
+
+I plan to describe fully the security of Android authorization decisions. The
+report will describe the authorization logic, why it was chosen over other
+policy languages.  How common decisions made by mobile operating systems may be
+described in it; how policies users want (such as the late-adopting and hipster
+policies) may be expressed in the language; what problems we may encounter and
+their potential solutions.  This technical report will be the first milestone
+for my PhD and will be used to provide the motivation and start to my thesis.
+
+
+\subsection{Exploring Policies and the App Guarden}
+
+The next area to look at will be the policies users want when downloading apps.
+To explore these policies we will create an app store where users can express
+their policies.  This store will be the \emph{App Guarden} and be used as a play
+ground for security policies and Android analysis tools.
+
+The store will use security policies to filter apps.  Creating an app store
+allows interaction with my research.  Encouraging users to use an app store with
+security policies increases the impact of the research. It provides a practical
+example to illustrate how it can be applied to a real world problem.  It also
+will offer a platform to test real policies against and show how different
+analysis tools can make different guarantees.  
 
 To build the store we will base it on the proxy store model shown in
 Figure~\ref{fig:proxy}.  The final store architecture will resemble
@@ -1974,15 +2026,15 @@ when combined with the danger provided by user supplied policy files. The
 engineering difficulty in developing such a store can be mitigated by sensible
 software development practices. 
 
-Technically, creating an app store for Android is not difficult.  Android allows
-apps to be installed by the system installer; after confirmation by the user.
-To implement the \emph{shop} one could embed a website in an app that downloads and
-opens apps from an external \emph{server}.  The server can provide apps to the
-device from an \emph{apps database} and allow \emph{users} to register
-themselves and their \emph{policies}.  Finally apps can be sent to \emph{expert
-checking services} who can send their results to the app database and the
-\emph{device} wanting to check their statements.  This is shown in
-Figure~\ref{fig:implement}.
+In terms of engineering difficulty, creating an app store for Android is not
+difficult.  Android allows apps to be installed by the system installer; after
+confirmation by the user.  To implement the \emph{shop} one could embed a
+website in an app that downloads and opens apps from an external \emph{server}.
+The server can provide apps to the device from an \emph{apps database} and allow
+\emph{users} to register themselves and their \emph{policies}.  Finally apps can
+be sent to \emph{expert checking services} who can send their results to the app
+database and the \emph{device} wanting to check their statements.  This is shown
+in Figure~\ref{fig:implement}.
 
 \begin{marginfigure}
   \includegraphics[width=\marginlength]{img/shop.eps}
@@ -2065,6 +2117,29 @@ Phone says Stowaway can-say 0
     present themselves: and user's (or at least administrators) should be able
     to choose between them with knowledge of what that entails.
     
+  \item[Policies and apps:] Can different categories of apps be filtered by
+    policies?  Are there policies that apply to one category of apps but not
+    others?  We might expect that social apps have access to your contacts but
+    not flashlight apps.
+  
+    To test these kinds of policies we need to be able to categorize apps.
+    Google's PlayStore organises apps into sections such as \emph{games} or
+    useful apps.  If a policy we write to describe games identifies with a high
+    probability apps in the games category then we should gain confidence that
+    the policy is good.  Alternately if an app that purports to being in one
+    category doesn't meet that categories policy then maybe the policy is wrong,
+    maybe the category is too general, or perhaps the app is malicious!
+
+    The App Guarden store will allow us to check policies such as these by
+    providing a set of apps and a filtering mechanism.  Similar to the company
+    store we might create a games store that only sells apps we categorize into
+    games on the basis of policy.  By comparing the apps that in these policy
+    specific stores against other app stores we can gain insight into how
+    different app stores work.  For example if the PlayStore categorises games
+    apps on the basis of one policy, but apps in Amazon's store games category
+    are best described by a different policy then we can contrast these two
+    policies to learn about how the app stores themselves differ.
+
   \item[Compound policies:] In Section~\ref{sec:polovertime} we introduced the idea that a policy on a
     device may be formed from several different policies.  For instance an
     employee may use their own personal phone for work too.  This is called
@@ -2189,10 +2264,16 @@ Phone says Stowaway can-say 0
 
 \end{description}
 
+\subsection{Richer Policies}
 
-The next stage of the project will be to create complex policies that deal with
-problems specific to the Android operating system.  These policies will then be
-tested on devices using the app store framework.
+So far we have described policies that describe existing mechanisms, and
+policies that use analysis tools and metadata to make judgements about apps.
+This final section of the project will involve creating more complex policies
+that describe both Android specific problems and also policies that a user might
+want to enforce that are richer\footnote{That is to say policies which are more
+  complex than showing an app gets a specific result when analysed by a series
+  of tools, or with certain app specific metadata.} than previously looked at.
+These policies will then be tested on devices using the app store framework.
 
 One topic will be to show how policies can be written to take into account of
 the \emph{app collusion problem}.  The app collusion problem is shown in
@@ -2234,6 +2315,149 @@ over time or if developers actively prune the lists; as well as developing
 policies that can describe what to do when a well-used app no longer meets the
 security policy.  
 
+\label{secpal:problems}
+If SecPAL is to be used as the authorization language then there are also some
+policies which might be problematic to express in it.
+
+Consider the \emph{late-adopting} user who will only install an app if
+two or more of their friends say it is good; or the \emph{hipster} user who will
+only install an app if no one else is using it. In SecPAL the one approach would
+be to say this is similar to a \emph{threshold signature}; a scheme where a
+signature is only valid if it has been signed by several signatories.  In
+\citeauthor*{Becker:2006vh}'s paper~\cite{Becker:2006vh} they describe a scheme
+for threshold signatures that we could apply here.  The late-adopting user would
+say:
+\begin{lstlisting}[language=SecPAL, mathescape=true]
+User says x can-say 0 app is-recommended-by(x)
+  if x is-friend.
+
+User says app is-good
+  if app is-recommended-by(x),
+     app is-recommended-by(y);
+     x $\not=$ y.
+\end{lstlisting}
+This seems to work but there are some problems: firstly we cannot express the
+\emph{hipster} case like this as we don't want want anyone to say the app is
+recommended and SecPAL cannot express this.  Secondly the phrasing is clunky as
+this relationship is very similar to SecPAL's \emph{can-say} relationship (which
+cannot be used here as conditional facts don't come with an origin).  It also
+isn't obvious how a friend can delegate the recommendation to one of their
+friends as they might do with the \emph{can-say} relationship. This seems
+natural: a conversation might be \emph{``Do you recommend this app? Oh I think
+my friend uses it why don't you ask them?''}.  
+
+If we were to alter SecPAL's syntax and allow conditions with an explicit origin
+we could write:
+\begin{lstlisting}[language=SecPAL, mathescape=true]
+User says x can-assert inf app is-good
+  if x is-friend.
+
+User says app is-good
+  if x says app is-good,
+     y says app is-good;
+     x $\not=$ y.
+\end{lstlisting}
+This seems more natural but requires changing the language. We need to add a new
+\emph{can-assert} rule that, like can-say, allows delegation but doesn't make
+statements true unless used in a conditional statement.  These changes may
+invalidate some of the safety and termination proofs from the original
+paper~\cite{Becker:2006vh} which is undesirable.  This still doesn't account for
+the hipster case. 
+
+A third alternative would be to borrow the \emph{find-all}
+construct from Prolog. Find-all allows the programmer to find all the statements
+that satisfy a given predicate.  For example to find all of Alice's cousins one
+could write in Prolog:
+\begin{lstlisting}[language=Prolog]
+  findall(X, cousin(Alice, X), cousins).
+\end{lstlisting}
+A similar construct could be brought into SecPAL:
+\begin{lstlisting}[language=SecPAL, mathescape=true]
+User says x can-assert inf app is-good
+  if x is-friend.
+
+User says app is-good
+  if findall(_, app is-good, recommenders);
+     sizeof(recommenders) $\geq$ 2.
+
+Hipster says app is-good
+  if findall(_, app is-good, recommenders);
+    sizeof(recommenders) = 0.
+\end{lstlisting}
+This accounts for the hipster case and helps keep policies short (one could
+imagine a user saying that it wouldn't install an app unless a million people
+recommended it which would lead to unwieldy policies in the earlier versions).
+This changes the language dramatically: \code{findall} isn't a Datalog
+instruction so this may not even be translatable.
+
+Another problem occurs when we are using a checking tool.  Suppose we have a
+tool which can infer complex properties about apps; for particularly complex and
+large apps however the checking becomes infeasible\footnote{For instance in a
+  meeting with developers of \emph{FlowDroid} they claimed their tool could
+  analyze the Facebook app, but took 75GB of RAM to do so. Whilst this was
+  feasible on a compute cluster, this could not be done on a mobile phone.}. You
+could imagine a security policy for a phone where the user uses the tool on some
+small apps but for large apps the user is allowed to make the judgement:
+\begin{lstlisting}[language=SecPAL,mathescape=true]
+Phone says FlowDroid can-say 0 app meets FlowPolicy
+  if sizeof(app) $<$ 500MB.
+
+Phone says User can-say inf app meets FlowPolicy
+  if sizeof(app) $\geq$ 500MB.
+\end{lstlisting}
+The \code{500MB} is a rather arbitrary constant here. If we wanted to change the
+policy it would need to be changed in multiple places.  A better solution might
+be to allow \emph{FlowDroid} to answer that it doesn't know about the app
+(perhaps it ran out of resources) and then make a decision based on that.
+\begin{lstlisting}[language=SecPAL]
+Phone says FlowDroid can-say 0 app meets FlowPolicy.
+Phone says FlowDroid can-say 0 app unsure-of FlowPolicy.
+
+Phone says User can-say inf app meets FlowPolicy
+  if app unsure-of FlowPolicy.
+\end{lstlisting}
+
+Suppose the user decided to make an exception and allow the app.
+Later, after FlowDroid is given access to more memory perhaps, FlowDroid
+analyses the app and finds proof that the app does not meet the policy.
+FlowDroid revokes its statement that it is unsure of the app meeting the policy,
+and the phone no longer believes the app meets the policy.
+
+In this case it works, but suppose instead the user decided to trust two
+different tools to decide whether the policy is met.  Both tools initially say
+they're unsure if an app meets the policy; the user provides the exception.
+Later one of them revokes its statement.  This time the phone still believes the
+app meets the policy as it still has the override and the statement about one of
+the tools being unsure.
+
+This suggests that using the \ac{CWA} may not be a helpful assumption. An alternative
+would be to allow negation in SecPAL (and use Datalog$^\lnot$).  Adding an
+explicit \emph{breaks} predicate instead of \emph{unsure-of} we write:
+\begin{lstlisting}[language=SecPAL, mathescape=true]
+Phone says User can-say inf app meets FlowPolicy
+  if $\lnot$ app meets FlowPolicy,
+     $\lnot$ app breaks FlowPolicy.
+\end{lstlisting}
+This changes the language however; which again may lead to invalid safety
+proofs. 
+
+It also raises questions about when two trusted tools disagree.  A cautious
+approach would be to always follow the \emph{breaks} statement: if there is
+doubt then trust no-one and reject everything.  With static analysis tools this
+might not be the right approach: false warnings are common amongst some tools
+(as anyone who has used the \emph{lint} tool can attest).  Suppose a malicious
+developer bribes a certification tool to be more strict with their competitor
+(or even just to devote less resources to checking it): they would create a
+denial-of-service for the app.
+
+Asking the user to pick between the tools isn't a good solution either.  Suppose
+\emph{Norton} and \emph{McAffee} disagree about whether an app is malware or
+not. Unless the policy author is skilled at malware-analysis they may not be
+able to decide who to trust here.  
+
+The solution to these problems, amongst others, is not immediately obvious.
+That basic Datalog, and therefore many policy languages, may not be able to
+describe possible solutions to the problems suggests the work is non-trivial.
 
 
 \subsection{Possible Extensions}
@@ -2274,20 +2498,21 @@ the signature matches the message (as shown in Figure~\ref{alg:speaking}).
 \SetKwFunction{FSays}{says}
 \SetKwFunction{FSign}{sign}
 \SetKwFunction{FCheck}{check}
-\SetKwFunction{RETURN}{return}
+\SetKwFunction{FReturn}{return}
 \SetKwFunction{FHears}{hears}
+\SetKwFunction{FCons}{$\Vert$}
 \SetKwData{vSpeaker}{s}
 \SetKwData{vMessage}{m}
 \SetKwData{vMessagep}{m$^\prime$}
 \SetKwData{vID}{id}
 \SetKwData{vKeys}{K}
 \SetKwData{vKey}{k}
-\SetKwData{vSig}{\sigma}
+\SetKwData{vSig}{$\sigma$}
 \begin{marginfigure}
   \begin{algorithm}[H]
     \Fn{\FSays{\vSpeaker:speaker, \vMessage:message}}{
       \vSig $\gets$ \FSign{\vMessage $\Vert$ \vSpeaker.id, \vSpeaker.k} \tcc*[H]{\vSpeaker.k is the speaker's secret-key}
-      \RETURN{\vMessage $\Vert$ \vSpeaker.id $\Vert$ \vSig}\;
+      \FReturn{\vMessage $\Vert$ \vSpeaker.id $\Vert$ \vSig  }\;
     }\;
 
     \Fn{\FHears{\vMessage:message, \vKeys:Key-store}}{
@@ -2295,7 +2520,7 @@ the signature matches the message (as shown in Figure~\ref{alg:speaking}).
         \With{(\vMessagep $\Vert$ \vID $\Vert$ \vSig)}{
           \vKey $\gets$ \vKeys[ \vID] \tcc*[H]{\vKey is a public-key}\;
           \If{\FCheck{\vMessagep $\Vert$ \vSpeaker.id, \vSig, \vKey} = \vTrue}{
-            \RETURN{\vSpeaker.id says \vMessagep}
+            \FReturn{\vSpeaker.id says \vMessagep}
           }
         }
       }
@@ -2341,6 +2566,44 @@ Devices would have an API to allow queries to them and the device would check if
 the \emph{can-ask-if} phrase is satisfied before distributing the statement
 asked for or a \emph{no-response} response.  If SecPAL had been extended
 to allow negative statements then one could also be returned.
+
+Another area to look at would be to quantify the trust in statements. Static
+analysis tools are known to give false positives and negatives; when a human
+analyzes an app by hand they sometimes miss things; and not all analysts are as
+good as others.  For example suppose Alice is an experienced malware analyst:
+nine times out of ten if Alice says something is dangerous then it is.  Bob, on
+the other hand, is a lazy analyst and doesn't always make the right call.  His
+success rate is only 60\%.  It would be nice to formalize these levels of trust
+and express them in an authorization language. We could use these trust levels
+to state how confident we are with a decision when it was made on the basis of
+several different judgements from other variably trusted entities.
+
+\begin{marginfigure}
+  \begin{lstlisting}[language=SecPAL]
+I say Alice can-say 0 app is-not-dangerous 
+  (with confidence 90%).
+I say Bob can-say 0 app is-not-dangerous
+  (with confidence 60%).
+
+I say app is-installable 
+  if app is-not-dangerous;
+     confidence > 75%.
+  \end{lstlisting}
+  \caption{Example of how levels of trust might be expressed in SecPAL.}
+  \label{secpal:confidence}
+\end{marginfigure}
+
+One approach to implementing this would be to attack the confidence to a SecPAL
+assertion as metadata.  This would not modify how evaluation works
+and should not affect any of the safety proofs.  Queries could be made based on
+the current confidence of all assertions by treating the confidence as a
+constraint.  This is shown in Figure~\ref{secpal:confidence}.
+
+Levels of trust are interesting because they closer model how we make decisions
+in real life.  Most static analysis tools are not utterly trustworthy. Being
+able model decisions based on levels of trust and quantify any statement allows
+us to model more closely the decisions we make and may allow us to express new,
+interesting policies.
 
 \subsection{Conclusion}
 

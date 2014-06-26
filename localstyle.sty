@@ -28,6 +28,7 @@
 % Acronyms
 \usepackage{acronym}
 \acrodef{AC}{assertion context}
+\acrodef{ADB}{Android debug bridge}
 \acrodef{AOSP}{Android Open Source Project}
 \acrodef{IDS}{intrusion detection system}
 \acrodef{BYOD}{bring your own device}
@@ -70,7 +71,7 @@
   columns=flexible,
   tabsize=2,
   showstringspaces=true,
-  numbers=left,
+  %numbers=left,
   numberstyle=\tiny\ttfamily\color{Gray},
   commentstyle=\ttfamily\color{Gray}
 }
@@ -79,8 +80,9 @@
 
 \lstdefinelanguage{SecPAL}{%
   morecomment=[l]{//},
+  mathescape=true,
   morekeywords={says,if,can,say,can,act,as,shows,assert,ask,meets,breaks,unsure,of},
-  literate=* {\ inf}{{$_\infty$}}1 {can-say\ 0}{{can-say$_0$\ }}9
+  literate=* {\ inf}{{$_\infty$}}1 {can-say\ 0}{{can-say$_{\mathtt 0}$\ }}9 
 }[keywords,comments,strings]
 
 \lstdefinelanguage{PolicyMaker}{%
@@ -172,3 +174,10 @@
 
 % Nicely typeset tables
 \usepackage{booktabs}
+
+\newcommand{\sideways}[1]{\parbox[t]{2mm}{\rotatebox[origin=l]{45}{#1}}}
+
+% Ticks
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\tick}{\ding{51}}
+\newcommand{\cross}{\ding{55}}
