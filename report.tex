@@ -2,6 +2,7 @@
 %\documentclass[a4paper,sfsidenotes]{tufte-book}
 \usepackage{localstyle} % local style file
 
+\renewcommand{\bibsection}{\section{\refname}}
 % Oh for some fun!
 %\usepackage{mathspec}
 %\setmainfont{PragmataPro}
@@ -9,8 +10,7 @@
 %\setmathfont(Digits,Latin,Greek)[StylisticSet=3]{PragmataPro} % Fraktur math!
 %\setsansfont{PragmataPro}
 
-\title{Authorization Logics For Mobile Ecosystems\\\vspace{1em}Thesis Proposal}
-%\title{Security Policies\\For Humans\\Thesis Proposal}
+\title{Authorization Logics For Mobile Ecosystems}%\\\vspace{1em}Thesis Proposal}
 \author{Joseph~Hallett}
 \date\today
 
@@ -613,7 +613,7 @@ rooting.  Mr.\ Hide provides five new fine grained permissions:
 The \emph{AppFence} tool~\cite{Hornyack:2011wq} doesn't modify apps.  Users can
 write policies for what data an app can receive. If an app breaks this then the
 it is stopped or fake data supplied instead.  This requires changes to Android
-however. The \emph{AppGuard} tool~\cite{Backes:2013vm} rewrites
+however. The \emph{AppGuard} tool~\cite{Backes:2012vm} rewrites
 apps to use a security monitor.  This security monitor allows them to add extra
 checks when an app is sending or requesting data.  They give examples for apps
 with the \texttt{INTERNET} permissions and show how they can restrict internet
@@ -1948,21 +1948,24 @@ will be excessively inconvenienced.  Whilst we are modelling the decisions on
 Android this is less important (the logic can be run on a more powerful system)
 but it may be a concern later.
 
+%R\tick 5h
+%R\cross5h
+
 \begin{marginfigure}
-  \centering
-  \begin{tabular}{r c c c c c }
+  \centering\smaller
+  \begin{tabular}{r c c c c c c }%\smaller
     \toprule
-                        & \sideways{Policymaker} & \sideways{Cassandra} & \sideways{RT} & \sideways{Binder} & \sideways{SecPAL} \\
+                        & \sideways{Policymaker} & \sideways{SPKI/SDSI} & \sideways{Cassandra} & \sideways{RT} & \sideways{Binder} & \sideways{SecPAL} \\
     \midrule
-    Local checking      &                        &                      &               &                   &                   \\
+    Local checking      & \tick                  & \cross               & \tick                & \tick         & \cross            & \tick             \\
     \addlinespace
-    Explicit speakers   & \cross                 &                      &               &                   & \tick             \\
+    Explicit speakers   & \cross                 & \cross               & \cross               & \tick         & \tick             & \tick             \\
     \addlinespace
-    External functions  & \tick                  &                      &               &                   & \tick             \\
+    External functions  & \tick                  & \cross               & \tick                & \cross        & \cross            & \tick             \\
     \addlinespace
-    Constraints         &                        &                      &               &                   & \tick             \\
+    Constraints         & \cross                 & \cross               & \tick                & \tick         & \cross            & \tick             \\
     \addlinespace
-    Delegation          &                        &                      &               &                   & \tick             \\
+    Delegation          & \cross                 & \tick                & \tick                & \tick         & \tick             & \tick             \\
     \bottomrule        \\
   \end{tabular}
   \caption{Table showing each of the features we described as being desirable
@@ -1975,7 +1978,11 @@ A comparison of the features is shown in Figure~\ref{tab:authlang}.
 Based on these requirements SecPAL seems to be a good fit; it has certainly been
 able to describe the scenarios we have encountered so far (though some
 hypothetical policies that SecPAL cannot express well are described later on
-page~\pageref{secpal:problems}). 
+page~\pageref{secpal:problems}).  Alternatively Cassandra, which like SecPAL was
+developed by Becker, or one of the RT languages might work.  Cassandra's
+policies, however, involve entities activating roles which feels less natural for
+describing policies that describe user preferences and software processes.
+The RT family of languages lack external functions, though these could be added.
 
 I plan to describe fully the security of Android authorization decisions. The
 report will describe the authorization logic, why it was chosen over other
@@ -2631,21 +2638,36 @@ authorization logics have not looked at and which do not have easy answers.
 
 % What will I produce that we didn't already know?
 
+By describing how decisions are made within the Android ecosystem we will gain
+insight into what the trust decisions and authorization reasons are within the
+operating system.  By expressing it in a formal language we can make precise
+comparisons between Android and other mobile operating systems.  This
+formalization of the security policies in one language is novel and the
+increased understanding of the policy may help us understand its strengths and
+weaknesses better.
+
+By using policies to describe apps we we will be able to better understand how
+apps differ; even when the apps themselves are in similar categories.  We will
+be able to understand how users decide what to install and what their
+expectations are with respect to security.
+
 Mobile systems have specific problems.  Existing uses of authorization logic
 have focused on systems in general, such as \emph{Binder} or \emph{SPKI/SDSI},
 or on very specific cases (such as access control) within a system.  Mobile
 devices have problems, such as collusion; app permissions; and personal data,
-that require greater attention than other settings.  This research aims to give
+that require greater attention than in other settings.  This research aims to give
 a greater insight into how these problems arise and the trust relationships
 required to make the \emph{right decision}.
 
 % Why do we care?
 
-This project is important because it allows us to improve decision making for
-mobile devices.  This will lead to better security for users as it allows
-policies to be described that match what the device is doing and how it should
-behave.  These policies can be enforced automatically allowing for a consistent
-enforcement of policy and less strain for the user.  These policies allow
+This project is important because it allows us to improve our understanding of
+the decisions made in a mobile ecosystem.  This will lead to better security for users as it allows
+policies to be written that match what they expect from an app and a device .
+The project will allow users to describe how apps should
+behave and ensure that they only use apps which meet these expectations.  These
+user policies will allow for a consistent
+enforcement of policy and mean less decisions for the user.  These policies allow
 precise comparison of different systems; this will allow an accurate comparison
 of security between them.
 

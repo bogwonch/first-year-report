@@ -1,0 +1,131 @@
+// https://wiki.helsinki.fi/download/attachments/122034202/Lecture2-Android.pdf?version=2&modificationDate=1390301067458&api=v2
+
+digraph mps {
+  compound=true;
+  overlap=false;
+  rankdir=LR;
+
+  graph [fontname="Helvetica"];
+  node [fontname="Helvetica"];
+
+  // Roles
+  pp [label="Platform\nProvider"];
+  Administrator;
+
+  subgraph cluster_markets {
+    label="";
+    style=invis;
+    rankdir=TB;
+
+    User;
+    Developer;
+    cmo [label="Centralized\nMarketplace\nOperator"];
+    amo [label="Auxiliary\nMarketplace\nOperator"];
+    dot [label="" shape=point];
+
+    cmo -> dot;
+    Developer -> cmo;
+    Developer -> amo;
+    Developer -> dot;
+    amo -> dot;
+  }
+
+
+  subgraph cluster_md {
+    label="Mobile\nDevice";
+    rankdir=TB;
+    
+    // PSC
+    ss [label="System\nservice"];
+    sl [label="System\nlibrary"];
+    ai [label="Application\nInstaller"];
+    al [label="Application\nLoader"];
+    
+    pd [label="Policy\nDatabase"];
+    ad [label="Application\nDatabase"];
+
+    // TPSC
+    tps [label="Third-party\nservice"];
+
+    // HSF
+    bi [label="Boot\nIntegrity"];
+    secs [label="Secure\nStorage"];
+    di [label="Device\nIdentification"];
+    ie [label="Isolated\nExecution"];
+    da [label="Device\nAuthentication"];
+    
+    bar [shape=point];
+  
+
+    subgraph cluster_tpl {
+      label="";
+      style=dotted;
+      rankdir=LR;
+
+      tpl [label="Third-party\nlibrary"];
+      Application;
+      
+    }
+
+    subgraph cluster_psa {
+      label="Platform Security Architecture";
+      style=dotted;
+      rankdir=TB;
+      
+      // PSC
+      su [label="System Updater"];
+      dm [label="Device\nManagement"];
+      bv [label="Boot\nVerifier"];
+      ssp [label="Secure Storage\nProvider"];
+      ldac [label="Legacy DAC"];
+      ep [label="Execution\nProtection"];
+      hwspapi [label="HW Security API"];
+      iso [label="Software isolation"];
+
+      {rank=sink bv ssp ldac ep hwspapi}
+
+      subgraph cluster_rm {
+        label="";
+        style=dotted;
+
+        rm [label="Reference Monitor"];
+        ipc [label="IPC"];
+      }
+
+      su -> pd;
+      ai -> pd;
+      ad -> ai [dir=back];
+      dm -> pd;
+      dm -> ad;
+      al -> ad;
+
+      { rank=source su dm}
+      { rank=same su pd ai}
+      { rank=same dm ad al}
+    }
+
+    Application -> ipc [dir=both];
+    tps -> ipc [dir=both];
+    ss -> ipc [dir=both];
+    bv -> bi;
+    ssp -> secs;
+
+    hwspapi -> bar;
+    bar -> secs;
+    bar -> di;
+    bar -> ie;
+    bar -> da;
+
+    { rank=source tps ss sl}
+    Application -> tps [dir=both style=invisible];
+  }
+
+
+  { rank=source pp Administrator }
+  { rank=sink bi secs di ie da }
+
+  pp -> su;
+  Administrator -> dm;
+
+  ai -> dot [rank=back];
+}

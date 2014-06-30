@@ -175,7 +175,9 @@
 % Nicely typeset tables
 \usepackage{booktabs}
 
-\newcommand{\sideways}[1]{\parbox[t]{2mm}{\rotatebox[origin=l]{45}{#1}}}
+\newcommand{\sideways}[1]{%
+  \parbox[t]{2mm}{\rotatebox[origin=c]{270}{#1}}
+}
 
 % Ticks
 \usepackage{pifont}% http://ctan.org/pkg/pifont
