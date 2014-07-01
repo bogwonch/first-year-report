@@ -15,9 +15,9 @@
 \date\today
 
 \hypersetup{%
-  pdftitle={Thesis Proposal},
+  pdftitle={Authorization Logics For Mobile Ecosystems: Thesis Proposal},
   pdfauthor={Joseph Hallett},
-  hidelinks
+  %hidelinks
 }
 
 \bibliographystyle{plainnat}
@@ -28,6 +28,7 @@
 \pagebreak
 
 \section{Introduction}
+\label{sec:intro}
 
 Android is an operating system for mobile phones.  Users run prepackaged
 software (\emph{apps}) which they download from special app stores.
@@ -1792,47 +1793,48 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
 \section{Thesis Proposal}
 
 I would like to focus on developing security policies for mobile systems.  My
-first year has focussed on exploring SecPAL and trying to find the right logic
-language to model the issues surrounding smart phones.  The next two years will
-be spent exploring what happens when these policies interact with users.
+first year has focussed on learning the SecPAL language, evaluating what
+scenarios in Android it can express, and trying to find the right logic language
+to model the issues surrounding smart phones.  The next two years will be spent
+exploring what happens when these policies interact with users.
 
 \subsection{Policy Language for Mobile Devices}
 \label{sec:proposallang}
 
-First will be to complete the work done in the first year. I will show that
-a logic of authorization can model the security decisions made inside Android;
-that it is capable of describing complex security policies. 
+The first stage of the project will be to complete the work done in the first
+year. I will show that a logic of authorization can model the security decisions
+made inside Android; and that it is capable of describing complex security
+policies. 
 
-The logic of authorization must be able to describe how current systems work.
-There are already several situations where Android makes a decision as to
-whether an app is allowed to be installed or updated.  The reasoning behind
-these decisions is embedded in the code itself.  The authorization logic must be
-able to describe these policies: this will help clarify and formalize the
-policies already present.
+The logic of authorization must be able to describe how the current mobile
+ecosystems (such as Android and iOS) work.  There are already several situations
+where Android makes a decision as to whether an app is allowed to be installed
+or updated.  The reasoning behind these decisions is embedded in the code
+itself.  The authorization logic will describe these policies: this
+will clarify and formalize the policies present in the code.
 
-One example of a decision already made by Android phones is whether to install
-or update an app.  Android allows a user to install any app they like.  Users
-have several methods available to them: they can install an app through an app
-store, or \emph{side-load} it through a file manager or the \ac{ADB} utility.  A
-request to install an app can be made explicitly by a user or by a program.
-Whichever method is used an intent is broadcast to install the app which is
-picked up by the app installer which confirms with the user that they wish the
-app to be installed (and are okay with the permissions requested), checks the
-app has been signed correctly, and decides whether it needs update or install
+One example of a decision made by Android phones is whether to install or update
+an app.  Android allows a user to install any app.  There are two methods to
+install an app: through an app store, or \emph{side-loading} (through a file
+manager or the \ac{ADB} utility).  A request to install an app can be made
+explicitly by a user or programatically.  An intent is broadcast to request the
+install the app.  It is picked up by the package manager which confirms the
+request with the user (and are okay with the permissions requested). It checks the
+app has been signed correctly, and decides whether it need update or newly install
 the app.  If this is okayed then the package manager passes the app to the
 \emph{installd} service which does the actual installation on the file system.
 When is is complete a message is broadcast by the package to say the app has
 been installed (the \texttt{ACTION\_PACKAGE\_ADDED} intent) or updated (the
 \texttt{ACTION\_PACKAGE\_REPLACED} intent).
 
-In this process there are several authorization decisions and delegations of
-trust.  Firstly there is the trust given by the Android system to the
-package-manager (a service called \texttt{com.android.server.pm}) to manage the
-installation.  All apps have a developer (identified by a public key within the
-app).  This developer creates the signature on the app (which is checked by the
-package manager).  We model this signature as a statement by the developer that
-the app is owned; since SecPAL statements are signed assertions importing the
-statement into the assertion context would involve checking the signature
+In the installation process there are several authorization decisions and
+delegations of trust.  Firstly there is the trust given by the Android system to
+the package-manager (a service called \texttt{com.android.server.pm}) to manage
+the installation.  All apps have a developer (identified by a public key within
+the app).  This developer creates the signature on the app (which is checked by
+the package manager).  We model this signature as a statement by the developer
+that the app is owned; since SecPAL statements are signed assertions importing
+the statement into the assertion context would involve checking the signature
 matches the app itself.  The package-manager asks the user whether the app
 should be installed: we model this as a constraint in SecPAL as this decision is
 made every time the app is installed and the decision made by the user is not
@@ -1843,6 +1845,7 @@ only says the package was installed if the installation process carried out by
 
 \begin{lstlisting}[language=SecPAL]
 Android says Com.Android.Server.PM can-say 0 app PACKAGE_ADDED.
+Android says Com.Android.Server.PM can-say 0 app PACKAGE_REPLACED.
 
 Com.Android.Server.PM says dev can-say 0 app is-owned;
   developer(app) = dev.
@@ -1862,8 +1865,6 @@ installed, otherwise the user is prompted for a confirmation that the update is
 okay again.
 
 \begin{lstlisting}[language=SecPAL]
-Android says Com.Android.Server.PM can-say 0 app PACKAGE_REPLACED.
-
 Com.Android.Server.PM says app PACKAGE_REPLACED
   if app is-owned,
      app updates(old-app);
@@ -1884,27 +1885,26 @@ Com.Android.Server.PM says app PACKAGE_REPLACED
      installd(app) = Success.
 \end{lstlisting}
 
-This example suggests that the SecPAL language might be suitable to describe the
-authorization decisions in Android as we have been able to describe the
+This example suggests that the SecPAL language can describe the
+authorization decisions in Android. We have been able to describe the
 installation and update scenario with relative ease.  Installation is not the
 only decision we have to make on Android. Other areas include:
-
 
 \begin{itemize}
   \item Comparison of different app~stores app~submission policies.
   \item Android permissions system.
   \item Android's SELinux policies and processes.
-  \item \ac{RPC} calls and Intents.
+  \item The \ac{RPC} calls and Intents between apps.
   \item Data sharing between apps.
   \item Remote data access and debugging.
 \end{itemize}
 
-To describe these scenarios we need a policy language that 
-We suspect we need an authorization language that has the following features:
+To describe these scenarios we need a policy language that has the following
+features:
 
 \begin{itemize}
 
-  \item Describe decisions at different locations.  This means we can check the
+  \item Model the decisions at separate locations.  This allows us to check the
     policies locally and make a decision based on that location's information
     rather than deferring to an all-seeing policy enforcer.  This suits the
     problem better because individual devices and stores have to make decisions
@@ -1918,25 +1918,43 @@ We suspect we need an authorization language that has the following features:
     an app store) that we access through a network.  Not being able to trace the
     origin of statements seems dangerous.
 
-  \item Allow for calling external functions (such as the
+  \item Calling external functions (such as the
     \texttt{UserInstallPrompt} constraint used when describing installation)
     that can obtain extra information about entities that may require special
     actions to fetch: for example an explicit ``okay'' from the user, or some
-    metadata about a function like its version.  If we don't allow the ability
+    metadata about an app like its version number.  If we don't allow the ability
     to fetch this information on-the-fly then it will have to be requested
     before checking the policy.  In the case of the \code{installd} function,
     where we check if the actual installation succeeded, this is especially
     important lest we install the app before we have made the decision whether
-    to install the app or not.
+    to install the app or not.  
+    
+    Alternatively \emph{obligation policies}~\cite{Gama:2005tp,Gelfond:2008cl}
+    could be used.  Obligation policies are used to describe a set of tasks an
+    entity is obligated to perform in the future to make a statement.  For
+    instance, in the case of package installation we could make the actual
+    installation of the package (the \code{installd(app) = Success}) an
+    obligation to perform if the package manager wanted to state that the
+    package is installed.  These kinds of policies do not seem to fit the app
+    installation scenario well, as we would want the statement that the app is
+    installed to be emitted only after the app is actually installed.  That said
+    obligation policies have been used in the KAoS~\cite{Uszok:2003bn},
+    Ponder~\cite{Damianou:2001ho,Twidle:2009fj}, and Rei~\cite{Kagal:2002ta}
+    distributed-systems policy languages and may be a useful strategy here also.
 
   \item Support for constraints.  Android apps have version numbers (for
     example) that will need to be compared with other version numbers.  If we
     cannot compare numbers and other infinite-domains simply then policies will
-    become tricky to express.
+    become tricky to express.  Constraints allow us to make these kinds of
+    comparisons; this will allow us to write the policies we want.
 
   \item Delegation.  We want to make a decision based on information from an
     external source.  This suggest that a \emph{can-say} mechanism is required
-    that will allow us to express how trust is distributed.
+    that will allow us to express how trust is distributed.   Since the
+    relationship between app stores and devices is one where a user delegates
+    trust to the store and the device uses the external store to obtain the app
+    this would hint that being able to express delegation will allow us to write
+    more accurate policies.
 
 \end{itemize}
     
@@ -1990,7 +2008,7 @@ policy languages.  How common decisions made by mobile operating systems may be
 described in it; how policies users want (such as the late-adopting and hipster
 policies) may be expressed in the language; what problems we may encounter and
 their potential solutions.  This technical report will be the first milestone
-for my PhD and will be used to provide the motivation and start to my thesis.
+for my PhD and will be used to provide the start to my thesis.
 
 
 \subsection{Exploring Policies and the App Guarden}
@@ -2029,19 +2047,21 @@ is a known infection strategy by malware~\cite{Svajcer:2012wy}.}.
 It also allows for a wide range of users to interact with the project. 
 
 Creating a secure app store is a non-trivial engineering challenge; especially
-when combined with the danger provided by user supplied policy files. The
-engineering difficulty in developing such a store can be mitigated by sensible
-software development practices. 
-
-In terms of engineering difficulty, creating an app store for Android is not
-difficult.  Android allows apps to be installed by the system installer; after
-confirmation by the user.  To implement the \emph{shop} one could embed a
-website in an app that downloads and opens apps from an external \emph{server}.
-The server can provide apps to the device from an \emph{apps database} and allow
-\emph{users} to register themselves and their \emph{policies}.  Finally apps can
-be sent to \emph{expert checking services} who can send their results to the app
-database and the \emph{device} wanting to check their statements.  This is shown
-in Figure~\ref{fig:implement}.
+when combined with the danger provided by user supplied policy
+files\footnote{Interpreting user supplied data can be dangerous as if the
+  interpreter can be exploited through the data passed, this can compromise the
+  integrity of the entire store.  Similarly if the policy language can form a
+  \emph{weird machine}~\cite{Bratus:wr} then it is possible to tie up the
+interpreter indefinitely or perform arbitrary calculations.}. The engineering
+difficulty in developing such a store can be mitigated by sensible software
+development practices.  Android allows apps to be installed by the system
+installer; after confirmation by the user.  To implement the \emph{shop} one
+could embed a website in an app that downloads and opens apps from an external
+\emph{server}.  The server can provide apps to the device from an \emph{apps
+database} and allow \emph{users} to register themselves and their
+\emph{policies}.  Finally apps can be sent to \emph{expert checking services}
+who can send their results to the app database and the \emph{device} wanting to
+check their statements.  This is shown in Figure~\ref{fig:implement}.
 
 \begin{marginfigure}
   \includegraphics[width=\marginlength]{img/shop.eps}
@@ -2149,8 +2169,8 @@ Phone says Stowaway can-say 0
 
   \item[Compound policies:] In Section~\ref{sec:polovertime} we introduced the idea that a policy on a
     device may be formed from several different policies.  For instance an
-    employee may use their own personal phone for work too.  This is called
-    \ac{BYOD}.
+    employee may use their own personal phone for work too.  This is the
+    \ac{BYOD} scheme described earlier in Section~\ref{sec:intro}.
     
     Compound policies have some interesting problems surrounding them.
     Suggesting solutions to these problems, and evaluating them is novel;
@@ -2263,7 +2283,7 @@ Phone says Stowaway can-say 0
     Testing for these issues can be difficult as it is hard to use real apps
     without checking they will or will note meet a policy by hand; and synthetic
     malware and \ac{PUS} may be trivially detectable\footnote{\emph{Schneier's
-    Law}\cite{Schneier:ws} states that: \begin{quote}``anyone can invent a security
+    Law}~\cite{Schneier:ws} states that: \begin{quote}``anyone can invent a security
       system that he himself cannot break.''\end{quote}}.  It is important to
     consider, and if possible evaluate, these failures as they are an obvious
     way to attack a system.  Any claim that authorization logics will solve all
@@ -2323,18 +2343,19 @@ policies that can describe what to do when a well-used app no longer meets the
 security policy.  
 
 \label{secpal:problems}
-If SecPAL is to be used as the authorization language then there are also some
-policies which might be problematic to express in it.
 
-Consider the \emph{late-adopting} user who will only install an app if
-two or more of their friends say it is good; or the \emph{hipster} user who will
-only install an app if no one else is using it. In SecPAL the one approach would
-be to say this is similar to a \emph{threshold signature}; a scheme where a
-signature is only valid if it has been signed by several signatories.  In
+If SecPAL is to be used as the authorization language then there are also some
+policies which might be problematic to express in it.  Consider the
+\emph{late-adopting} user who will only install an app if two or more of their
+friends say it is good; or the \emph{hipster} user who will only install an app
+if no one else is using it. In SecPAL the one approach would be to say this is
+similar to a \emph{threshold signature}; a scheme where a signature is only
+valid if it has been signed by several signatories.  In
 \citeauthor*{Becker:2006vh}'s paper~\cite{Becker:2006vh} they describe a scheme
-for threshold signatures that we could apply here.  The late-adopting user would
-say:
-\begin{lstlisting}[language=SecPAL, mathescape=true]
+for threshold signatures in SecPAL that we could apply here.  The late-adopting user would
+say: 
+
+\begin{lstlisting}[language=SecPAL, mathescape=true] 
 User says x can-say 0 app is-recommended-by(x)
   if x is-friend.
 
@@ -2395,7 +2416,7 @@ This accounts for the hipster case and helps keep policies short (one could
 imagine a user saying that it wouldn't install an app unless a million people
 recommended it which would lead to unwieldy policies in the earlier versions).
 This changes the language dramatically: \code{findall} isn't a Datalog
-instruction so this may not even be translatable.
+instruction; this may not even be translatable.
 
 Another problem occurs when we are using a checking tool.  Suppose we have a
 tool which can infer complex properties about apps; for particularly complex and
@@ -2469,8 +2490,9 @@ describe possible solutions to the problems suggests the work is non-trivial.
 
 \subsection{Possible Extensions}
 
-This project is expected to take three-and-a-half years.  If time permits a
-couple of extra ideas that would prove interesting to look at.
+This project is expected to take three-and-a-half years. If the project is
+completed before that time then there are several extensions that could provide
+interesting extra work.
 
 Android uses SELinux to enforce restrictions on apps.  Currently Android app
 processes are run in several domains: the \emph{appdomain} (a domain for apps
@@ -2488,8 +2510,8 @@ set of SELinux rules that add additional restrictions to the app to ensure it
 met the device policy.  An alternative would be to generate rules for an
 \ac{IDS} that could detect when the authorization logic has failed.
 
-This would increase the trust in the system as it is adding additional run-time
-restrictions that enforce the policy on top of the checks that the policy is
+This would increase the trust in the system as it adds additional run-time
+restrictions that enforce the policy.  This is on top of the checks that the policy is
 met.  Generating \ac{IDS} test would aid debugging as it would identify cases
 where the authorization logic has identified a false positive (i.e.~a policy
 breaking app that was allowed onto the device) and could become digital evidence
@@ -2566,13 +2588,18 @@ isn't a dating app:
 \begin{lstlisting}[language=SecPAL,mathescape=true]
 User says x can-ask-if app is-good
   if x is-a-friend;
-  category(app) $\not=$ `dating'.
+     category(app) $\not=$ `dating'.
 \end{lstlisting}
 
-Devices would have an API to allow queries to them and the device would check if
+Devices, or other principals such as stores, would have an API to allow queries
+to them. When a statement is requested the entity would check if
 the \emph{can-ask-if} phrase is satisfied before distributing the statement
 asked for or a \emph{no-response} response.  If SecPAL had been extended
-to allow negative statements then one could also be returned.
+to allow negative statements then one could also be returned; allowing a querier
+to distinguish between there being no response and the principal not being
+willing to say the queried statements.  This may have privacy repercussions
+however as a querier may be able to learn the queried party's information
+distribution policy by looking at which queries it refuses to answer.  
 
 Another area to look at would be to quantify the trust in statements. Static
 analysis tools are known to give false positives and negatives; when a human
