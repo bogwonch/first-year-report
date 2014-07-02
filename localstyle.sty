@@ -1,5 +1,4 @@
 \ProvidesPackage{localstyle}
-\@ifpackageloaded{inputenc}{}{\usepackage[utf8]{inputenc}}
 
 % If not using tufte, load a complete set of fonts
 \@ifclassloaded{article}{\usepackage{lmodern}}
@@ -183,3 +182,11 @@
 \usepackage{pifont}% http://ctan.org/pkg/pifont
 \newcommand{\tick}{\ding{51}}
 \newcommand{\cross}{\ding{55}}
+
+
+% Quotation fonts
+%\usepackage{etoolbox}
+%\usepackage{fontspec}
+%\newfontfamily\quotefont{Latin Modern Sans Quotation}
+%\AtBeginEnvironment{quote}{\quotefont\smaller}
+

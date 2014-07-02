@@ -3,12 +3,12 @@ digraph proxystore {
   splines = true;
   rankdir = LR;
 
-  appStore   [label="App Store"         shape=box  fontname="Helvetica"]
-  policy1    [label="Store Policy"      shape=cds  fontname="Helvetica"]
-  altStore   [label="Alternative Store" shape=box  fontname="Helvetica"]
-  policy2    [label="Store Policy"      shape=cds  fontname="Helvetica"]
-  userPolicy [label="User Policy"       shape=cds  fontname="Helvetica"]
-  phone      [label="Phone"             shape=oval fontname="Helvetica"]
+  appStore   [label="App Store"         shape=box  fontname="LMSans10-Regular"]
+  policy1    [label="Store Policy"      shape=cds  fontname="LMSans10-Regular"]
+  altStore   [label="Alternative Store" shape=box  fontname="LMSans10-Regular"]
+  policy2    [label="Store Policy"      shape=cds  fontname="LMSans10-Regular"]
+  userPolicy [label="User Policy"       shape=cds  fontname="LMSans10-Regular"]
+  phone      [label="Phone"             shape=oval fontname="LMSans10-Regular"]
 
   policy1    -> appStore;
   policy2    -> altStore;

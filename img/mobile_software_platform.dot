@@ -5,8 +5,8 @@ digraph mps {
   overlap=false;
   rankdir=LR;
 
-  graph [fontname="Helvetica"];
-  node [fontname="Helvetica"];
+  graph [fontname="LMSans10-Regular"];
+  node [fontname="LMSans10-Regular"];
 
   // Roles
   pp [label="Platform\nProvider"];

@@ -5,10 +5,10 @@ digraph digitalevidence {
   subgraph cluster_store {
     style=filled;
     color=white;
-    appStore      [label="App Store"         shape=box     fontname="Helvetica"]
-    phone         [label="Phone"             shape=oval    fontname="Helvetica"]
-    checker       [label="Checking\nService"  shape=diamond fontname="Helvetica"]
-    inferer       [label="Inference\nService" shape=diamond fontname="Helvetica"]
+    appStore      [label="App Store"         shape=box     fontname="LMSans10-Regular"]
+    phone         [label="Phone"             shape=oval    fontname="LMSans10-Regular"]
+    checker       [label="Checking\nService"  shape=diamond fontname="LMSans10-Regular"]
+    inferer       [label="Inference\nService" shape=diamond fontname="LMSans10-Regular"]
     
     {rank=same appStore inferer}
     {rank=same phone checker}

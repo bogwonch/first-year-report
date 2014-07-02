@@ -3,16 +3,16 @@ digraph policies{
   //rankdir = LR;
   splines = true;
 
-  user      [label="User Policy"      shape=cds fontname="Helvetica" color="crimson" fontcolor="crimson"]
-  work      [label="Work Policy"      shape=cds fontname="Helvetica"]
-  it        [label="Admin Policy"     shape=cds fontname="Helvetica"]
-  net       [label="Network Policy"   shape=cds fontname="Helvetica"]
-  os        [label="OS Policy"        shape=cds fontname="Helvetica"]
-  store     [label="Store Policy"     shape=cds fontname="Helvetica"]
-  law       [label="Regional Law"     shape=cds fontname="Helvetica"]
-  exception [label="Exceptions"       shape=cds fontname="Helvetica"]
-  dev       [label="Developer Policy" shape=cds fontname="Helvetica"]
-  device    [label="Device Policy"    shape=cds fontname="Helvetica"]
+  user      [label="User Policy"      shape=cds fontname="LMSans10-Regular" color="crimson" fontcolor="crimson"]
+  work      [label="Work Policy"      shape=cds fontname="LMSans10-Regular"]
+  it        [label="Admin Policy"     shape=cds fontname="LMSans10-Regular"]
+  net       [label="Network Policy"   shape=cds fontname="LMSans10-Regular"]
+  os        [label="OS Policy"        shape=cds fontname="LMSans10-Regular"]
+  store     [label="Store Policy"     shape=cds fontname="LMSans10-Regular"]
+  law       [label="Regional Law"     shape=cds fontname="LMSans10-Regular"]
+  exception [label="Exceptions"       shape=cds fontname="LMSans10-Regular"]
+  dev       [label="Developer Policy" shape=cds fontname="LMSans10-Regular"]
+  device    [label="Device Policy"    shape=cds fontname="LMSans10-Regular"]
   
   os -> device;
   work -> it -> device

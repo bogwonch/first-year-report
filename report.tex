@@ -213,7 +213,7 @@ which we may informally call their personal \emph{security policy}.
 
 \begin{marginfigure}
   \label{fig:policies}
-  \includegraphics[width=\marginlength]{img/policies.eps}
+  \includegraphics[width=\marginlength]{img/policies.pdf}
   \caption{Different policies being applied to one another.  Users, businesses
   and stores are all subject to regional laws.  A store may have a policy but
 the developers who write the apps may also add their own rules in.  Devices
@@ -373,7 +373,7 @@ the right to complete a certain action.
 \subsection{Project Context (App Guarden)}
 
 \begin{figure}
-  \includegraphics[width=\linewidth]{img/appguarden.eps}
+  \includegraphics[width=\linewidth]{img/appguarden.pdf}
   \caption{Overview of the different entities in App Guarden.  Each of the ovals
   represents a different device inside the system; each rectangle or trapezium
   represents  different supplier of apps, and each diamond is an authority that
@@ -394,27 +394,27 @@ Figure~\ref{fig:ag} where devices are interacting with stores and security
 services such as static analysis tools or proof checkers. 
 
 \begin{marginfigure}
-  \includegraphics[width=\marginlength]{img/proxystore.eps}
+  \includegraphics[width=\marginlength]{img/proxystore.pdf}
   \caption{Security policies and the proxying store}
   \label{fig:proxy}
 \end{marginfigure}
 
 \begin{marginfigure}
-  \includegraphics[width=\marginlength]{img/digitalevidence.eps}
+  \includegraphics[width=\marginlength]{img/digitalevidence.pdf}
   \caption{Checking services and an app store.}
   \label{fig:de}
 \end{marginfigure}
 
 \begin{marginfigure}
   
-  \includegraphics[width=\marginlength]{img/mcafee.eps}
+  \includegraphics[width=\marginlength]{img/mcafee.pdf}
   \caption{Use of an expert checker.}
 \label{fig:mcafee}
 \end{marginfigure}
 
 \begin{marginfigure}
   
-  \includegraphics[width=\marginlength]{img/altstore.eps}
+  \includegraphics[width=\marginlength]{img/altstore.pdf}
   \caption{A device using multiple stores with different policies.}
 \label{fig:altstore}
 \end{marginfigure}
@@ -474,7 +474,7 @@ model~\cite{Drake:2014uq}.
 
 \begin{figure*}
   \centering
-  \includegraphics[width=\linewidth]{img/mobile-software-platform.eps}
+  \includegraphics[width=\linewidth]{img/mobile-software-platform.pdf}
   \caption{Overview of a components in a mobile software platform like Android.
     Diagram taken from the \emph{Mobile Platform Security} course at the
   University of Helsinki~\cite{Asokan:9AWuNtvh}.}
@@ -647,7 +647,7 @@ and restrict permission [ ACCESS_FINE_LOCATION
 
 \begin{marginfigure}
   \centering
-  \includegraphics[width=\marginlength]{img/taint.eps}
+  \includegraphics[width=\marginlength]{img/taint.pdf}
   \caption{A flow between components a tool like SCanDroid might
   catch. The aim would be to detect that data from the internet is send to an
 activity app which can then be sent to an app without the internet permission.}
@@ -1083,7 +1083,7 @@ First they define a fact to be \emph{flat} if it does not contain a
 \SetKwData{vCondC}{condition-3}
 \SetKwData{vTrue}{True}
 \SetKwData{vFalse}{False}
-\SetKwData{vwild}{*}
+\SetKwData{vwild}{\star~}
 \begin{algorithm}[H]
   \Input{a fact \vF}
   \Output{a boolean indicating if \vF is flat}
@@ -1838,10 +1838,22 @@ the statement into the assertion context would involve checking the signature
 matches the app itself.  The package-manager asks the user whether the app
 should be installed: we model this as a constraint in SecPAL as this decision is
 made every time the app is installed and the decision made by the user is not
-stored as an assertion.  The app is only installed if it isn't already
+stored as an assertion. Normally this prompt will only display the permissions
+the app requires, but for some app known to be dangerous and additional warning
+may be displayed as shown in Figure~\ref{fig:androiddanger}. The app is only installed if it isn't already
 installed, again we model this as a constraint.  Finally the package manager
 only says the package was installed if the installation process carried out by
 \texttt{installd} succeded. 
+
+\begin{marginfigure}
+  \centering
+  \includegraphics[width=\marginlength]{img/towelroot.png}
+  \caption{The additional warning displayed when a user attempts to install an
+    app known to be dangerous: in this case \emph{George Hotz's Towelroot} app
+    that enables access to the root user account through a Linux kernel exploit.
+    \url{http://towelroot.com}}
+    \label{fig:androiddanger}
+  \end{marginfigure}
 
 \begin{lstlisting}[language=SecPAL]
 Android says Com.Android.Server.PM can-say 0 app PACKAGE_ADDED.
@@ -2034,7 +2046,7 @@ will become the \emph{curated stores}.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{img/appguardenstore.eps}
+  \includegraphics[width=\textwidth]{img/appguardenstore.pdf}
   \caption{Model of the App Guarden store architecture.}
   \label{fig:appguardenstore}
 \end{figure}
@@ -2051,7 +2063,7 @@ when combined with the danger provided by user supplied policy
 files\footnote{Interpreting user supplied data can be dangerous as if the
   interpreter can be exploited through the data passed, this can compromise the
   integrity of the entire store.  Similarly if the policy language can form a
-  \emph{weird machine}~\cite{Bratus:wr} then it is possible to tie up the
+  \emph{weird machine}~\cite{Bratus:2011wr} then it is possible to tie up the
 interpreter indefinitely or perform arbitrary calculations.}. The engineering
 difficulty in developing such a store can be mitigated by sensible software
 development practices.  Android allows apps to be installed by the system
@@ -2064,7 +2076,7 @@ who can send their results to the app database and the \emph{device} wanting to
 check their statements.  This is shown in Figure~\ref{fig:implement}.
 
 \begin{marginfigure}
-  \includegraphics[width=\marginlength]{img/shop.eps}
+  \includegraphics[width=\marginlength]{img/shop.pdf}
   \caption{Components which speak to each other in an implementation of the App
   Guarden curated stores.}
   \label{fig:implement}
@@ -2314,7 +2326,7 @@ breaking the policy.  A taint analysis tool, like
 \emph{TaintDroid}~\cite{Enck:2010uw}, can detect when this attack occurs.
 
 \begin{marginfigure}
-  \includegraphics[width=\marginlength]{img/collusion.eps}
+  \includegraphics[width=\marginlength]{img/collusion.pdf}
   \caption{Two apps who could collude to leak contacts over the internet}
   \label{fig:collude}
 \end{marginfigure}

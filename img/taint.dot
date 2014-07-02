@@ -3,22 +3,22 @@ digraph taint {
   overlap=false;
   rankdir=LR;
   splines=true;
-  graph [fontname="Helvetica"]
+  graph [fontname="LMSans10-Regular"]
 
-  net [label="The\nInternet" shape=none fontcolor=crimson fontname="Helvetica"];  
+  net [label="The\nInternet" shape=none fontcolor=crimson fontname="LMSans10-Regular"];  
 
-  subgraph cluster_source {fontname="Helvetica"
+  subgraph cluster_source {fontname="LMSans10-Regular"
     label="Source App";
-    perm [label="INTERNET" shape=none fontcolor=black fontname="Helvetica"];      
-    act [label="Activity" shape=rectangle color=crimson fontcolor=crimson fontname="Helvetica"];
+    perm [label="INTERNET" shape=none fontcolor=black fontname="LMSans10-Regular"];      
+    act [label="Activity" shape=rectangle color=crimson fontcolor=crimson fontname="LMSans10-Regular"];
   }
 
-  subgraph cluster_sink {fontname="Helvetica"
+  subgraph cluster_sink {fontname="LMSans10-Regular"
     label="Sink App";
-    perm2 [label="" shape=none fontname="Helvetica"];
-    oncreate [label="OnCreate" shape=rectangle color=crimson fontcolor=crimson fontname="Helvetica"];
+    perm2 [label="" shape=none fontname="LMSans10-Regular"];
+    oncreate [label="OnCreate" shape=rectangle color=crimson fontcolor=crimson fontname="LMSans10-Regular"];
   }
 
   net -> act;
-  act -> oncreate [label=send fontname="Helvetica" fontcolor=crimson color=crimson];
+  act -> oncreate [label=send fontname="LMSans10-Regular" fontcolor=crimson color=crimson];
 }

@@ -2,11 +2,11 @@ digraph proxystore {
   overlap = false;
   splines = true;
 
-  appStore      [label="App Store"      shape=box          fontname="Helvetica"]
-  proxyStore    [label="Proxy Store"    shape=invtrapezium fontname="Helvetica"]
-  companyPolicy [label="Company Policy" shape=cds          fontname="Helvetica"]
-  userPolicy    [label="User Policy"    shape=cds          fontname="Helvetica"]
-  phone         [label="Company\nPhone" shape=oval         fontname="Helvetica"]
+  appStore      [label="App Store"      shape=box          fontname="LMSans10-Regular"]
+  proxyStore    [label="Proxy Store"    shape=invtrapezium fontname="LMSans10-Regular"]
+  companyPolicy [label="Company Policy" shape=cds          fontname="LMSans10-Regular"]
+  userPolicy    [label="User Policy"    shape=cds          fontname="LMSans10-Regular"]
+  phone         [label="Company\nPhone" shape=oval         fontname="LMSans10-Regular"]
 
   appStore      -> proxyStore -> phone;
   companyPolicy -> proxyStore;

@@ -3,18 +3,18 @@ digraph appguardenstore {
   splines = true;
   rankdir = LR;
 
-  PlayStore [label="Google\nPlay Store" shape=box          fontname="Helvetica"];
-  MalwStore [label="Malware\nStore"     shape=box          fontname="Helvetica"];
-  AGStore   [label="App Guarden\nStore" shape=box          fontname="Helvetica"];
-  PStore1   [label="Infected Store"     shape=invtrapezium fontname="Helvetica"];
-  PStore2   [label="Company Store"      shape=invtrapezium fontname="Helvetica"];
-  PStore3   [label="Curated Store"      shape=invtrapezium fontname="Helvetica"];
-  pol1      [label="User Policy"        shape=cds          fontname="Helvetica"];
-  pol2      [label="Company Policy"     shape=cds          fontname="Helvetica"];
-  pol3      [label="User Policy"        shape=cds          fontname="Helvetica"];
-  phone1    [label="Infected Phone"     shape=oval         fontname="Helvetica"];
-  phone2    [label="Company\nPhone"     shape=oval         fontname="Helvetica"];
-  phone3    [label="BYOD\nPhone"        shape=oval         fontname="Helvetica"];
+  PlayStore [label="Google\nPlay Store" shape=box          fontname="LMSans10-Regular"];
+  MalwStore [label="Malware\nStore"     shape=box          fontname="LMSans10-Regular"];
+  AGStore   [label="App Guarden\nStore" shape=box          fontname="LMSans10-Regular"];
+  PStore1   [label="Infected Store"     shape=invtrapezium fontname="LMSans10-Regular"];
+  PStore2   [label="Company Store"      shape=invtrapezium fontname="LMSans10-Regular"];
+  PStore3   [label="Curated Store"      shape=invtrapezium fontname="LMSans10-Regular"];
+  pol1      [label="User Policy"        shape=cds          fontname="LMSans10-Regular"];
+  pol2      [label="Company Policy"     shape=cds          fontname="LMSans10-Regular"];
+  pol3      [label="User Policy"        shape=cds          fontname="LMSans10-Regular"];
+  phone1    [label="Infected Phone"     shape=oval         fontname="LMSans10-Regular"];
+  phone2    [label="Company\nPhone"     shape=oval         fontname="LMSans10-Regular"];
+  phone3    [label="BYOD\nPhone"        shape=oval         fontname="LMSans10-Regular"];
   
   PlayStore -> AGStore;
   MalwStore -> PStore1;

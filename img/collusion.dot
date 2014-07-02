@@ -1,14 +1,14 @@
 digraph Collusion {
-  Contacts [shape=none fontname=Helvetica];
-  Internet [shape=none fontname=Helvetica];
+  Contacts [shape=none fontname="LMSans10-Regular"];
+  Internet [shape=none fontname="LMSans10-Regular"];
 
-  A [label="App 1" shape=square fontname=Helvetica];
-  B [label="App 2" shape=square fontname=Helvetica];
+  A [label="App 1" shape=square fontname="LMSans10-Regular"];
+  B [label="App 2" shape=square fontname="LMSans10-Regular"];
 
   Contacts -> A;
   Internet -> B [dir=back];
 
-  A -> B [dir=both label=RPC style=dotted fontname=Helvetica];
+  A -> B [dir=both label=RPC style=dotted fontname="LMSans10-Regular"];
 
   {rank=same Contacts Internet}
   {rank=source Contacts Internet}

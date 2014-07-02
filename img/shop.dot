@@ -1,12 +1,12 @@
 digraph shop {
 
-  Policies [label="Policies"         shape=cds       fontname=Helvetica];
-  Server   [label="Server"           shape=rectangle fontname=Helvetica];
-  Device   [label="Device"           shape=oval      fontname=Helvetica];
-  Users    [label="Users\nDB"        shape=Mcircle   fontname=Helvetica];
-  Apps     [label="Apps\nDB"         shape=Mcircle   fontname=Helvetica];
-  Shop     [label="Shop"             shape=rectangle fontname=Helvetica];
-  Checks   [label="Expert\nServices" shape=diamond   fontname=Helvetica];
+  Policies [label="Policies"         shape=cds       fontname="LMSans10-Regular"];
+  Server   [label="Server"           shape=rectangle fontname="LMSans10-Regular"];
+  Device   [label="Device"           shape=oval      fontname="LMSans10-Regular"];
+  Users    [label="Users\nDB"        shape=Mcircle   fontname="LMSans10-Regular"];
+  Apps     [label="Apps\nDB"         shape=Mcircle   fontname="LMSans10-Regular"];
+  Shop     [label="Shop"             shape=rectangle fontname="LMSans10-Regular"];
+  Checks   [label="Expert\nServices" shape=diamond   fontname="LMSans10-Regular"];
 
   {rank=source Apps Users};
   {rank=same Policies Server Checks};

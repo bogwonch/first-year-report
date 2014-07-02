@@ -2,20 +2,20 @@ digraph appguarden {
   overlap = false;
   splines = true;
 
-  altStore      [label="Alternative Store"  shape=box          fontname="Helvetica"]
-  appStore      [label="App Store"          shape=box          fontname="Helvetica"]
-  checker       [label="Checking\nService"  shape=diamond      fontname="Helvetica"]
-  companyPolicy [label="Company Policy"     shape=cds          fontname="Helvetica"]
-  expert        [label="Expert\nService"    shape=diamond      fontname="Helvetica"]
-  inferer       [label="Inference\nService" shape=diamond      fontname="Helvetica"]
-  phone         [label="Phone"              shape=oval         fontname="Helvetica"]
-  phone2        [label="Phone"              shape=oval         fontname="Helvetica"]
-  phone4        [label="Company\nPhone"     shape=oval         fontname="Helvetica"]
-  policy1       [label="Store Policy"       shape=cds          fontname="Helvetica"]
-  policy2       [label="Store Policy"       shape=cds          fontname="Helvetica"]
-  proxyStore    [label="Proxy Store"        shape=invtrapezium fontname="Helvetica"]
-  userPolicy    [label="User Policy"        shape=cds          fontname="Helvetica"]
-  userPolicy2   [label="User Policy"        shape=cds          fontname="Helvetica"]
+  altStore      [label="Alternative Store"  shape=box          fontname="LMSans10-Regular"]
+  appStore      [label="App Store"          shape=box          fontname="LMSans10-Regular"]
+  checker       [label="Checking\nService"  shape=diamond      fontname="LMSans10-Regular"]
+  companyPolicy [label="Company Policy"     shape=cds          fontname="LMSans10-Regular"]
+  expert        [label="Expert\nService"    shape=diamond      fontname="LMSans10-Regular"]
+  inferer       [label="Inference\nService" shape=diamond      fontname="LMSans10-Regular"]
+  phone         [label="Phone"              shape=oval         fontname="LMSans10-Regular"]
+  phone2        [label="Phone"              shape=oval         fontname="LMSans10-Regular"]
+  phone4        [label="Company\nPhone"     shape=oval         fontname="LMSans10-Regular"]
+  policy1       [label="Store Policy"       shape=cds          fontname="LMSans10-Regular"]
+  policy2       [label="Store Policy"       shape=cds          fontname="LMSans10-Regular"]
+  proxyStore    [label="Proxy Store"        shape=invtrapezium fontname="LMSans10-Regular"]
+  userPolicy    [label="User Policy"        shape=cds          fontname="LMSans10-Regular"]
+  userPolicy2   [label="User Policy"        shape=cds          fontname="LMSans10-Regular"]
 
 /*
   {rank=same appStore      policy2}
