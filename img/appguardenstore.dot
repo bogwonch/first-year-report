@@ -3,21 +3,24 @@ digraph appguardenstore {
   splines = true;
   rankdir = LR;
 
-  PlayStore [label="Google\nPlay Store" shape=box          fontname="LMSans10-Regular"];
-  MalwStore [label="Malware\nStore"     shape=box          fontname="LMSans10-Regular"];
-  AGStore   [label="App Guarden\nStore" shape=box          fontname="LMSans10-Regular"];
-  PStore1   [label="Infected Store"     shape=invtrapezium fontname="LMSans10-Regular"];
-  PStore2   [label="Company Store"      shape=invtrapezium fontname="LMSans10-Regular"];
-  PStore3   [label="Curated Store"      shape=invtrapezium fontname="LMSans10-Regular"];
-  pol1      [label="User Policy"        shape=cds          fontname="LMSans10-Regular"];
-  pol2      [label="Company Policy"     shape=cds          fontname="LMSans10-Regular"];
-  pol3      [label="User Policy"        shape=cds          fontname="LMSans10-Regular"];
-  phone1    [label="Infected Phone"     shape=oval         fontname="LMSans10-Regular"];
-  phone2    [label="Company\nPhone"     shape=oval         fontname="LMSans10-Regular"];
-  phone3    [label="BYOD\nPhone"        shape=oval         fontname="LMSans10-Regular"];
+  PlayStore [label="Google\nPlay Store"  shape=box          fontname="LMSans10-Regular"];
+  MalwStore [label="Disreputable\nStore" shape=box          fontname="LMSans10-Regular"];
+  AltStore  [label="Alternative\nStore"  shape=box          fontname="LMSans10-Regular"];
+  AGStore   [label="App Guarden\nStore"  shape=box          fontname="LMSans10-Regular"];
+  PStore1   [label="Quarantined Store"   shape=invtrapezium fontname="LMSans10-Regular"];
+  PStore2   [label="Company Store"       shape=invtrapezium fontname="LMSans10-Regular"];
+  PStore3   [label="Curated Store"       shape=invtrapezium fontname="LMSans10-Regular"];
+  pol1      [label="User Policy"         shape=cds          fontname="LMSans10-Regular"];
+  pol2      [label="Company Policy"      shape=cds          fontname="LMSans10-Regular"];
+  pol3      [label="User Policy"         shape=cds          fontname="LMSans10-Regular"];
+  phone1    [label="Risky Phone"         shape=oval         fontname="LMSans10-Regular"];
+  phone2    [label="Company\nPhone"      shape=oval         fontname="LMSans10-Regular"];
+  phone3    [label="BYOD\nPhone"         shape=oval         fontname="LMSans10-Regular"];
+  service   [label="Rewriting\nService"  shape=diamond      fontname="LMSans10-Regular"];
   
   PlayStore -> AGStore;
-  MalwStore -> PStore1;
+  MalwStore -> AGStore;
+  AltStore  -> AGStore;
   AGStore   -> PStore1;
   AGStore   -> PStore2;
   AGStore   -> PStore3;
@@ -25,9 +28,11 @@ digraph appguardenstore {
   pol2      -> PStore2 -> phone2;
   pol3      -> PStore3 -> phone3;
   PStore2   -> phone3;
+  PStore2   -> service [dir=none style=dotted];
 
   {rank=same; pol1 PStore1} {rank=same pol2 PStore2} {rank=same pol3 PStore3}
   {rank=same; PlayStore MalwStore}
+  {rank=same; AGStore service}
 
 }
 

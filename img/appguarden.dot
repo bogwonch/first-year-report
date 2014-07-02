@@ -2,6 +2,8 @@ digraph appguarden {
   overlap = false;
   splines = true;
 
+  node [fontname="LMSans10-Regular"];
+
   altStore      [label="Alternative Store"  shape=box          fontname="LMSans10-Regular"]
   appStore      [label="App Store"          shape=box          fontname="LMSans10-Regular"]
   checker       [label="Checking\nService"  shape=diamond      fontname="LMSans10-Regular"]
@@ -17,6 +19,19 @@ digraph appguarden {
   userPolicy    [label="User Policy"        shape=cds          fontname="LMSans10-Regular"]
   userPolicy2   [label="User Policy"        shape=cds          fontname="LMSans10-Regular"]
 
+  subgraph cluster_key {
+    fontname="LMSans10-Bold";
+    label="Key";
+
+    Device [shape=oval];
+    Store [shape=box];
+    Service [shape=diamond];
+    Policy [shape=cds];
+    Proxy [shape=invtrapezium];
+    
+    edge [style=invisible arrowhead=none]
+    Policy -> Device -> Store -> Proxy -> Service;
+  }
 /*
   {rank=same appStore      policy2}
   {rank=same companyPolicy proxyStore}

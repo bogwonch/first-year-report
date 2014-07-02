@@ -34,7 +34,7 @@ Android is an operating system for mobile phones.  Users run prepackaged
 software (\emph{apps}) which they download from special app stores.
 
 \begin{marginfigure}
-  \includegraphics[width=\marginlength]{img/facebookperms.jpeg}
+  \includegraphics[width=\smallmarginlength]{img/facebookperms2.png}
   \caption{Some of the permissions requested by the Facebook app on Android.
   When installing an app a user is presented with a list of permissions the app
 requires to run.  Permissions describe what phone features an app will have
@@ -212,15 +212,15 @@ if they want to install an app: to do this they apply a series of judgements
 which we may informally call their personal \emph{security policy}.  
 
 \begin{marginfigure}
-  \label{fig:policies}
   \includegraphics[width=\marginlength]{img/policies.pdf}
-  \caption{Different policies being applied to one another.  Users, businesses
+  \caption{Compound policies applied to one another.  Users, businesses
   and stores are all subject to regional laws.  A store may have a policy but
 the developers who write the apps may also add their own rules in.  Devices
 might have their own policies set by their designers but also have the OS
 policies.  If the device is used on a network certain traffic may be restricted.
 The user's policy (in red) is just one component of this ecosystem and cannot be
 considered on its own.}
+  \label{fig:policies}
 \end{marginfigure}
 
 The user has their own security policy. They also have other security policies
@@ -235,7 +235,7 @@ need to be combined to create a policy that will work in multiple environments
 and on a system with its own rules.  An example of how a compound policy might
 be written is shown in Figure~\ref{example:composition}.
 
-\begin{marginfigure}\label{example:composition}
+\begin{marginfigure}  
   \begin{lstlisting}[language=SecPAL]
 Phone says app is-installable
   if app meets UserSecurityPolicy,
@@ -254,6 +254,8 @@ Phone says ITAdmin can-say inf
   \end{lstlisting}
   \caption{A compound security policy where an installation policy for a
     phone is dependent on other security policies.}
+  \label{example:composition}
+
 \end{marginfigure}
      
 Suppose the phone uses this policy for a while but the user changes jobs.
@@ -291,10 +293,9 @@ excessive permissions in applications~\cite{Felt:2011kj,Vidas:2011wr} there
 has not been a thorough review of how permissions change for apps over time
 and between versions of the same app as far as we know. 
 
-% TODO ADD BIT EXPLAINING HOW TO DO THIS
 
 
-\subsection{Personally Curated App Stores}
+\subsection{Curated App Stores}
 
 Apps are normally distributed on mobile devices through an app
 store.  On iOS users have the \emph{App Store}: a curated market place run by
@@ -354,32 +355,14 @@ the user's security policy.  By creating app stores tailored to a security
 policy we also give ourselves a way to empirically measure how restrictive a
 security policy is: we can measure the number of apps offered inside the stores.
 
-To enhance trust in the store digital evidence could be offered
-with the apps This would give devices a practical means to check the app is
-supported by their security policy without having to re-run all the static
-analysis checks
-themselves. This should also save device battery life.  
-
-Proof-carrying authentication~\cite{Appel:1999dq} and authorization logics such
-as BLF~\cite{Whitehead:2004bu} have already introduced ideas from proof-carrying
-code into authorization logics. The focus of their work has been on
-access control where a user is providing a proof that they have the credentials
-to access a resource.   In the scenario we propose the role of the user is
-reversed: the store offers many proofs to the user to increase their trust in
-its wares; rather than the user offering one specific proof to prove they have
-the right to complete a certain action.
-
-
 \subsection{Project Context (App Guarden)}
 
 \begin{figure}
   \includegraphics[width=\linewidth]{img/appguarden.pdf}
-  \caption{Overview of the different entities in App Guarden.  Each of the ovals
-  represents a different device inside the system; each rectangle or trapezium
-  represents  different supplier of apps, and each diamond is an authority that
-  makes statements about apps and other software decisions.  Arrow boxes show
-policies.  Arrows represent transfers of information or apps, and dotted line
-indicate that the two entities are connected in some other way.}\label{fig:ag}
+  \caption{Overview of the different entities in App Guarden.  Arrows represent
+  transfers of information or apps, and dotted line indicate that the two
+  entities are connected in some other way.}
+\label{fig:ag}
 \end{figure}
 
 This thesis will form part of the \emph{App
@@ -432,9 +415,20 @@ apps that meet their own policies.  At each stage (as shown in
 Figure~\ref{fig:proxy}) judgements are being made about what is acceptable from
 an app store, and the policies are refined.
 
-Another example might be an app store that supplies apps with \emph{digital
-evidence}.  When the app store sells an app it wants to reassure its users that
-it real guarantees that the app it is selling meets the security guarantees it
+Proof-carrying authentication~\cite{Appel:1999dq} and authorization logics such
+as BLF~\cite{Whitehead:2004bu} have already introduced ideas from proof-carrying
+code into authorization logics. The focus of their work has been on access
+control where a user is providing a proof that they have the credentials to
+access a resource.   In the scenario we propose the role of the user is
+reversed: the store offers many proofs to the user to increase their trust in
+its wares; rather than the user offering one specific proof to prove they have
+the right to complete a certain action.  These proofs also form an audit trail
+we can present to the user to say why a decision was made.  This provides a
+valuable justification for each decision, as well as aiding the debugging of
+policies.
+
+The app store sells apps and it wants to reassure its users that
+it guarantees that the app it sells meets the policies it
 claims.  Being able to infer these properties is complex and takes both time and
 battery power; this is difficult as many phones are battery constrained.  To
 avoid this the app store uses an inference service to produce digital evidence
@@ -499,7 +493,7 @@ checks in code.
 
 \begin{marginfigure}
   \centering
-  \includegraphics[width=\marginlength]{img/brightestflashlight.png}
+  \includegraphics[width=\smallmarginlength]{img/brightestflashlight.png}
   \caption{The \emph{Brightest Flashlight Free} app prompting for its permissions
     at install time. This app is over privileged as a flashlight app should have
     no need for GPS or phone data, or network access.  This extra functionality
@@ -1285,7 +1279,7 @@ $A$dministrative role.  All processes started by a user with this
 role\footnote{Technically all subjects (processes) started under the root file
   system which is almost the same thing.} may $r$elax debugging restrictions,
   $v$iew and $k$ill all processes as well as $a$dministrate the system.
-For all files under the '/' path they may $r$ead and $w$rite files, $c$reate and
+For all files under the `/' path they may $r$ead and $w$rite files, $c$reate and
 $d$elete files or directories, $m$ark files as setuid or setgid, hardlink files,
 e$x$ecute or map into executable memory, and any new binaries $i$nherit being
 owned by the admin role.
@@ -1790,28 +1784,8 @@ AC, inf [app\AngryBirds] |= Alice says AngryBirds is-installable.
 \label{secpal:exampleproof}
 \end{figure}
 
-\section{Thesis Proposal}
-
-I would like to focus on developing security policies for mobile systems.  My
-first year has focussed on learning the SecPAL language, evaluating what
-scenarios in Android it can express, and trying to find the right logic language
-to model the issues surrounding smart phones.  The next two years will be spent
-exploring what happens when these policies interact with users.
-
-\subsection{Policy Language for Mobile Devices}
-\label{sec:proposallang}
-
-The first stage of the project will be to complete the work done in the first
-year. I will show that a logic of authorization can model the security decisions
-made inside Android; and that it is capable of describing complex security
-policies. 
-
-The logic of authorization must be able to describe how the current mobile
-ecosystems (such as Android and iOS) work.  There are already several situations
-where Android makes a decision as to whether an app is allowed to be installed
-or updated.  The reasoning behind these decisions is embedded in the code
-itself.  The authorization logic will describe these policies: this
-will clarify and formalize the policies present in the code.
+\subsection{Modelling Mobile Operating Systems}
+\label{sec:modellingmobileos}
 
 One example of a decision made by Android phones is whether to install or update
 an app.  Android allows a user to install any app.  There are two methods to
@@ -1847,7 +1821,7 @@ only says the package was installed if the installation process carried out by
 
 \begin{marginfigure}
   \centering
-  \includegraphics[width=\marginlength]{img/towelroot.png}
+  \includegraphics[width=\smallmarginlength]{img/towelroot.png}
   \caption{The additional warning displayed when a user attempts to install an
     app known to be dangerous: in this case \emph{George Hotz's Towelroot} app
     that enables access to the root user account through a Linux kernel exploit.
@@ -1897,10 +1871,46 @@ Com.Android.Server.PM says app PACKAGE_REPLACED
      installd(app) = Success.
 \end{lstlisting}
 
-This example suggests that the SecPAL language can describe the
-authorization decisions in Android. We have been able to describe the
-installation and update scenario with relative ease.  Installation is not the
-only decision we have to make on Android. Other areas include:
+
+\section{Thesis Proposal}
+
+In my first year I have been learning the SecPAL language, evaluating what
+scenarios in Android it can express, and trying to find the right logic language
+to model the issues surrounding smart phones.  The next two years will be spent
+exploring what happens when these policies interact with users.
+
+In the remaining time I will work on the following areas:
+
+\begin{itemize}
+  \item Describing how authorization decisions are made in Android using an
+    authorization logic.
+  \item Building an app store that allows for the filtering and modification of
+    apps on the basis of policies.
+  \item Evaluating how different policies interact and the effects of filtering.
+  \item Creating richer policies for users and to describe difficult Android
+    scenarios.
+\end{itemize}
+
+\subsection{Policy Language for Mobile Devices}
+\label{sec:proposallang}
+
+The first stage of the project will be to complete the work done in the first
+year. I will show that a logic of authorization can model the security decisions
+made inside Android; and that it is capable of describing complex security
+policies. 
+
+The logic of authorization must be able to describe how the current mobile
+ecosystems (such as Android and iOS) work.  There are already several situations
+where Android makes a decision as to whether an app is allowed to be installed
+or updated.  The reasoning behind these decisions is embedded in the code
+itself.  The authorization logic will describe these policies: this
+will clarify and formalize the policies present in the code.
+
+The description of the Android installation procedure in
+Section~\ref{sec:modellingmobileos} suggests that the SecPAL language could
+describe the authorization decisions in Android. We have been able to describe
+the installation and update scenario with relative ease.  Installation is not
+the only decision we have to make on Android. Other areas include:
 
 \begin{itemize}
   \item Comparison of different app~stores app~submission policies.
@@ -1910,6 +1920,10 @@ only decision we have to make on Android. Other areas include:
   \item Data sharing between apps.
   \item Remote data access and debugging.
 \end{itemize}
+
+This is interesting because by modeling these decisions we are able to
+compare the different mobile OSs precisely.  It also may allow us to find
+problems in the implicit policies in the code by specifying them formally.
 
 To describe these scenarios we need a policy language that has the following
 features:
@@ -2023,7 +2037,7 @@ their potential solutions.  This technical report will be the first milestone
 for my PhD and will be used to provide the start to my thesis.
 
 
-\subsection{Exploring Policies and the App Guarden}
+\subsection{Exploring Policies and App Guarden}
 
 The next area to look at will be the policies users want when downloading apps.
 To explore these policies we will create an app store where users can express
@@ -2047,7 +2061,7 @@ will become the \emph{curated stores}.
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{img/appguardenstore.pdf}
-  \caption{Model of the App Guarden store architecture.}
+  \caption{Model of App Guarden store architecture.}
   \label{fig:appguardenstore}
 \end{figure}
 
@@ -2650,6 +2664,11 @@ in real life.  Most static analysis tools are not utterly trustworthy. Being
 able model decisions based on levels of trust and quantify any statement allows
 us to model more closely the decisions we make and may allow us to express new,
 interesting policies.
+
+
+\subsection{Evaluation of App Guarden}
+
+% <+TODO+>
 
 \subsection{Conclusion}
 

@@ -2,11 +2,13 @@ digraph digitalevidence {
   overlap = false;
   splines = true;
 
+  edge [fontname="LMSans9-Oblique"];
+
   subgraph cluster_store {
     style=filled;
     color=white;
-    appStore      [label="App Store"         shape=box     fontname="LMSans10-Regular"]
-    phone         [label="Phone"             shape=oval    fontname="LMSans10-Regular"]
+    appStore      [label="App Store"         shape=box      fontname="LMSans10-Regular"]
+    phone         [label="Phone"             shape=oval     fontname="LMSans10-Regular"]
     checker       [label="Checking\nService"  shape=diamond fontname="LMSans10-Regular"]
     inferer       [label="Inference\nService" shape=diamond fontname="LMSans10-Regular"]
     
@@ -15,9 +17,9 @@ digraph digitalevidence {
   }
 
   //companyPolicy -> appStore;
-  inferer       -> appStore;
-  appStore      -> inferer;
-  appStore      -> phone;
+  inferer       -> appStore [label="Evidence"];
+  appStore      -> inferer [label="App"];
+  appStore      -> phone [label="App\n+\nEvidence" labeljust=l];
   phone         -> checker;
   checker       -> phone;
   inferer       -> checker [style=dotted arrowhead=none];
