@@ -1,5 +1,9 @@
-\documentclass[a4paper]{article}
-%\documentclass[a4paper,sfsidenotes]{tufte-book}
+\documentclass[a4paper,sfsidenotes]{%
+  %report%
+  %scrreprt%
+  article%
+  %tufte-book%
+}
 \usepackage{localstyle} % local style file
 
 \renewcommand{\bibsection}{\section{\refname}}
@@ -21,7 +25,7 @@
 }
 
 \bibliographystyle{plainnat}
-\begin{document}
+\begin{document}\frenchspacing
 \maketitle
 \setcounter{tocdepth}{3}
 \tableofcontents
@@ -50,7 +54,7 @@ reasons: because they don't understand the risks, they don't understand the
 permissions, or they simply don't care and will install the app whatever.
 
 Facebook is an example of an app which requests a large number of permissions
-(Figure~\ref{fig:fb}). Users trust Facebook not to be malicious even though it
+(\autoref{fig:fb}). Users trust Facebook not to be malicious even though it
 has access to amount of their personal data.  Some apps are over
 privileged~\cite{Felt:2011kj}: they request permissions that grants them access
 to data they do not use. Some apps are malicious~\cite{Zhou:2012cf}: they
@@ -233,7 +237,7 @@ Blackberry and Sailfish operating systems.  Each system may add additional
 restrictions that may make some apps not installable.  Sometimes these policies
 need to be combined to create a policy that will work in multiple environments
 and on a system with its own rules.  An example of how a compound policy might
-be written is shown in Figure~\ref{example:composition}.
+be written is shown in \autoref{example:composition}.
 
 \begin{marginfigure}  
   \begin{lstlisting}[language=SecPAL]
@@ -373,7 +377,7 @@ by developing new tools to analyze apps and the app stores that sell them.
 This work contributes by developing the security policies that describe what the
 user wants and showing how they can be enforced using the tools that can check
 security policies within the code.  The end result might be a system as shown in
-Figure~\ref{fig:ag} where devices are interacting with stores and security
+\autoref{fig:ag} where devices are interacting with stores and security
 services such as static analysis tools or proof checkers. 
 
 \begin{marginfigure}
@@ -412,7 +416,7 @@ store.  The proxy app store takes apps from the main store but discards any apps
 which might break the policy it is supplied with.  Users may download apps from
 the company store, but they might exercise their own judgement and only download
 apps that meet their own policies.  At each stage (as shown in
-Figure~\ref{fig:proxy}) judgements are being made about what is acceptable from
+\autoref{fig:proxy}) judgements are being made about what is acceptable from
 an app store, and the policies are refined.
 
 Proof-carrying authentication~\cite{Appel:1999dq} and authorization logics such
@@ -434,18 +438,18 @@ battery power; this is difficult as many phones are battery constrained.  To
 avoid this the app store uses an inference service to produce digital evidence
 to be supplied with the app that shows (with the aid of a checking service that
 could be running on the device) that an app meets the policy (as shown in
-Figure~\ref{fig:de}). Other parts of the App Guarden project are 
+\autoref{fig:de}). Other parts of the App Guarden project are 
 developing these tools.
 
 An alternative form of this could be where a store delegates to an expert third
 party to make statements about the apps it sells.  One might imagine a scenario
 where an app store might claim \emph{``We don't sell viruses in our store, but
 don't take our word for it: here's a well known anti-virus company that will
-verify our claim''} (as shown in Figure~\ref{fig:mcafee}).
+verify our claim''} (as shown in \autoref{fig:mcafee}).
 
 If a user is using multiple stores (for example a jail broken iPhone user might
 buy apps from both the App Store and the Cydia Store) then the policies the user
-might be applying become complex (as described in Figure~\ref{fig:altstore}).
+might be applying become complex (as described in \autoref{fig:altstore}).
 This leads to interesting questions around how policies should be composed and
 the equivalence of security policies when they are; as well as questions about
 the overall device policy in a system.
@@ -459,6 +463,9 @@ and device policies rather than the intricacies of code analysis.
 
 \section{Review of Android Security}
 
+Since Android is used as the basis for many mobile OSs a review is given of its
+security features.
+
 Android is a Linux OS for mobile phones and consumer electronics. It has a large
 software market of apps. Apps on the Dalvik virtual machine.  Dalvik is a
 modified JVM architecture: it uses registers rather than stacks to save memory
@@ -471,12 +478,14 @@ model~\cite{Drake:2014uq}.
   \includegraphics[width=\linewidth]{img/mobile-software-platform.pdf}
   \caption{Overview of a components in a mobile software platform like Android.
     Diagram taken from the \emph{Mobile Platform Security} course at the
-  University of Helsinki~\cite{Asokan:9AWuNtvh}.}
+  University of Helsinki.}%~\cite{Asokan:9AWuNtvh}.}
   \label{fig:mobilesoftwareplatform}
 \end{figure*}
 
 \subsection{Permissions and Apps}
 
+Android permissions are the access control mechanism users see most often.  This
+section reviews their mechanisms and tools for analysing their use in apps.
 
 Android permissions come in three varieties: API permissions, file system
 permissions, and IPC permissions.  API permissions say what high level
@@ -488,7 +497,7 @@ and file system permissions.  In this case any process started from an app with
 the \texttt{INTERNET} is assigned the \texttt{inet} file system permission which
 is used by the kernel to control access to network sockets.  Not all API
 permissions are enforced through file system permissions: those which do are
-shown in Figure~\ref{tab:perms}.  Other API permissions are enforced through
+shown in \autoref{tab:perms}.  Other API permissions are enforced through
 checks in code.  
 
 \begin{marginfigure}
@@ -527,7 +536,7 @@ by the permission is exposed in an API then other apps could collude with the
 overprivileged app to gain privileges: as in the collusion attacks.
 
 Tools can detect when an app is over privileged (like the app in
-Figure~\ref{img:brightestflashlight}). The \emph{Stowaway}
+\autoref{img:brightestflashlight}). The \emph{Stowaway}
 tool~\cite{Felt:2011kj} mapped Android permissions onto the API calls. This
 allowed \citeauthor*{Felt:2011kj} to detect when apps were over privileged by
 looking for those with the permissions but not the associated API calls. The
@@ -623,7 +632,7 @@ information to an advertisement service, or a potential thief.
 \emph{Kirin}~\cite{Enck:2009ko} certifies apps at install time based on
 the requested permissions and potential dataflows between apps.
 Kirin lets users write security policies that prevent apps with certain
-permissions or intent handlers (discussed in Section~\ref{sec:intents}).  For
+permissions or intent handlers (discussed in \autoref{sec:intents}).  For
 example the location tracking app could be banned with the Kirin policy:
 
 \begin{lstlisting}[language=Kirin]
@@ -638,6 +647,9 @@ and restrict permission [ ACCESS_FINE_LOCATION
 \end{lstlisting}
 
 \subsection{Intents and Collusion}\label{sec:intents}
+
+Intents are the standard method for IPC on Android.  This section explains the
+mechanism as well as the collusion attack to escalate a processes privileges.
 
 \begin{marginfigure}
   \centering
@@ -684,6 +696,10 @@ is sent to a sink.
 
 \subsection{Logics of Authorization}
 
+Logics of authorization allow policies to be written that restrict what an
+entity can do.  They are a key topic in this proposal and various different
+logics are reviewed for comparison.
+
 When an action is performed, such as reading a file or installing an app,
 conditions must be met for it to go ahead. The conditions form the
 \emph{authorization~policy} and we make a choice with respect to that policy
@@ -702,7 +718,7 @@ regular expressions, or  a special version of AWK. Any language could be
 used, however.  The author suggested it might work well as a model for the
 public-key infrastructure. If we want a policy that only allows Alice
 (identified by key ``\textsf{0x12345678}'') to say she is Alice at Microsoft we
-write the policy in Figure~\ref{policymaker:alice}.  If we received a request
+write the policy in \autoref{policymaker:alice}.  If we received a request
 from a different key to say they're Alice it would be denied; wheres a message
 from Alice's key would be authorized.
 
@@ -749,7 +765,7 @@ however.
 for public-key infrastructure.  Like PolicyMaker it authorized actions based on
 keys and a series of conditions.  It drops support for arbitrary program
 checkers; opting for its own specific language~\cite{Blaze:1999vc}.  An example
-of KeyNote is given in Figure~\ref{keynote:example}. 
+of KeyNote is given in \autoref{keynote:example}. 
 
 \begin{figure}
   \begin{lstlisting}[language=KeyNote]
@@ -763,7 +779,7 @@ Conditions: (app_domain == `RFC822-EMAIL') &&
             (name=`Alice') &&
             (address=`.*@microsoft.com');
   \end{lstlisting}
-  \caption{The policy from Figure~\ref{policymaker:alice} rewritten in KeyNote.}
+  \caption{The policy from \autoref{policymaker:alice} rewritten in KeyNote.}
   
 \label{keynote:example}
 \end{figure}
@@ -964,7 +980,7 @@ app to apply to it.  Rather than duplicate all the rules for the new app (making
 their policy unwieldy) they can alias \texttt{SendSMS} to the \texttt{SMSSender}
 app.  This ensures that the new \texttt{SendSMS} app will only be able to act if
 the old \texttt{SMSSender} could have. The SecPAL code for this is shown in
-Figure~\ref{fig:canactas}.
+\autoref{fig:canactas}.
 
 \begin{figure}
 \begin{lstlisting}[language=SecPAL]
@@ -1022,7 +1038,7 @@ extended version of) {SecPAL} designed to specify how users' wished their
 \label{secpal:rules}
 \end{figure}
 
-The inference rules for SecPAL are shown in Figure~\ref{secpal:rules}. Queries
+The inference rules for SecPAL are shown in \autoref{secpal:rules}. Queries
 are evaluated against a set of known statements (the \ac{AC}) and an initially
 infinite delegation level ($D$). If the rules show that the query is valid then
 SecPAL says the statement is okay else it is rejected.
@@ -1077,13 +1093,13 @@ First they define a fact to be \emph{flat} if it does not contain a
 \SetKwData{vCondC}{condition-3}
 \SetKwData{vTrue}{True}
 \SetKwData{vFalse}{False}
-\SetKwData{vwild}{\star~}
+\SetKwData{vwild}{$\star$}
 \begin{algorithm}[H]
   \Input{a fact \vF}
   \Output{a boolean indicating if \vF is flat}
   \Fn{\FFlat{\vF:Fact}}{%
     \Match{\vF}{
-      \With{\vwild can-say \vwild \vwild}{\vFalse}
+      \With{\vwild~can-say~\vwild~\vwild}{\vFalse}
       \Other{\vTrue}
     }
   }
@@ -1095,7 +1111,7 @@ conditional facts of the claim ($fs$) and not just the constraint.
 \begin{algorithm}[H]
   \Input{an entity \vE and a claim \vC}
   \Output{a boolean indicating if the variable \vE is safe in the claim \vC}
-  \Fn{\FSafeIn{\vE:Constant, \vwild}}{\vTrue}
+  \Fn{\FSafeIn{\vE:Constant,~\vwild}}{\vTrue}
   \Fn{\FSafeIn{\vE:Variable, \vC:Claim}}{
     \Match{\vC}{
       \With{\vF:Fact if \vFs:[Fact]}{
@@ -1122,11 +1138,11 @@ Finally an assertion is \emph{safe} if three conditions are met:
   \Output{a boolean indicating if the assertion is safe}
   \Fn{\FSafe{\vA:Assertion}}{
     \Match{\vA}{
-      \With{\vwild says \vClaim}{
+      \With{\vwild~says \vClaim}{
         \Match{\vClaim}{
           \With{\vF if \vFs, \vC}{
             \Match{\vF}{
-              \With{\vX \vwild}{
+              \With{\vX~\vwild}{
                 \vCondA $\wedge$ \vCondB $\wedge$ \vCondC
               } } } } } }\;
     \Where{}{
@@ -1147,7 +1163,10 @@ Finally an assertion is \emph{safe} if three conditions are met:
 \subsection{Access Control Systems}
 
 Access control is an area where logics of authorization have been successfully
-applied.  Access control systems control which users can have access to which
+applied. A review of several of the more commonly used schemes is given to contrast
+to the other authorization logics.
+
+Access control systems control which users can have access to which
 files (or capabilities) on a system.  These systems tend to fall into four categories:
 
 \begin{description}
@@ -1240,7 +1259,7 @@ access then the process is authorized to access the file.
 The policy language is written in the form \emph{subject~object~capabilities}.
 Several example use cases are given in the original proposal including an
 implementation of a read-down hierarchical security level system shown in
-Figure~\ref{smack:hierarchical}.
+\autoref{smack:hierarchical}.
 
 \begin{marginfigure}
   \begin{lstlisting}
@@ -1304,8 +1323,14 @@ role sshd u
     bind disabled
     connect disabled
 \end{lstlisting}
+
 \section{Review of Datalog}
 \label{sec:datalog}
+
+Datalog is used in the implementation of several authorization logics.  A brief
+explanation of the language, how it is used in SecPAL, and its variants is given
+for some context as to how these languages can be implemented and the
+limitations the languages inherit from Datalog.
 
 Datalog is a database language. It was created from a simplification of general
 logic programming.  The language is based on first order logic; evaluation of
@@ -1341,7 +1366,7 @@ sibling(X,Y) :-
 \end{marginfigure}
 
 Datalog programs are presented as series of Horn~clauses in the
-same way as Prolog (see Figure~\ref{datalog:example}).  There are
+same way as Prolog (see \autoref{datalog:example}).  There are
 additional restrictions, however: all variables in the head of a clause
 must be present in the body, and no parameter can be a nested predicate.
 
@@ -1397,7 +1422,7 @@ statements may be added as the device runs in response to changing
 circumstances, recomputing all possible fact each time  will not be efficient.
 The \ac{SLD} resolution strategy is also not appropriate (despite Datalog's
 finite Herbrand universe) as SecPAL's \emph{can-say} and \emph{can-act-as}
-assertions could allow infinite recursion; as shown in Figure~\ref{secpal:inf}.
+assertions could allow infinite recursion; as shown in \autoref{secpal:inf}.
 
 \begin{figure*}\centering
   \begin{lstlisting}[language=SecPAL]
@@ -1436,7 +1461,7 @@ have not been fully answered.  For a query $p$: $ans(p)$ and $wait(p)$ are the
 entries in each table pertaining to the query $p$.
 
 To evaluate a query $p$ for a given program with answer table $ans$ the
-algorithm proceeds as in Figure~\ref{secpal:datalog}.
+algorithm proceeds as in \autoref{secpal:datalog}.
 
 \begin{figure}
 \SetKwFunction{FEval}{evaluate}
@@ -1491,13 +1516,13 @@ algorithm proceeds as in Figure~\ref{secpal:datalog}.
   \tcc*[h]{to resolve the sub goal clause.}\;
   \Fn(){\FProcessNode{\vNd:Node, \vProg:Program}}{
     \Match{\vNd}{
-      \With{(\vP, \vQs, \vC, \vwild, \vwild, \vwild)}{
+      \With{(\vP, \vQs, \vC,~\vwild,~\vwild,~\vwild)}{
         \If{\vQs = $[]$}{
           \FProcessAns{\vNd}
         }
         \Else{
           \Match{\vQs}{
-            \With{(\vQa, \vwild)}{
+            \With{(\vQa,~\vwild)}{
               \If{$\exists$ \vQq \FElem \vProg.ans $\vert$ \FCanRename{\vQa, \vQq}}{
                 \FWait{\vQq} $\xleftarrow{+}$ \vNd\;
                 \For{\vNdd \FElem \FWait{\vQq}}{
@@ -1523,7 +1548,7 @@ algorithm proceeds as in Figure~\ref{secpal:datalog}.
   \tcc*[h]{subgoals.}\;
   \Fn(){\FProcessAns{\vNd:Node}}{
     \Match{\vNd}{
-      \With{(\vP, $[]$, \vC, \vwild, \vwild, \vwild)}{
+      \With{(\vP, $[]$, \vC,~\vwild,~\vwild,~\vwild)}{
         \If{\vNd $\not\in$ \FAns{\vP}}{
           \FAns{\vP} $+=$ \vNd
         }
@@ -1707,7 +1732,7 @@ takes the statements  and builds her assertion context.  These
 statements include a recommendation from Google: McAfee can be trusted to
 decide whether an app is malware. There are also statements from McAfee
 and the NLLTool about the app itself. The assertion context is shown in
-Figure~\ref{secpal:exampleac}.
+\autoref{secpal:exampleac}.
 Alice uses SecPAL to decide whether it says
 that \code{Alice says app is-installable.}
 
@@ -1750,7 +1775,7 @@ contexts with over a thousand statements. It is not ideal but can serve as
 a reference for a later efficient implementation if required.
 
 An example of a proof generated by the tool is shown in
-Figure~\ref{secpal:exampleproof}.  The proof is presented as an inverted
+\autoref{secpal:exampleproof}.  The proof is presented as an inverted
 inference tree. Indented statements are the proofs for each condition of
 the unindented line above.  Underlining indicates something is  true
 as it either exists in the assertion context or is true in itself. Variable
@@ -1814,7 +1839,7 @@ should be installed: we model this as a constraint in SecPAL as this decision is
 made every time the app is installed and the decision made by the user is not
 stored as an assertion. Normally this prompt will only display the permissions
 the app requires, but for some app known to be dangerous and additional warning
-may be displayed as shown in Figure~\ref{fig:androiddanger}. The app is only installed if it isn't already
+may be displayed as shown in \autoref{fig:androiddanger}. The app is only installed if it isn't already
 installed, again we model this as a constraint.  Finally the package manager
 only says the package was installed if the installation process carried out by
 \texttt{installd} succeded. 
@@ -1907,7 +1932,7 @@ itself.  The authorization logic will describe these policies: this
 will clarify and formalize the policies present in the code.
 
 The description of the Android installation procedure in
-Section~\ref{sec:modellingmobileos} suggests that the SecPAL language could
+\autoref{sec:modellingmobileos} suggests that the SecPAL language could
 describe the authorization decisions in Android. We have been able to describe
 the installation and update scenario with relative ease.  Installation is not
 the only decision we have to make on Android. Other areas include:
@@ -2013,12 +2038,12 @@ but it may be a concern later.
     \bottomrule        \\
   \end{tabular}
   \caption{Table showing each of the features we described as being desirable
-    and the authorization language described in Section~\ref{sec:authlang}.
+    and the authorization language described in \autoref{sec:authlang}.
     The table compares which languages support which features.}
   \label{tab:authlang}
 \end{marginfigure}
 
-A comparison of the features is shown in Figure~\ref{tab:authlang}.  
+A comparison of the features is shown in \autoref{tab:authlang}.  
 Based on these requirements SecPAL seems to be a good fit; it has certainly been
 able to describe the scenarios we have encountered so far (though some
 hypothetical policies that SecPAL cannot express well are described later on
@@ -2038,6 +2063,7 @@ for my PhD and will be used to provide the start to my thesis.
 
 
 \subsection{Exploring Policies and App Guarden}
+\label{sec:appguarden}
 
 The next area to look at will be the policies users want when downloading apps.
 To explore these policies we will create an app store where users can express
@@ -2052,8 +2078,8 @@ will offer a platform to test real policies against and show how different
 analysis tools can make different guarantees.  
 
 To build the store we will base it on the proxy store model shown in
-Figure~\ref{fig:proxy}.  The final store architecture will resemble
-Figure~\ref{fig:appguardenstore}.  We will download apps plus metadata from the Play Store
+\autoref{fig:proxy}.  The final store architecture will resemble
+\autoref{fig:appguardenstore}.  We will download apps plus metadata from the Play Store
 into our own \emph{App Guarden Store}.  From this master store we will create
 start to filter apps on the basis of policies.  The results from this filtering
 will become the \emph{curated stores}. 
@@ -2087,7 +2113,7 @@ could embed a website in an app that downloads and opens apps from an external
 database} and allow \emph{users} to register themselves and their
 \emph{policies}.  Finally apps can be sent to \emph{expert checking services}
 who can send their results to the app database and the \emph{device} wanting to
-check their statements.  This is shown in Figure~\ref{fig:implement}.
+check their statements.  This is shown in \autoref{fig:implement}.
 
 \begin{marginfigure}
   \includegraphics[width=\marginlength]{img/shop.pdf}
@@ -2122,7 +2148,7 @@ These curated stores will give us several areas for investigation:
     we will be able to test theories about different clusters of apps.  For
     instance if we had the theory that most flashlight apps are over-privileged
     we can check it by writing a policy that rejects apps if
-    Stowaway~\cite{Felt:2011kj} says they are (Figure~\ref{fig:overpriv}): if
+    Stowaway~\cite{Felt:2011kj} says they are (\autoref{fig:overpriv}): if
     half or more apps categorized as flashlights are blocked then we have
     evidence the theory is correct.
 
@@ -2153,7 +2179,7 @@ Phone says Stowaway can-say 0
     circumstances and risks change as well as when a policy needs relaxing or
     tightening for a specific app. Apps are updated by their developers.
     Sometimes these apps need more permissions for new features.  As was discussed in
-    Section~\ref{sec:polovertime}; it is not alway clear what to do in these
+    \autoref{sec:polovertime}; it is not alway clear what to do in these
     circumstances. Several solutions are available:
 
     \begin{itemize}
@@ -2193,10 +2219,10 @@ Phone says Stowaway can-say 0
     are best described by a different policy then we can contrast these two
     policies to learn about how the app stores themselves differ.
 
-  \item[Compound policies:] In Section~\ref{sec:polovertime} we introduced the idea that a policy on a
+  \item[Compound policies:] In \autoref{sec:polovertime} we introduced the idea that a policy on a
     device may be formed from several different policies.  For instance an
     employee may use their own personal phone for work too.  This is the
-    \ac{BYOD} scheme described earlier in Section~\ref{sec:intro}.
+    \ac{BYOD} scheme described earlier in \autoref{sec:intro}.
     
     Compound policies have some interesting problems surrounding them.
     Suggesting solutions to these problems, and evaluating them is novel;
@@ -2253,7 +2279,7 @@ Phone says Stowaway can-say 0
         expected to change over time.  A new policy could be made by composing a
         new set of rules (from a company) with an existing set (from the user):
         but what should happen to the users existing software?  In
-        Section~\ref{sec:polovertime} several possibilities were discussed; none
+        \autoref{sec:polovertime} several possibilities were discussed; none
         of which seemed satisfying.  The App Guarden store will allow us to
         explore and find the consequences of each of them.
         
@@ -2330,7 +2356,7 @@ These policies will then be tested on devices using the app store framework.
 
 One topic will be to show how policies can be written to take into account of
 the \emph{app collusion problem}.  The app collusion problem is shown in
-Figure~\ref{fig:collude}.  A user has a policy that no app that can access the
+\autoref{fig:collude}.  A user has a policy that no app that can access the
 contacts should have access to the internet.  A device has two apps, the first
 can read the contacts, and the second can access the internet.  Individually
 they both meet the policy, however if the first app was to send the contact
@@ -2548,7 +2574,7 @@ Another area would be to develop a protocol for distributing knowledge.
 Whilst SecPAL describes informally a method for transmitting \emph{says}
 statements (they're signed by the speaker's asymmetric key).  When an entity
 wishes to use this statement it gets the public key of the speaker and checks
-the signature matches the message (as shown in Figure~\ref{alg:speaking}).  
+the signature matches the message (as shown in \autoref{alg:speaking}).  
 
 \SetKwFunction{FSays}{says}
 \SetKwFunction{FSign}{sign}
@@ -2600,7 +2626,7 @@ by private individuals they might be discouraged from making publicly available
 statements about apps they have on their phone.  For example someone having an
 affair might not wish to say they have a dating app on their phone.  When a
 user's policy is to only install apps that their friends already used (as
-discussed in Section~\ref{sec:proposallang}) how do they ask their friends for
+discussed in \autoref{sec:proposallang}) how do they ask their friends for
 this information?  
 
 Can we extend SecPAL to express a policy that decides when an
@@ -2657,7 +2683,7 @@ One approach to implementing this would be to attack the confidence to a SecPAL
 assertion as metadata.  This would not modify how evaluation works
 and should not affect any of the safety proofs.  Queries could be made based on
 the current confidence of all assertions by treating the confidence as a
-constraint.  This is shown in Figure~\ref{secpal:confidence}.
+constraint.  This is shown in \autoref{secpal:confidence}.
 
 Levels of trust are interesting because they closer model how we make decisions
 in real life.  Most static analysis tools are not utterly trustworthy. Being
@@ -2668,7 +2694,102 @@ interesting policies.
 
 \subsection{Evaluation of App Guarden}
 
-% <+TODO+>
+The ideas presented in this project will be evaluated using the app store
+framework described in \autoref{sec:appguarden}.  The app store environment is
+ideal for testing with as we can measure the effects of policies on apps by
+grouping the apps into sets and seeing how they are filtered or modified.  
+Methods for evaluating the success of the project for some of the ideas
+presented in this report are detailed bellow.
+
+\begin{itemize}
+  \item To evaluate how users might use the policy language and their
+    comprehension of policies we will let them use the app store.  This will be
+    presented to them through the use of a special \emph{App Guarden app} that
+    connects to the store and allows the download of apps based on policies.
+    This will allow users to give us feedback and for us to ask questions that
+    test how users might understand policies.  Such questions should include:
+
+    \begin{description}
+      \item\textbf{ Given this policy can you explain in natural language what it
+        prevents? }  This tests the \emph{comprehension} of a policy.  If a user
+        can describe what a policy is allowing then they may understand why a
+        policy has prevented them from doing something.
+
+      \item\textbf{ Given this policy to do \emph{X} can you modify it so that it
+        instead does \emph{Y}? }  This tests the \emph{reconfigurability} of 
+        the policy language.  This is important as (technically oriented) users
+        will doubtless need to debug policies.  A language that cannot be easily
+        debugged will not be useful.
+
+      \item\textbf{ Here is an app.  Do you expect this app would be allowed on your
+        system given your policy? } This again tests comprehension of policies
+        but also tests how users relate these policies back to apps.  If a user
+        routinely expects an app to meet a policy, whereas it actually fails to
+        meet it then this indicates that the user either does not understand
+        their policy or does not understand how apps work.  This may lead to
+        users becoming frustrated and should be avoided.
+
+      \item\textbf{ You have asked us to install this app but we believe it fails to
+          meet the policy \emph{P} because of reason \emph{X}. Do you really want
+        to install it and why? }  This question allows us to judge how users
+      \emph{interact} with policies.  If users are installing apps regardless of
+      the warning this suggests the system is too cumbersome to use.  If they
+      are installing it because they believe the reasoning is wrong then this
+      suggests either they are understanding the justification (if it is
+      actually a bad reason) or they do not understand it (if the justification
+      is correct).  Users might override the system because they believe the
+      policy is too draconian.
+  
+  \end{description}
+
+  \item To test the idea that apps can be filtered by policies we will write
+    policies that describe different sets of apps; for example: games,
+    flashlights, password safes and malware.  
+
+    Using the app store framework we will filter apps based on these policies.
+    We will compare the apps the filters allow with their categorization from
+    various different app stores.  If a filtering policy for games allows an app
+    the Play Store categorizes as a game we will consider it as a success with
+    respect to the Play Store.  If a filtering policy doesn't allow an app
+    categorized as a game, or the policy allows an app that was not categorized
+    as a game then we will consider it a failure with respect to the Play Store.
+    When measured over a set of apps if the ratio of successful to unsuccessful
+    filters will give a metric of how closely the filtering policy matches the
+    app store categorization policy.
+
+    By repeating with different app stores we can build different policies that
+    closely match the different app store categorization policies.  This then
+    allows comparison based on any differences (or similarities) in the
+    respective filter policies. 
+
+  \item To test the user policies we will start by creating policies for users
+    that describe the restrictions we can imagine them wanting.  From here we
+    will attempt to write malicious\footnote{Malicious here may include
+      traditional malware, but may also include \ac{PUS} and handwritten apps
+    that definitely break user's policies.} apps which deliberately break the
+    policies.   If these policies ensure that any malicious apps are kept away
+    from the policy users (or at least flagged for modification) then the policy
+    is successful.  Extraneous malicious apps that get flagged by a policy may
+    need further inspection to discover why, and any malicious apps that are
+    allowed should count as policy failures.  This allows us to measure the
+    effectiveness of policies.
+
+    If policies require the use of various static analysis tools we can also
+    assess the effectiveness of various configurations of the tools (or
+    alternative tools which check the same things).  To do this we write
+    different policies which use different tooling set-ups and again measure the
+    success rate on filtering apps from a malicious data set.
+
+  \item To test how policies can prevent colluding apps we can take colluding
+  apps (from app stores and synthetic examples); then measure how many of these
+  apps a policy prevents.  This also allows us to gain information about what
+  kinds of collusion are most common: common collusions will result in more
+  blocks.  If we find we frequently block too many app then it suggests that our
+  policies are too general, if we fail to block many apps then our policies are
+  ineffective.  If we cannot give understandable reasons why an app should be
+  blocked then our explanations will need further work.
+
+\end{itemize}
 
 \subsection{Conclusion}
 
@@ -2731,7 +2852,7 @@ of security between them.
 
 By the end of the PhD I want to have shown how authorization logics can be
 extended to describe and mitigate decision making problems on mobile devices.
-A schedule for completing the project is shown in Figure~\ref{fig:gantt}.
+A schedule for completing the project is shown in \autoref{fig:gantt}.
 
 \vfill
 \begin{figure*}
