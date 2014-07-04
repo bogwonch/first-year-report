@@ -1,4 +1,7 @@
+% vim: set ft=tex:
 \ProvidesPackage{localstyle}
+
+\usepackage{hanging}
 
 % If not using tufte, load a complete set of fonts
 \@ifclassloaded{article}{\usepackage{lmodern}}
@@ -62,10 +65,10 @@
 
 % Handle tufte figures gracefully
 \@ifundefined{marginfigure}{%
-  \newenvironment{marginfigure}{\begin{figure}\centering}{\end{figure}}
+  \newenvironment{marginfigure}[1][]{\begin{figure}[#1]\centering}{\end{figure}}
 }{}
 \@ifundefined{figure*}{%
-  \newenvironment{figure*}{\begin{figure}\centering}{\end{figure}}
+  \newenvironment{figure*}[1][]{\begin{figure}[#1]\centering}{\end{figure}}
 }{}
 
 % Code
