@@ -1,0 +1,130 @@
+\documentclass[ignorenonframetext,]{beamer}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifxetex
+  \usepackage{fontspec,xltxtra,xunicode}
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+\else
+  \ifluatex
+    \usepackage{fontspec}
+    \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \else
+    \usepackage[utf8]{inputenc}
+  \fi
+\fi
+
+% Comment these out if you don't want a slide with just the
+% part/section/subsection/subsubsection title:
+\AtBeginPart{
+  \let\insertpartnumber\relax
+  \let\partname\relax
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \let\insertsectionnumber\relax
+  \let\sectionname\relax
+  \frame{\sectionpage}
+}
+\AtBeginSubsection{
+  \let\insertsubsectionnumber\relax
+  \let\subsectionname\relax
+  \frame{\subsectionpage}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+\title{Authorization Logics For Mobile Ecosystems}
+\author{Joseph Hallett}
+\date{10th September 2014}
+
+\begin{document}
+\frame{\titlepage}
+
+\section{Authorization Logics for Mobile Ecosystems --- Thesis
+Proposal}\label{authorization-logics-for-mobile-ecosystems-thesis-proposal}
+
+\begin{frame}{What I am proposing}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Authorization logic for Android ecosystem
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Based on SecPAL
+  \end{itemize}
+\item
+  Used for modelling and decisions made in
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    User and device interactions
+  \item
+    Developer and store interactions
+  \item
+    User and store interactions
+  \end{itemize}
+\item
+  Modelling precisely current differences
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    iPhone and Android
+  \item
+    Play Store and Yandex app store
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Research areas}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  What does an authorization logic for mobile ecosystems need?
+
+  \begin{itemize}
+  \itemsep1pt\parskip0pt\parsep0pt
+  \item
+    Have an implementation of SecPAL that is working well
+
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      Running with \emph{real} apps
+    \item
+      Fast/stable enough for research purposes
+    \item
+      Would be nice to get it going on Android\ldots{}
+    \end{itemize}
+  \item
+    Starting to get an idea what we need/want
+
+    \begin{itemize}
+    \itemsep1pt\parskip0pt\parsep0pt
+    \item
+      Have integration with SKB/external checkers
+    \item
+      Starting to get extensions to SecPAL creeping in
+
+      \begin{itemize}
+      \itemsep1pt\parskip0pt\parsep0pt
+      \item
+        Searching rather than querying
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\end{document}
