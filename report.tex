@@ -57,13 +57,13 @@ software (\emph{apps}) which they download from special app stores.
 When an app is installed on Android the user is prompted to accept the
 privileges required by the app.  The user makes a decision based on what they
 know about the app and their own personal security policies.  Most users accept
-the app without thinking about it~\cite{Felt:2012hm}.  They do this for a many
-reasons: because they don't understand the risks, they don't understand the
-permissions, or they simply don't care and will install the app whatever.
+the app without thinking about it~\cite{Felt:2012hm}.  They do this because they
+don't understand the risks, because they don't understand the
+permissions, or because they simply don't care and will install the app whatever.
 
 Facebook is an example of an app which requests many permissions
 (\autoref{fig:fb}). Users trust Facebook not to be malicious even though it
-has access to amount of their personal data.  Some apps are over
+has access to large amounts of their personal data.  Some apps are over
 privileged~\cite{Felt:2011kj}: they request permissions that grants them access
 to data they do not use. Some apps are malicious~\cite{Zhou:2012cf}: they
 request permissions to steal data or to spend money without the users consent.
@@ -77,7 +77,7 @@ with another program.  On Android \ac{PUS} might be an aggressive advertising
 framework that leaks private information or repeatedly polls GPS information,
 draining the phones battery~\cite{Svajcer:2013tp}.
 
-More generally users and computers make decisions. Whether it is to update an
+Users and computers make decisions. Whether it is to update an
 app or to connect to a website: the decisions are made based on the security
 policies and trust relationships of the user and device.  These security
 policies may include the use of tools or experts to decide whether something is
@@ -109,9 +109,9 @@ through a vigorous review process and Apple is selective about what it sells.
 Android is more permissive.  With a formal language to describe system policy we
 can make a precise comparison. 
 
-To analyze permissions and detect malware both static and dynamic analysis has
+To analyze permissions and detect malware static and dynamic analysis has
 been used.  Static analysis tools infer (and occasionally enforce) complex
-security properties about the code.  What is missing is the link between the
+security properties about the code.  Dynamic .  What is missing is the link between the
 assurances these tools can give and the \emph{user-level policies} we want to
 enforce.  A user-level policy describes how a user wishes an app to behave;
 though a user may only specify them informally.
@@ -177,7 +177,7 @@ Logics of authorization are used to decide whether some system may do something.
 This might be carrying out an action, accessing data, or describing what another
 entity can do. When we apply these logics to files and information we create an
 access control system. A review of the history and applications of
-the logics is given later in this proposal (page~\pageref{sec:pollang}); but in
+the logics is given later in this proposal (page~\pageref{sec:authlang}); but in
 summary they have shown themselves to be useful for modelling the
 complex security and trust policies in modern systems.
 
@@ -789,7 +789,7 @@ might have a policy that:
 \end{quote}  
 In PolicyMaker the key specified by the policy must be fixed: you cannot say any
 key with a property.  For Keynote the local-constants have the same
-restrictions.  Consequently these languages were not as expressive as hoped.
+restrictions.  Consequently these languages are not as expressive as might be hoped.
 
 
 In comparison to KeyNote, \emph{SPKI/SDSI}~\cite{Ellison:1999ui} is more
@@ -806,7 +806,7 @@ Where $\bot$ indicates that delegation would not be allowed.
 \emph{RT}~\cite{Li:2002if} builds on PolicyMaker. RT allows principals to be
 given roles; similar to a \ac{RBAC} system. Decisions are made based on which
 roles are held.
-RT can express the general statements that were impossible in PolicyMaker.
+RT can express the general statements that are impossible in PolicyMaker.
 For example consider the earlier example: students and preferred customers get
 discounts. To write this in RT for the Amazon store the policy would be written:
 
@@ -836,7 +836,7 @@ an Amazon preferred customer.
 If Amazon agreed with these assertions (i.e.\ they were cryptographically signed
 by the appropriate people) then it would grant discount.
 
-Several versions of RT were described: the simplest being
+Several versions of RT are described: the simplest being
 \emph{RT$_0$}~\cite{Li:2003tj} and with \emph{RT$_1$} and \emph{RT$_2$} adding
 support for parameterized-roles and logical-objects respectively. Extensions
 added support for constraints.  A constraint is a limitation based on something
@@ -943,42 +943,7 @@ statement must just come from him directly.
 
 Despite only having two delegation levels it is possible to express nested
 delegation to an arbitrary depth.  To do this one imports statements which put a
-limit on how far the delegation can go.  For instance if $A$ wanted to allow $B$
-to delegate to someone who can delegate to someone but not any further than
-that; when importing statements $A$ might opt to modify one to prevent further
-delegation.
-
-\begin{lstlisting}[language=SecPAL]
-A says B can-say inf x is-allowed.
-B says C can-say inf x is-allowed. 
-C says D can-say inf x is-allowed. // Change this line
-C says D can-say 0 x is-allowed.   // to this line
-\end{lstlisting}
-
-\citeauthor{Becker:2006vh} sometimes write this using nested delegation
-statements; this syntax is non-standard as they disallow nested can-say
-statements as it complicates the evaluation making it potentially intractable
-(by breaking Datalog's safety condition).
-
-\begin{lstlisting}[language=SecPAL]
-// Non-standard SecPAL
-A says B can-say inf 
-  c can-say inf
-    d can-say 0 
-      x is-allowed.
-\end{lstlisting}
-
-{SecPAL} also adds a \emph{can-act-as} phrase that allows \emph{speaks for}
-relationships and entity aliasing.  Suppose a user has a text messaging
-app SMSSender.  The user also has a policy that they won't send a text message
-unless it is to someone in their address book.  The user wants to try out a new
-messaging app, \texttt{SendSMS}, but still wants any restrictions from the old
-app to apply to it.  Rather than duplicate all the rules for the new app (making
-their policy unwieldy) they can alias \texttt{SendSMS} to the \texttt{SMSSender}
-app.  This ensures that the new \texttt{SendSMS} app will only be able to act if
-the old \texttt{SMSSender} could have. The SecPAL code for this is shown in
-\autoref{fig:canactas}.
-
+limit on how far the delegation can go.  For instance
 \begin{figure}
 \begin{lstlisting}[language=SecPAL]
 User says SMSSender can-send-message-to(m) 
@@ -996,7 +961,7 @@ one messaging app to another.}
 Extensions of {SecPAL}~\cite{Becker:2009vt} add support for guarded
 universal quantification. They also remove the \emph{can-act-as} statement. Other
 languages such as \emph{DKAL}~\cite{Gurevich:2008fz} built on and eventually split
-from {SecPAL}. DKAL was designed to express distributed knowledge between
+from {SecPAL}. D:qKAL was designed to express distributed knowledge between
 principals by adding to the trust delegation mechanisms already in {SecPAL}.
 They also showed how any {SecPAL} statement could be translated into {DKAL}.
 The \emph{{SecPAL}4P} language~\cite{Becker:2009ula} was an instantiation of (the
@@ -1040,7 +1005,7 @@ are evaluated against a set of known statements (the \ac{AC}) and an initially
 infinite delegation level ($D$). If the rules show that the query is valid then
 SecPAL says the statement is okay else it is rejected.
 
-\newcommand{\bnfcomment}[1]{\slshape{\color{gray}\smaller\smaller (#1)}}
+\newcommand{\bnfcomment}[1]{\slshape{\color{gray} (#1)}}
 \begin{marginfigure}
   \begin{tabular}{r r l c}\smaller
     e          & $\Coloneqq$ & \secpal{x}                                       & \bnfcomment{variables}         \\
@@ -1121,7 +1086,6 @@ conditional facts of the claim ($fs$) and not just the constraint.
 \end{algorithm}
 
 Finally an assertion is \emph{safe} if three conditions are met:
-
 \begin{enumerate}
   \item If the asserted fact is flat, all variables in that fact are also safe;
     otherwise the delegated entity must be a safe variable or constant.

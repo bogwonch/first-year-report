@@ -2,9 +2,16 @@
 \ProvidesPackage{localstyle}
 
 \usepackage{hanging}
+\clubpenalty=9996
+\widowpenalty=9999
+\brokenpenalty=4991
+\predisplaypenalty=10000
+\postdisplaypenalty=1549
+\displaywidowpenalty=1602
 
 % If not using tufte, load a complete set of fonts
-\@ifclassloaded{article}{\usepackage{lmodern}}
+\usepackage{lmodern}
+%\@ifclassloaded{article}{\usepackage{lmodern}}
 %\@ifclassloaded{report}{\usepackage{lmodern}}
 %\@ifclassloaded{book}{\usepackage{lmodern}}
 
@@ -88,7 +95,7 @@
 \newcommand{\secpal}[1]{\lstinline[language=SecPAL]{#1}}
 
 \lstdefinelanguage{SecPAL}{%
-  morecomment=[l]{//},
+  morecomment=[l]{\%},
   mathescape=true,
   morekeywords={says,if,can,say,can,act,as,shows,assert,ask,meets,breaks,unsure,of},
   literate=* {\ inf}{{$_\infty$}}1 {can-say\ 0}{{can-say$_{\mathtt 0}$\ }}9 
